@@ -1,0 +1,318 @@
+﻿{
+  "RouteId": 189,
+  "TemplateId": 215,
+  "Id": 74,
+  "Test": {
+    "Value1": "Value1acf46bc4-ee68-424c-9217-075111694004",
+    "Value2": 103,
+    "Values": [
+      199,
+      46,
+      190
+    ],
+    "NullableValue": 138,
+    "InnerClass123": {
+      "Value": "Valuef872fa1c-3716-4c2b-87ca-adda457b9fa4"
+    },
+    "Values2": [
+      {
+        "Value": "Value7f745df8-cc16-4f02-b84b-ed23cc75f1da"
+      },
+      {
+        "Value": "Valuede31457e-eec2-4081-a5ed-805864634805"
+      },
+      {
+        "Value": "Valueeff313ad-5ca9-4016-a279-a3d9c0c096ee"
+      }
+    ]
+  },
+  "Amount": 229.0,
+  "Comment": [
+    "ecd0770a-b65b-4940-9662-06c06e477acd",
+    "07733b95-851d-497d-83e1-a7c9ad1c628c",
+    "5a29bf90-3838-4b31-ae38-8e8712552e45"
+  ],
+  "CrDate": "2016-12-24T14:14:39.8393294",
+  "DateTimeStamp": "2018-11-21T02:36:46.9506665",
+  "Deleted": true,
+  "DistributorId": 47,
+  "ActionId": 114,
+  "BaseDocId": 111,
+  "BusinessStatusId": 30,
+  "OutletId": 54,
+  "ClientId": 153,
+  "CreatorId": 235,
+  "ExchangeStateId": 71,
+  "FirstVersionId": 247,
+  "OperationId": 14,
+  "PhysicalPersonId": 170,
+  "PositionId": 126,
+  "PreviousVersionId": 8,
+  "StatusId": 137,
+  "IdvDJGridFields": 203,
+  "VisitId": 150,
+  "IsEditOut": false,
+  "IsReserved": true,
+  "IsSent": false,
+  "ObjectType": 145,
+  "OpDate": "2019-11-28T23:30:39.2415502",
+  "Outercode": "блаблаблаблаблаблабла",
+  "PDADocNum": 163,
+  "PrintDocNum": "PrintDocNum1f665b2c-463a-4c45-9713-1bc713d72b58",
+  "PrnDocNum": "PrnDocNum81ff40b7-4e12-40da-8922-7ce4167c041a",
+  "StatusSentMail": "StatusSentMail9e05d74c-0879-45d2-b2cd-6fb0d274d34f",
+  "Items": [
+    {
+      "Id": 228,
+      "IdDoc": 115,
+      "IdPacket": 242,
+      "IdQuestion": 197,
+      "IdTemplateRow": 122,
+      "IdTopic": 16,
+      "Photos": [
+        {
+          "Id": 11,
+          "IdDocRow": 217,
+          "IdDoc": 121,
+          "IdQuestion": 156,
+          "IdTemplateRow": 41,
+          "IdTemplate": 22,
+          "IdTopic": 116,
+          "PhotoFileName": "PhotoFileName1e91a978-4d6b-4ae2-9916-55da94c76198",
+          "PhotoTime": "2020-04-06T05:58:16.9025973"
+        },
+        {
+          "Id": 48,
+          "IdDocRow": 183,
+          "IdDoc": 33,
+          "IdQuestion": 17,
+          "IdTemplateRow": 70,
+          "IdTemplate": 62,
+          "IdTopic": 236,
+          "PhotoFileName": "PhotoFileName16e0d20d-7ccc-4425-abae-85530f80f445",
+          "PhotoTime": "2018-05-18T09:01:28.6244439"
+        },
+        {
+          "Id": 99,
+          "IdDocRow": 173,
+          "IdDoc": 174,
+          "IdQuestion": 182,
+          "IdTemplateRow": 78,
+          "IdTemplate": 208,
+          "IdTopic": 55,
+          "PhotoFileName": "PhotoFileName541593ae-5c9e-42c4-829e-91a571eaed5d",
+          "PhotoTime": "2020-04-09T11:49:43.6955282"
+        }
+      ],
+      "Values": [
+        {
+          "AnswerDate": "2019-07-24T18:32:15.372851",
+          "AnswerId": 218,
+          "AnswerNumber": 24.0,
+          "AnswerStr": "AnswerStr9dc625be-8b09-435c-b634-0e3ec7cf8691",
+          "Id": 105,
+          "IdDocRow": 96,
+          "IdDoc": 20,
+          "IdQuestion": 120,
+          "IdTemplateRow": 4,
+          "IdTemplate": 19,
+          "IdTopic": 211
+        },
+        {
+          "AnswerDate": "2018-03-22T11:39:58.2497089",
+          "AnswerId": 77,
+          "AnswerNumber": 149.0,
+          "AnswerStr": "AnswerStr4b27aae7-2d2e-4e24-83cd-bdd5e7a06585",
+          "Id": 85,
+          "IdDocRow": 241,
+          "IdDoc": 21,
+          "IdQuestion": 223,
+          "IdTemplateRow": 113,
+          "IdTemplate": 147,
+          "IdTopic": 159
+        },
+        {
+          "AnswerDate": "2018-10-29T05:17:57.6986716",
+          "AnswerId": 53,
+          "AnswerNumber": 7.0,
+          "AnswerStr": "AnswerStrf7039d8a-a897-4107-9fe1-731626e077be",
+          "Id": 204,
+          "IdDocRow": 97,
+          "IdDoc": 196,
+          "IdQuestion": 9,
+          "IdTemplateRow": 72,
+          "IdTemplate": 91,
+          "IdTopic": 162
+        }
+      ]
+    },
+    {
+      "Id": 238,
+      "IdDoc": 193,
+      "IdPacket": 18,
+      "IdQuestion": 35,
+      "IdTemplateRow": 12,
+      "IdTopic": 56,
+      "Photos": [
+        {
+          "Id": 87,
+          "IdDocRow": 13,
+          "IdDoc": 66,
+          "IdQuestion": 44,
+          "IdTemplateRow": 25,
+          "IdTemplate": 160,
+          "IdTopic": 58,
+          "PhotoFileName": "PhotoFileNamed9e51d08-6c5e-4ab9-92f6-e81c7045ed5d",
+          "PhotoTime": "2020-06-29T23:42:55.1088942"
+        },
+        {
+          "Id": 226,
+          "IdDocRow": 60,
+          "IdDoc": 254,
+          "IdQuestion": 80,
+          "IdTemplateRow": 112,
+          "IdTemplate": 187,
+          "IdTopic": 49,
+          "PhotoFileName": "PhotoFileName82f5d570-b6e5-40ad-8d29-ca48493e276a",
+          "PhotoTime": "2017-01-31T21:43:28.1218258"
+        },
+        {
+          "Id": 167,
+          "IdDocRow": 67,
+          "IdDoc": 206,
+          "IdQuestion": 10,
+          "IdTemplateRow": 100,
+          "IdTemplate": 136,
+          "IdTopic": 250,
+          "PhotoFileName": "PhotoFileName1ec96be7-3af7-426d-b418-2b1bf1581bb1",
+          "PhotoTime": "2019-01-01T16:12:37.8072182"
+        }
+      ],
+      "Values": [
+        {
+          "AnswerDate": "2018-12-28T20:51:51.8814832",
+          "AnswerId": 93,
+          "AnswerNumber": 180.0,
+          "AnswerStr": "AnswerStr2deef42b-8fed-449e-beaf-7c9956934eb2",
+          "Id": 209,
+          "IdDocRow": 68,
+          "IdDoc": 177,
+          "IdQuestion": 134,
+          "IdTemplateRow": 6,
+          "IdTemplate": 89,
+          "IdTopic": 42
+        },
+        {
+          "AnswerDate": "2018-12-14T23:07:01.3336998",
+          "AnswerId": 135,
+          "AnswerNumber": 231.0,
+          "AnswerStr": "AnswerStre25adc3e-28ce-4bd5-a39e-7dffb404dcb1",
+          "Id": 84,
+          "IdDocRow": 175,
+          "IdDoc": 245,
+          "IdQuestion": 253,
+          "IdTemplateRow": 222,
+          "IdTemplate": 185,
+          "IdTopic": 119
+        },
+        {
+          "AnswerDate": "2019-02-20T14:58:53.2112937",
+          "AnswerId": 61,
+          "AnswerNumber": 63.0,
+          "AnswerStr": "AnswerStrf6f54e1a-c068-4421-a093-59e52b2af091",
+          "Id": 128,
+          "IdDocRow": 176,
+          "IdDoc": 198,
+          "IdQuestion": 152,
+          "IdTemplateRow": 5,
+          "IdTemplate": 88,
+          "IdTopic": 214
+        }
+      ]
+    },
+    {
+      "Id": 110,
+      "IdDoc": 221,
+      "IdPacket": 73,
+      "IdQuestion": 249,
+      "IdTemplateRow": 28,
+      "IdTopic": 64,
+      "Photos": [
+        {
+          "Id": 104,
+          "IdDocRow": 141,
+          "IdDoc": 154,
+          "IdQuestion": 94,
+          "IdTemplateRow": 45,
+          "IdTemplate": 39,
+          "IdTopic": 186,
+          "PhotoFileName": "PhotoFileNamece7527b3-9605-48ba-abf6-e49244e6bfc9",
+          "PhotoTime": "2020-09-15T20:36:44.6774784"
+        },
+        {
+          "Id": 52,
+          "IdDocRow": 207,
+          "IdDoc": 32,
+          "IdQuestion": 191,
+          "IdTemplateRow": 194,
+          "IdTemplate": 1,
+          "IdTopic": 131,
+          "PhotoFileName": "PhotoFileName558768bf-e4fb-403c-b3b8-6fe7113899ff",
+          "PhotoTime": "2017-12-09T15:21:44.0985336"
+        },
+        {
+          "Id": 224,
+          "IdDocRow": 239,
+          "IdDoc": 212,
+          "IdQuestion": 158,
+          "IdTemplateRow": 165,
+          "IdTemplate": 98,
+          "IdTopic": 31,
+          "PhotoFileName": "PhotoFileName68614052-694f-4a83-8f1c-f2db588b5dce",
+          "PhotoTime": "2018-01-09T23:40:41.4561279"
+        }
+      ],
+      "Values": [
+        {
+          "AnswerDate": "2020-03-12T11:29:15.2267014",
+          "AnswerId": 51,
+          "AnswerNumber": 219.0,
+          "AnswerStr": "AnswerStr43e3bc8c-c713-44be-bd78-48d03230d8c2",
+          "Id": 117,
+          "IdDocRow": 86,
+          "IdDoc": 166,
+          "IdQuestion": 210,
+          "IdTemplateRow": 40,
+          "IdTemplate": 76,
+          "IdTopic": 232
+        },
+        {
+          "AnswerDate": "2019-11-19T12:25:46.53689",
+          "AnswerId": 129,
+          "AnswerNumber": 26.0,
+          "AnswerStr": "AnswerStr9b430489-1eff-45b8-9bfb-323b18e7e7f5",
+          "Id": 130,
+          "IdDocRow": 181,
+          "IdDoc": 244,
+          "IdQuestion": 118,
+          "IdTemplateRow": 233,
+          "IdTemplate": 230,
+          "IdTopic": 23
+        },
+        {
+          "AnswerDate": "2019-07-28T02:45:30.8187962",
+          "AnswerId": 57,
+          "AnswerNumber": 123.0,
+          "AnswerStr": "AnswerStr752a93a9-f12b-4a86-9c6b-d932b769245e",
+          "Id": 38,
+          "IdDocRow": 255,
+          "IdDoc": 133,
+          "IdQuestion": 234,
+          "IdTemplateRow": 102,
+          "IdTemplate": 108,
+          "IdTopic": 124
+        }
+      ]
+    }
+  ]
+}

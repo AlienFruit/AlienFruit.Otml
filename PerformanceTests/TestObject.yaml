@@ -1,0 +1,254 @@
+﻿RouteId: 27328
+TemplateId: 27984
+Id: 21671
+Test:
+  Value1: Value16d2a7a12-fbbd-40a3-bfe9-3d28d0ca26ef
+  Value2: 24922
+  Values:
+  - 15700
+  - 30004
+  - 17400
+  NullableValue: 27206
+  InnerClass123:
+    Value: Value2844f1a9-cd06-4c8d-8053-c834c4b02a05
+  Values2:
+  - Value: Value440e2013-d133-415d-8f63-a7fe652a8d05
+  - Value: Value844c15eb-69d2-438b-94b1-c91ef425feba
+  - Value: Valuee714ea48-f7af-4a2d-ba0e-4df2855e622f
+Amount: 6227
+Comment:
+- 70417672-08be-486a-a346-543fe332ce6f
+- 3c5244a9-e134-4630-820f-72b92edf7c94
+- bd40b2a1-09c7-4f7f-8264-5a8150226b53
+CrDate: 2017-04-21T15:14:31.3769086
+DateTimeStamp: 2017-11-11T23:56:07.5635860
+Deleted: true
+DistributorId: 8249
+ActionId: 28748
+BaseDocId: 22380
+BusinessStatusId: 28690
+OutletId: 31554
+ClientId: 13707
+CreatorId: 8802
+ExchangeStateId: 32215
+FirstVersionId: 17872
+OperationId: 14016
+PhysicalPersonId: 23497
+PositionId: 1580
+PreviousVersionId: 12819
+StatusId: 16161
+IdvDJGridFields: 6320
+VisitId: 9156
+IsReserved: true
+ObjectType: 11401
+OpDate: 2019-09-04T13:51:46.2292194
+Outercode: блаблаблаблаблаблабла
+PDADocNum: 17969
+PrintDocNum: PrintDocNum4d899509-5411-4d3d-84d1-c226ea391082
+PrnDocNum: PrnDocNumda327f2f-5bbc-47c3-bda7-8c9f49e4b5c2
+StatusSentMail: StatusSentMailbc74c724-7f36-43d3-89ea-a3f9d07bfff0
+Items:
+- Id: 24347
+  IdDoc: 23790
+  IdPacket: 6025
+  IdQuestion: 28948
+  IdTemplateRow: 19279
+  IdTopic: 30144
+  Photos:
+  - Id: 25853
+    IdDocRow: 3989
+    IdDoc: 15557
+    IdQuestion: 1935
+    IdTemplateRow: 3453
+    IdTemplate: 11446
+    IdTopic: 5727
+    PhotoFileName: PhotoFileName406034f0-aa78-4bbf-b17b-9dccddc60755
+    PhotoTime: 2019-02-25T19:53:54.2967388
+  - Id: 13935
+    IdDocRow: 30130
+    IdDoc: 10954
+    IdQuestion: 9077
+    IdTemplateRow: 13472
+    IdTemplate: 28451
+    IdTopic: 6699
+    PhotoFileName: PhotoFileName8cc5481a-a535-4d4b-b6f8-5108654e7c7b
+    PhotoTime: 2018-07-02T09:45:41.5072950
+  - Id: 2476
+    IdDocRow: 16235
+    IdDoc: 26786
+    IdQuestion: 30817
+    IdTemplateRow: 10721
+    IdTemplate: 31367
+    IdTopic: 20855
+    PhotoFileName: PhotoFileNamedc1502ef-1330-40c6-8310-3d051d4d7adc
+    PhotoTime: 2019-12-20T13:06:39.9424458
+  Values:
+  - AnswerDate: 2017-03-10T00:13:46.1569369
+    AnswerId: 10155
+    AnswerNumber: 14765
+    AnswerStr: AnswerStrff4c3593-8582-4ea3-b4b7-e87219f62831
+    Id: 12079
+    IdDocRow: 15606
+    IdDoc: 16022
+    IdQuestion: 4554
+    IdTemplateRow: 12291
+    IdTemplate: 25820
+    IdTopic: 3672
+  - AnswerDate: 2018-09-15T19:34:46.0329611
+    AnswerId: 458
+    AnswerNumber: 12068
+    AnswerStr: AnswerStr909ccfd8-4590-48b0-b8fa-c9d0fe522f84
+    Id: 9724
+    IdDocRow: 25004
+    IdDoc: 3092
+    IdQuestion: 27820
+    IdTemplateRow: 30918
+    IdTemplate: 7123
+    IdTopic: 29018
+  - AnswerDate: 2019-09-18T10:26:26.8154204
+    AnswerId: 6682
+    AnswerNumber: 8544
+    AnswerStr: AnswerStrb8e7eb79-8051-4e7f-8719-70be0d213eca
+    Id: 9818
+    IdDocRow: 4218
+    IdDoc: 2120
+    IdQuestion: 7339
+    IdTemplateRow: 25616
+    IdTemplate: 4957
+    IdTopic: 15748
+- Id: 8367
+  IdDoc: 29771
+  IdPacket: 7976
+  IdQuestion: 18482
+  IdTemplateRow: 20680
+  IdTopic: 9545
+  Photos:
+  - Id: 15954
+    IdDocRow: 21992
+    IdDoc: 3734
+    IdQuestion: 19096
+    IdTemplateRow: 20198
+    IdTemplate: 7147
+    IdTopic: 26204
+    PhotoFileName: PhotoFileNamed3c69071-eb4d-4c80-a543-72ad54a2aaf0
+    PhotoTime: 2019-05-11T10:39:01.1624578
+  - Id: 20882
+    IdDocRow: 26714
+    IdDoc: 10752
+    IdQuestion: 29776
+    IdTemplateRow: 4004
+    IdTemplate: 3702
+    IdTopic: 3862
+    PhotoFileName: PhotoFileName73a1c6db-7e04-4063-a98b-3081153e30af
+    PhotoTime: 2017-03-13T20:58:31.1182571
+  - Id: 7423
+    IdDocRow: 18085
+    IdDoc: 19919
+    IdQuestion: 2055
+    IdTemplateRow: 4295
+    IdTemplate: 23078
+    IdTopic: 11293
+    PhotoFileName: PhotoFileNamed944f9fa-fe4b-4f8c-950b-0456e8be73f6
+    PhotoTime: 2018-07-16T21:49:08.7124937
+  Values:
+  - AnswerDate: 2019-05-15T20:15:40.4103771
+    AnswerId: 6193
+    AnswerNumber: 12900
+    AnswerStr: AnswerStr584bf99e-2b3f-478c-92ae-771ac8ef8559
+    Id: 4995
+    IdDocRow: 22758
+    IdDoc: 2805
+    IdQuestion: 32365
+    IdTemplateRow: 29310
+    IdTemplate: 17709
+    IdTopic: 6668
+  - AnswerDate: 2020-08-06T01:24:59.6870269
+    AnswerId: 25250
+    AnswerNumber: 21811
+    AnswerStr: AnswerStr46a7a27b-981a-413d-903d-d28ca6345950
+    Id: 15715
+    IdDocRow: 19906
+    IdDoc: 6084
+    IdQuestion: 27439
+    IdTemplateRow: 20794
+    IdTemplate: 9075
+    IdTopic: 32302
+  - AnswerDate: 2017-03-19T10:54:32.5255193
+    AnswerId: 15108
+    AnswerNumber: 21703
+    AnswerStr: AnswerStr4e335429-d4b2-4fb1-8baa-b90fdf96a873
+    Id: 10272
+    IdDocRow: 24136
+    IdDoc: 10330
+    IdQuestion: 21867
+    IdTemplateRow: 10025
+    IdTemplate: 1351
+    IdTopic: 8580
+- Id: 23049
+  IdDoc: 10108
+  IdPacket: 6176
+  IdQuestion: 14443
+  IdTemplateRow: 30369
+  IdTopic: 31019
+  Photos:
+  - Id: 10016
+    IdDocRow: 9347
+    IdDoc: 31506
+    IdQuestion: 29105
+    IdTemplateRow: 17648
+    IdTemplate: 7550
+    IdTopic: 29661
+    PhotoFileName: PhotoFileName985bdcc6-a943-44ff-99e3-c856b58e438e
+    PhotoTime: 2018-12-21T21:22:39.7391798
+  - Id: 3429
+    IdDocRow: 20301
+    IdDoc: 18270
+    IdQuestion: 3678
+    IdTemplateRow: 14960
+    IdTemplate: 20755
+    IdTopic: 16723
+    PhotoFileName: PhotoFileName8ef07196-2df5-4b82-b6e7-e3df5b5cd482
+    PhotoTime: 2019-05-18T07:34:31.6853597
+  - Id: 1595
+    IdDocRow: 23414
+    IdDoc: 31892
+    IdQuestion: 25747
+    IdTemplateRow: 4761
+    IdTemplate: 8226
+    IdTopic: 22357
+    PhotoFileName: PhotoFileName3794e7e3-9643-4123-9c52-834f74c6053f
+    PhotoTime: 2020-07-29T19:39:46.3850339
+  Values:
+  - AnswerDate: 2020-01-02T05:21:27.9427802
+    AnswerId: 28689
+    AnswerNumber: 21532
+    AnswerStr: AnswerStr2aa38d86-b202-4058-ae8e-c29700ef0fc6
+    Id: 27433
+    IdDocRow: 1147
+    IdDoc: 25547
+    IdQuestion: 31270
+    IdTemplateRow: 20986
+    IdTemplate: 27427
+    IdTopic: 29328
+  - AnswerDate: 2016-12-27T20:31:35.2957614
+    AnswerId: 19329
+    AnswerNumber: 12166
+    AnswerStr: AnswerStr923eadf5-ebcd-4e48-8327-0db5851302ef
+    Id: 24209
+    IdDocRow: 17463
+    IdDoc: 10146
+    IdQuestion: 29504
+    IdTemplateRow: 28700
+    IdTemplate: 24456
+    IdTopic: 24194
+  - AnswerDate: 2018-06-28T03:28:00.6221962
+    AnswerId: 25007
+    AnswerNumber: 18214
+    AnswerStr: AnswerStr65bf3f27-a8f6-44d1-a3f4-94afb464c44d
+    Id: 18530
+    IdDocRow: 22738
+    IdDoc: 6122
+    IdQuestion: 6907
+    IdTemplateRow: 7163
+    IdTemplate: 22038
+    IdTopic: 17395
