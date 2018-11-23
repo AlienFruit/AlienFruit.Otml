@@ -82,6 +82,7 @@ namespace AlienFruit.Otml.Serializer.Tests
         }
 
         [Test]
+        [Ignore("Because I can")]
         public void Test123()
         {
             var serializer = Serializer.Build().WithContainer(new ExpressioinContainer()).Create();
@@ -144,12 +145,6 @@ namespace AlienFruit.Otml.Serializer.Tests
         }
 
         [Test]
-        public void Test()
-        {
-            var serializer = Serializer.Build().Create();
-        }
-
-        [Test]
         public void Serialize_then_desererialize_with_custom_formatter_should_change_string_property()
         {
             // Arrange
@@ -161,7 +156,8 @@ namespace AlienFruit.Otml.Serializer.Tests
             var deserealizeResult = serializer.Deserialize<InnerClass>(serializeResult);
 
             // Assert
-            deserealizeResult.Should().BeEquivalentTo(sourceObject);
+            deserealizeResult.Should().BeEquivalentTo(sourceObject, x =>
+                x.Using<string>(ctx => ctx.Subject.Should().Be("deserialize test")).WhenTypeIs<string>());
         }
 
         private class TestContainer : ResolverContainer
@@ -174,36 +170,32 @@ namespace AlienFruit.Otml.Serializer.Tests
 
         private class TestFormatter : IFormatter<string>
         {
-            public string Deserialize(IEnumerable<INode> node) => "deserialize test";
+            public string Deserialize(IEnumerable<OtmlNode> node) => "deserialize test";
 
-            public object DeserializeObject(IEnumerable<INode> value) => Deserialize(value);
+            public object DeserializeObject(IEnumerable<OtmlNode> value) => Deserialize(value);
 
-            public IEnumerable<INode> Serialize(string value, INodeFactory nodeFactory) => new TestValue("serialize test").Singleton();
+            public IEnumerable<OtmlNode> Serialize(string value, INodeFactory nodeFactory) => new TestValue("serialize test").Singleton();
 
-            public IEnumerable<INode> SerializeObject(object value, INodeFactory nodeFactory) => Serialize((string)value, nodeFactory);
+            public IEnumerable<OtmlNode> SerializeObject(object value, INodeFactory nodeFactory) => Serialize((string)value, nodeFactory);
         }
 
-        private class TestValue : INode
+        private class TestValue : OtmlNode
         {
-            public string Name => string.Empty;
-
-            public string Value { get; set; }
-
-            public NodeType Type => NodeType.Value;
-
-            public bool IsMultiline => false;
-
-            public IEnumerable<INode> Children => Enumerable.Empty<INode>();
+            private readonly string value;
+            public override NodeType Type => NodeType.Value;
 
             public TestValue(string value)
             {
-                this.Value = value;
+                this.value = value;
             }
 
-            public void AddChild(INode child)
-            {
-                throw new NotImplementedException();
-            }
+            protected override string GetName() => string.Empty;
+
+            protected override string GetValue() => this.value;
+
+            protected override bool GetMultilineState() => false;
+
+            protected override IEnumerable<OtmlNode> GetChildren() => Enumerable.Empty<OtmlNode>();
         }
 
         private class TestClass

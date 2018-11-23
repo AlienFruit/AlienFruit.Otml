@@ -14,7 +14,7 @@ namespace AlienFruit.Otml.Serializer.Formatters
             this.resolver = resolver;
         }
 
-        public object Deserialize(IEnumerable<INode> node)
+        public object Deserialize(IEnumerable<OtmlNode> node)
         {
             if (node.Count() > 1)
                 throw new OtmlDeserializeException("A object can be deserialized from only single node");
@@ -32,12 +32,12 @@ namespace AlienFruit.Otml.Serializer.Formatters
             return result;
         }
 
-        public object DeserializeObject(IEnumerable<INode> node) => Deserialize(node);
+        public object DeserializeObject(IEnumerable<OtmlNode> node) => Deserialize(node);
 
-        public IEnumerable<INode> Serialize(object value, INodeFactory nodeFactory)
-            => value is null ? Enumerable.Empty<INode>() : this.resolver.GetFormatter(value.GetType()).SerializeObject(value, nodeFactory);
+        public IEnumerable<OtmlNode> Serialize(object value, INodeFactory nodeFactory)
+            => value is null ? Enumerable.Empty<OtmlNode>() : this.resolver.GetFormatter(value.GetType()).SerializeObject(value, nodeFactory);
 
-        public IEnumerable<INode> SerializeObject(object value, INodeFactory nodeFactory) => Serialize(value, nodeFactory);
+        public IEnumerable<OtmlNode> SerializeObject(object value, INodeFactory nodeFactory) => Serialize(value, nodeFactory);
 
         private static void AddProperty(ExpandoObject expando, string propertyName, object propertyValue)
         {

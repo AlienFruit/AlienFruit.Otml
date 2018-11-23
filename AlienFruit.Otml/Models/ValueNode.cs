@@ -4,29 +4,41 @@ using System.Linq;
 
 namespace AlienFruit.Otml.Models
 {
-    internal class ValueNode : INode
+    internal class ValueNode : OtmlNode
     {
         private string value;
+        private readonly bool isMultiline;
 
         public ValueNode(string value, bool isMultiline = false)
         {
-            this.IsMultiline = this.IsMergeable = isMultiline;
+            this.isMultiline = this.IsMergeable = isMultiline;
             this.value = value;
         }
 
-        public string Name => string.Empty;
+        protected override IEnumerable<OtmlNode> GetChildren() => Enumerable.Empty<OtmlNode>();
 
-        public IEnumerable<INode> Children => Enumerable.Empty<INode>();
+        protected override bool GetMultilineState() => this.isMultiline;
 
-        public bool IsMultiline { get; }
-        public bool IsMergeable { get; private set; }
-        public string Value => value;
+        protected override string GetName() => string.Empty;
 
-        public NodeType Type => NodeType.Value;
+        protected override string GetValue() => this.value;
+
+        //public string Name => string.Empty;
+
+        //public IEnumerable<INode> Children => Enumerable.Empty<INode>();
+
+        //public bool IsMultiline { get; }
+
+        //public string Value => value;
+
+        //public NodeType Type => NodeType.Value;
 
         public string Description => string.Empty;
+        public bool IsMergeable { get; private set; }
 
-        public void AddChild(INode child) => throw new NotImplementedException();
+        public override NodeType Type => NodeType.Value;
+
+        //public void AddChild(INode child) => throw new NotImplementedException();
 
         public void Merge(ValueNode value)
         {

@@ -1,10 +1,11 @@
 ﻿using AlienFruit.Otml.Exceptions;
+
 using AlienFruit.Otml.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace AlienFruit.Otml.Parsers
+namespace AlienFruit.Otml.Domain.Version1v0
 {
     internal class OtmlParser : IParser
     {
@@ -16,14 +17,14 @@ namespace AlienFruit.Otml.Parsers
 
         public OtmlParser(ITextReader reader) => this.reader = reader;
 
-        public IEnumerable<INode> Parse() => Parse(this.reader);
+        public IEnumerable<OtmlNode> Parse() => Parse(this.reader);
 
         #region Private
 
-        private static IEnumerable<INode> Parse(ITextReader reader)
+        private static IEnumerable<OtmlNode> Parse(ITextReader reader)
         {
-            var result = new List<INode>();
-            var levels = new Dictionary<int, INode>();
+            var result = new List<OtmlNode>();
+            var levels = new Dictionary<int, OtmlNode>();
             int lastLevel = 0;
 
             int tabCounter = 0;
@@ -64,7 +65,7 @@ namespace AlienFruit.Otml.Parsers
             return result;
         }
 
-        private static INode ParseItem(ITextReader reader, bool isObject, char? lostChar = null)
+        private static OtmlNode ParseItem(ITextReader reader, bool isObject, char? lostChar = null)
         {
             var line = reader.ReadLine();
             if (lostChar == null)
@@ -73,7 +74,7 @@ namespace AlienFruit.Otml.Parsers
                 return ParseLine(lostChar + line, isObject, new CurrentCharLocation(reader.CurrentLocation.Line, reader.CurrentLocation.Position - 1));
         }
 
-        private static INode ParseLine(string line, bool isObject, CurrentCharLocation location)
+        private static OtmlNode ParseLine(string line, bool isObject, CurrentCharLocation location)
         {
             var property = GetNameAndValues(line);
             var offset = property.Item2 is null ? 0 : property.Item1.Length + 1 /*':'*/;
@@ -89,16 +90,16 @@ namespace AlienFruit.Otml.Parsers
 
             var propertyName = property.Item1.Trim();
 
-            INode parrent = isObject
-                ? new ObjectNode(propertyName) as INode
+            OtmlNode parrent = isObject
+                ? new ObjectNode(propertyName) as OtmlNode
                 : new PropertyNode(propertyName);
-            AddToParrent(parrent, property.Item2 is null ? Enumerable.Empty<INode>() : valueNodes, location);
+            AddToParrent(parrent, property.Item2 is null ? Enumerable.Empty<OtmlNode>() : valueNodes, location);
             return parrent;
 
             CurrentCharLocation GetRelativeLocation(CurrentCharLocation loc, int ofst) => new CurrentCharLocation(location.Line, location.Position + ofst);
         }
 
-        private static void AddItem(INode item, List<INode> toList, Dictionary<int, INode> levels, int tabCounter, CurrentCharLocation location)
+        private static void AddItem(OtmlNode item, List<OtmlNode> toList, Dictionary<int, OtmlNode> levels, int tabCounter, CurrentCharLocation location)
         {
             if (tabCounter == 0)
                 toList.Add(item);
@@ -109,7 +110,7 @@ namespace AlienFruit.Otml.Parsers
                 throw new OtmlParseException($"Failed to recognoze parrents for item \'{(item.Type == NodeType.Value ? item.Value : item.Name)}\'", location);
         }
 
-        private static void AddToParrent(INode parrent, INode item, CurrentCharLocation location)
+        private static void AddToParrent(OtmlNode parrent, OtmlNode item, CurrentCharLocation location)
         {
             #region Validation
 
@@ -122,10 +123,10 @@ namespace AlienFruit.Otml.Parsers
             if (lastNode != null && lastNode.Type == NodeType.Value && item.Type == NodeType.Value && (lastNode as ValueNode).IsMergeable)
                 (lastNode as ValueNode).Merge(item as ValueNode);
             else
-                parrent.AddChild(item);
+                (parrent as Node).AddChild(item);
         }
 
-        private static void AddToParrent(INode parrent, IEnumerable<INode> items, CurrentCharLocation location)
+        private static void AddToParrent(OtmlNode parrent, IEnumerable<OtmlNode> items, CurrentCharLocation location)
         {
             foreach (var item in items)
                 AddToParrent(parrent, item, location);

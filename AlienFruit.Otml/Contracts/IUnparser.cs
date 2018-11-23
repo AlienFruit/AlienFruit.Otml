@@ -5,9 +5,9 @@ namespace AlienFruit.Otml
 {
     public interface IUnparser
     {
-        string Unparse(IEnumerable<INode> tree);
+        string Unparse(IEnumerable<OtmlNode> tree);
 
-        void Unparse(IEnumerable<INode> tree, Stream toStream, bool leaveOpen);
+        void Unparse(IEnumerable<OtmlNode> tree, Stream toStream, bool leaveOpen = false);
 
         INodeFactory GetNodeFactory();
     }

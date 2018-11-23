@@ -17,10 +17,10 @@ namespace AlienFruit.Otml.Serializer.Formatters
         {
         }
 
-        public IEnumerable<INode> Serialize(DateTime value, INodeFactory nodeFactory)
+        public IEnumerable<OtmlNode> Serialize(DateTime value, INodeFactory nodeFactory)
             => nodeFactory.CreateValue(value.ToString("o", CultureInfo.InvariantCulture)).Singleton();
 
-        public DateTime Deserialize(IEnumerable<INode> node)
+        public DateTime Deserialize(IEnumerable<OtmlNode> node)
         {
             if (node.Count() > 1)
                 throw new OtmlDeserializeException($"DateTime value should be have only one node, but founded {node.Count()}");
@@ -30,8 +30,8 @@ namespace AlienFruit.Otml.Serializer.Formatters
             return DateTime.Parse(valueNode.Value, null, System.Globalization.DateTimeStyles.RoundtripKind);
         }
 
-        public IEnumerable<INode> SerializeObject(object value, INodeFactory nodeFactory) => Serialize((DateTime)value, nodeFactory);
+        public IEnumerable<OtmlNode> SerializeObject(object value, INodeFactory nodeFactory) => Serialize((DateTime)value, nodeFactory);
 
-        public object DeserializeObject(IEnumerable<INode> value) => Deserialize(value);
+        public object DeserializeObject(IEnumerable<OtmlNode> value) => Deserialize(value);
     }
 }

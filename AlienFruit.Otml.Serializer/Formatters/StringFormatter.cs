@@ -12,7 +12,7 @@ namespace AlienFruit.Otml.Serializer.Formatters
         {
         }
 
-        public string Deserialize(IEnumerable<INode> node)
+        public string Deserialize(IEnumerable<OtmlNode> node)
         {
             if (node.Count() > 1)
                 throw new OtmlDeserializeException($"The string value can build from only one node, but founded {node.Count()}");
@@ -22,15 +22,15 @@ namespace AlienFruit.Otml.Serializer.Formatters
             return node.Single().Value;
         }
 
-        public object DeserializeObject(IEnumerable<INode> value) => Deserialize(value);
+        public object DeserializeObject(IEnumerable<OtmlNode> value) => Deserialize(value);
 
-        public IEnumerable<INode> Serialize(string value, INodeFactory nodeFactory)
+        public IEnumerable<OtmlNode> Serialize(string value, INodeFactory nodeFactory)
         {
             return value is null
-                ? Enumerable.Empty<INode>()
+                ? Enumerable.Empty<OtmlNode>()
                 : nodeFactory.CreateValue(value, value.Contains(Environment.NewLine)).Singleton();
         }
 
-        public IEnumerable<INode> SerializeObject(object value, INodeFactory nodeFactory) => Serialize((string)value, nodeFactory);
+        public IEnumerable<OtmlNode> SerializeObject(object value, INodeFactory nodeFactory) => Serialize((string)value, nodeFactory);
     }
 }

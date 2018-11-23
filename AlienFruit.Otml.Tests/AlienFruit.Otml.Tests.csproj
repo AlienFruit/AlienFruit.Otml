@@ -49,6 +49,9 @@
     <None Include="OtmlTestData.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="OtmlTestDataANSI.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="OtmlTestDataUTF16.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 
 namespace AlienFruit.Otml.Serializer.Formatters
 {
@@ -17,7 +18,7 @@ namespace AlienFruit.Otml.Serializer.Formatters
             this.resolver = resolver;
         }
 
-        public T Deserialize(IEnumerable<INode> node)
+        public T Deserialize(IEnumerable<OtmlNode> node)
         {
             if (!node.Any())
                 throw new OtmlDeserializeException($"Cannot deserialize class \"{typeof(T)}\" from empty node");
@@ -51,12 +52,12 @@ namespace AlienFruit.Otml.Serializer.Formatters
             return (T)result;
         }
 
-        public object DeserializeObject(IEnumerable<INode> value) => Deserialize(value);
+        public object DeserializeObject(IEnumerable<OtmlNode> value) => Deserialize(value);
 
-        public IEnumerable<INode> Serialize(T value, INodeFactory nodeFactory)
+        public IEnumerable<OtmlNode> Serialize(T value, INodeFactory nodeFactory)
         {
             if (value is null)
-                return Enumerable.Empty<INode>();
+                return Enumerable.Empty<OtmlNode>();
             var type = typeof(T);
             var result = nodeFactory.CreateNode(NodeType.Object, type.Name);
             var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
@@ -71,14 +72,15 @@ namespace AlienFruit.Otml.Serializer.Formatters
                     continue;
                 var formatter = this.resolver.GetFormatter(property.PropertyType);
                 var propertyNode = nodeFactory.CreateNode(NodeType.Property, property.Name, formatter.SerializeObject(propertyValue, nodeFactory));
-                result.AddChild(propertyNode);
+                nodeFactory.AddChild(result, propertyNode);
             }
             return result.Singleton();
         }
 
-        public IEnumerable<INode> SerializeObject(object value, INodeFactory nodeFactory) => Serialize((T)value, nodeFactory);
+        public IEnumerable<OtmlNode> SerializeObject(object value, INodeFactory nodeFactory) => Serialize((T)value, nodeFactory);
 
         private static bool HasIgnoreAttrubute(PropertyInfo property)
-            => property.GetCustomAttribute(typeof(SerializerIgnoreAttribute)) != null;
+            => property.GetCustomAttribute(typeof(SerializerIgnoreAttribute)) != null
+            || property.GetCustomAttribute(typeof(IgnoreDataMemberAttribute)) != null;
     }
 }

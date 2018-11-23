@@ -4,10 +4,12 @@ namespace AlienFruit.Otml
 {
     public interface INodeFactory
     {
-        INode CreateNode(NodeType type, string name);
+        OtmlNode CreateNode(NodeType type, string name);
 
-        INode CreateNode(NodeType type, string name, IEnumerable<INode> children);
+        OtmlNode CreateNode(NodeType type, string name, IEnumerable<OtmlNode> children);
 
-        INode CreateValue(string value, bool isPartial = false);
+        OtmlNode CreateValue(string value, bool isPartial = false);
+
+        void AddChild(OtmlNode toParrent, OtmlNode child);
     }
 }

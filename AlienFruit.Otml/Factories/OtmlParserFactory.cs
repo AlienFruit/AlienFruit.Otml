@@ -1,5 +1,4 @@
-﻿using AlienFruit.Otml.Parsers;
-using AlienFruit.Otml.Readers;
+﻿using AlienFruit.Otml.Readers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -20,29 +19,26 @@ namespace AlienFruit.Otml.Factories
 
         private readonly Encoding defaultEncoding;
 
-        public OtmlParserFactory(Encoding defaultEnconding)
+        public OtmlParserFactory(Encoding defaultEnconding = null)
         {
-            this.defaultEncoding = defaultEnconding;
+            this.defaultEncoding = defaultEnconding ?? Encoding.UTF8;
             this.parsersMap = new Dictionary<Version, Func<ITextReader, IParser>>
             {
-                { new Version("1.0"), x => new OtmlParser(x) }
+                { new Version("1.0"), x => new Domain.Version1v0.OtmlParser(x) }
             };
         }
 
         public IParser GetParser(string otmlText) => GetParser(new StringTextReader(otmlText));
 
-        public IParser GetParser(Stream stream, bool leaveOpen)
-        {
-            using (var reader = new StreamTextReader(stream, this.defaultEncoding, true))
-                return GetParser(reader);
-        }
+        public IParser GetParser(Stream stream, bool leaveOpen = false)
+            => GetParser(new StreamTextReader(stream, this.defaultEncoding, leaveOpen));
 
         private IParser GetParser(ITextReader reader)
         {
             var declaration = ParseDeclaration(reader);
             var maxVersion = parsersMap.Keys.Max();
 
-            var encoding = declaration.Encodind ?? this.defaultEncoding;
+            //var encoding = declaration.Encodind ?? this.defaultEncoding;
 
             if (declaration.Version is null)
                 return parsersMap[maxVersion].Invoke(reader);

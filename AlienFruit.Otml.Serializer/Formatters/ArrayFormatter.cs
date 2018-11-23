@@ -12,10 +12,10 @@ namespace AlienFruit.Otml.Serializer.Formatters
             this.formatter = resolver.GetFormatter<T>();
         }
 
-        public IEnumerable<INode> Serialize(T[] value, INodeFactory nodeFactory) => Serialize(value.AsEnumerable(), nodeFactory);
+        public IEnumerable<OtmlNode> Serialize(T[] value, INodeFactory nodeFactory) => Serialize(value.AsEnumerable(), nodeFactory);
 
-        T[] IFormatter<T[]>.Deserialize(IEnumerable<INode> node) => Deserialize(node).ToArray();
+        T[] IFormatter<T[]>.Deserialize(IEnumerable<OtmlNode> node) => Deserialize(node).ToArray();
 
-        public override object DeserializeObject(IEnumerable<INode> value) => Deserialize(value).ToArray();
+        public override object DeserializeObject(IEnumerable<OtmlNode> value) => Deserialize(value).ToArray();
     }
 }

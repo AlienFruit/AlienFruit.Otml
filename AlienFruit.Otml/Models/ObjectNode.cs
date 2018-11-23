@@ -8,14 +8,12 @@ namespace AlienFruit.Otml.Models
         {
         }
 
-        public ObjectNode(string name, IEnumerable<INode> children) : base(name, children)
+        public ObjectNode(string name, IEnumerable<OtmlNode> children) : base(name, children)
         {
         }
 
         public override NodeType Type => NodeType.Object;
 
-        public override bool IsMultiline => false; //TODO: objectNode cannot have this property (only value property)
-
-        public override void AddChild(INode child) => base.children.Add(child);
+        public override void AddChild(OtmlNode child) => base.children.Add(child);
     }
 }

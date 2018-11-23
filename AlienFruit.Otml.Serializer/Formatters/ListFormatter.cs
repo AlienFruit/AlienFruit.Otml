@@ -12,18 +12,18 @@ namespace AlienFruit.Otml.Serializer.Formatters
             this.formatter = resolver.GetFormatter<T>();
         }
 
-        public IEnumerable<INode> Serialize(List<T> value, INodeFactory nodeFactory) => Serialize((IEnumerable<T>)value, nodeFactory);
+        public IEnumerable<OtmlNode> Serialize(List<T> value, INodeFactory nodeFactory) => Serialize((IEnumerable<T>)value, nodeFactory);
 
-        List<T> IFormatter<List<T>>.Deserialize(IEnumerable<INode> node) => Deserialize(node).ToList();
+        List<T> IFormatter<List<T>>.Deserialize(IEnumerable<OtmlNode> node) => Deserialize(node).ToList();
 
-        public override object DeserializeObject(IEnumerable<INode> value) => Deserialize(value).ToList();
+        public override object DeserializeObject(IEnumerable<OtmlNode> value) => Deserialize(value).ToList();
 
-        public IEnumerable<INode> Serialize(IList<T> value, INodeFactory nodeFactory) => Serialize((IEnumerable<T>)value, nodeFactory);
+        public IEnumerable<OtmlNode> Serialize(IList<T> value, INodeFactory nodeFactory) => Serialize((IEnumerable<T>)value, nodeFactory);
 
-        IList<T> IFormatter<IList<T>>.Deserialize(IEnumerable<INode> node) => Deserialize(node).ToList();
+        IList<T> IFormatter<IList<T>>.Deserialize(IEnumerable<OtmlNode> node) => Deserialize(node).ToList();
 
-        public IEnumerable<INode> Serialize(ICollection<T> value, INodeFactory nodeFactory) => Serialize((IEnumerable<T>)value, nodeFactory);
+        public IEnumerable<OtmlNode> Serialize(ICollection<T> value, INodeFactory nodeFactory) => Serialize((IEnumerable<T>)value, nodeFactory);
 
-        ICollection<T> IFormatter<ICollection<T>>.Deserialize(IEnumerable<INode> node) => Deserialize(node).ToArray();
+        ICollection<T> IFormatter<ICollection<T>>.Deserialize(IEnumerable<OtmlNode> node) => Deserialize(node).ToArray();
     }
 }

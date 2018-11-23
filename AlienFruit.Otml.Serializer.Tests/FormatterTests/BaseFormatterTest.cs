@@ -1,5 +1,4 @@
-﻿using AlienFruit.Otml.Models;
-using AutoFixture;
+﻿using AutoFixture;
 using System;
 using System.Collections.Generic;
 
@@ -28,32 +27,52 @@ namespace AlienFruit.Otml.Serializer.Tests.FormatterTests
 
             public StubFormatter(Fixture fixture) => this.fixture = fixture;
 
-            public T Deserialize(IEnumerable<INode> node) => default(T);
+            public T Deserialize(IEnumerable<OtmlNode> node) => default(T);
 
-            public object DeserializeObject(IEnumerable<INode> value) => default(T);
+            public object DeserializeObject(IEnumerable<OtmlNode> value) => default(T);
 
-            public IEnumerable<INode> Serialize(T value, INodeFactory nodeFactory) => new INode[] { fixture.Create<StubNode>() };
+            public IEnumerable<OtmlNode> Serialize(T value, INodeFactory nodeFactory) => new OtmlNode[] { fixture.Create<StubNode>().Complete() };
 
-            public IEnumerable<INode> SerializeObject(object value, INodeFactory nodeFactory) => new INode[] { fixture.Create<StubNode>() };
+            public IEnumerable<OtmlNode> SerializeObject(object value, INodeFactory nodeFactory) => new OtmlNode[] { fixture.Create<StubNode>().Complete() };
         }
 
-        protected class StubNode : INode
+        protected class StubNode : OtmlNode
         {
             public string Name { get; set; }
 
             public string Value { get; set; }
 
-            public NodeType Type { get; set; }
+            public NodeType NodeType { get; set; }
 
             public bool IsMultiline { get; set; }
 
-            public IEnumerable<INode> Children => throw new NotImplementedException();
+            public IEnumerable<OtmlNode> Children => throw new NotImplementedException();
 
             public string Description => string.Empty;
 
-            public void AddChild(INode child)
+            public override NodeType Type => NodeType;
+
+            protected override IEnumerable<OtmlNode> GetChildren() => Children;
+
+            protected override bool GetMultilineState() => IsMultiline;
+
+            protected override string GetName() => Name;
+
+            protected override string GetValue() => Value;
+
+            public StubNode Complete()
             {
-                throw new NotImplementedException();
+                switch (Type)
+                {
+                    case NodeType.Object:
+                    case NodeType.Property:
+                        Value = string.Empty;
+                        return this;
+
+                    default:
+                        Name = string.Empty;
+                        return this;
+                }
             }
         }
     }

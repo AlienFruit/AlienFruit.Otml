@@ -4,6 +4,6 @@ namespace AlienFruit.Otml
 {
     public interface IParser
     {
-        IEnumerable<INode> Parse();
+        IEnumerable<OtmlNode> Parse();
     }
 }

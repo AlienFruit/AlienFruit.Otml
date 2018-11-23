@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace AlienFruit.Otml.Unparsers
+namespace AlienFruit.Otml.Domain.Version1v0
 {
     internal class OtmlUnparser : IUnparser
     {
@@ -18,7 +18,7 @@ namespace AlienFruit.Otml.Unparsers
             this.encoding = encoding;
         }
 
-        public string Unparse(IEnumerable<INode> tree)
+        public string Unparse(IEnumerable<OtmlNode> tree)
         {
             var result = new StringBuilder();
             var level = 0;
@@ -27,7 +27,7 @@ namespace AlienFruit.Otml.Unparsers
             return result.ToString();
         }
 
-        public void Unparse(IEnumerable<INode> tree, Stream toStream, bool leaveOpen)
+        public void Unparse(IEnumerable<OtmlNode> tree, Stream toStream, bool leaveOpen = false)
         {
             using (var writer = new StreamWriter(toStream, this.encoding, 1024, leaveOpen))
             {
@@ -40,7 +40,7 @@ namespace AlienFruit.Otml.Unparsers
 
         #region private
 
-        private static void UnparseTree(IEnumerable<INode> tree, StringBuilder builder, INode parrent, int level)
+        private static void UnparseTree(IEnumerable<OtmlNode> tree, StringBuilder builder, OtmlNode parrent, int level)
         {
             foreach (var item in tree)
             {
@@ -55,7 +55,7 @@ namespace AlienFruit.Otml.Unparsers
             }
         }
 
-        private static void UnparseTree(IEnumerable<INode> tree, StreamWriter writer, INode parrent, int level)
+        private static void UnparseTree(IEnumerable<OtmlNode> tree, StreamWriter writer, OtmlNode parrent, int level)
         {
             foreach (var item in tree)
             {
@@ -70,7 +70,7 @@ namespace AlienFruit.Otml.Unparsers
             }
         }
 
-        private static string ItemToString(INode item, int level)
+        private static string ItemToString(OtmlNode item, int level)
         {
             var result = new StringBuilder(CreateTabs(level));
             if (item.Type == NodeType.Object)
@@ -106,15 +106,23 @@ namespace AlienFruit.Otml.Unparsers
                 case NodeType.Property:
                     result.Append(item.Name + $" {OtmlSyntax.SplitChar} ");
                     if (!IsArrayProperty(item) && !IsMultilineProperty(item))
-                        result.Append(ShieldValue(item.Value));
+                    {
+                        result.Append(ShieldValue(GetChildValue(item)));
+                    }
                     break;
             }
             return result.ToString();
 
-            bool IsArrayProperty(INode property) => property.Children.Count() > 1;
+            bool IsArrayProperty(OtmlNode property) => property.Children.Count() > 1;
 
-            bool IsMultilineProperty(INode property)
+            bool IsMultilineProperty(OtmlNode property)
                 => property.Children.SingleOrDefault()?.IsMultiline ?? false;
+
+            string GetChildValue(OtmlNode property)
+            {
+                var values = property.Children.Where(x => x.Type == NodeType.Value);
+                return values.Count() == 1 ? values.Single().Value : string.Empty;
+            }
         }
 
         private static string CreateTabs(int tabsCount)
@@ -127,6 +135,8 @@ namespace AlienFruit.Otml.Unparsers
 
         private static string ShieldValue(string value)
         {
+            if (string.IsNullOrEmpty(value))
+                return string.Empty;
             var result = value
                 //.Replace(shieldChar.ToString(), $"{shieldChar}{shieldChar}")
                 .Replace(OtmlSyntax.DoubleQuote.ToString(), $"{OtmlSyntax.ShieldChar}{OtmlSyntax.DoubleQuote}")

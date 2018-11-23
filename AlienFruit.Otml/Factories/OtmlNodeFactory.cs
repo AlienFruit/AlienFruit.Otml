@@ -6,7 +6,21 @@ namespace AlienFruit.Otml.Factories
 {
     internal class OtmlNodeFactory : INodeFactory
     {
-        public INode CreateNode(NodeType type, string name)
+        public void AddChild(OtmlNode toParrent, OtmlNode child)
+        {
+            switch (toParrent.Type)
+            {
+                case NodeType.Object:
+                case NodeType.Property:
+                    (toParrent as Node).AddChild(child);
+                    break;
+
+                case NodeType.Value: throw new InvalidOperationException("Is't possible add any children to property");
+                default: throw new InvalidOperationException("Unknown node type");
+            }
+        }
+
+        public OtmlNode CreateNode(NodeType type, string name)
         {
             switch (type)
             {
@@ -17,7 +31,7 @@ namespace AlienFruit.Otml.Factories
             }
         }
 
-        public INode CreateNode(NodeType type, string name, IEnumerable<INode> children)
+        public OtmlNode CreateNode(NodeType type, string name, IEnumerable<OtmlNode> children)
         {
             switch (type)
             {
@@ -28,7 +42,7 @@ namespace AlienFruit.Otml.Factories
             }
         }
 
-        public INode CreateValue(string value, bool isPartial = false)
+        public OtmlNode CreateValue(string value, bool isPartial = false)
             => new ValueNode(value, isPartial);
     }
 }

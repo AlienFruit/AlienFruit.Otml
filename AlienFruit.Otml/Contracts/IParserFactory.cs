@@ -6,6 +6,6 @@ namespace AlienFruit.Otml
     {
         IParser GetParser(string otmlText);
 
-        IParser GetParser(Stream stream, bool leaveOpen);
+        IParser GetParser(Stream stream, bool leaveOpen = false);
     }
 }

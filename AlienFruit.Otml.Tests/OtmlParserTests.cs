@@ -1,8 +1,7 @@
-﻿using AlienFruit.Otml.Exceptions;
+﻿using AlienFruit.Otml.Domain.Version1v0;
+using AlienFruit.Otml.Exceptions;
 using AlienFruit.Otml.Models;
-using AlienFruit.Otml.Parsers;
 using AlienFruit.Otml.Readers;
-using AlienFruit.Otml.Unparsers;
 using FluentAssertions;
 using NUnit.Framework;
 using System;
@@ -15,7 +14,7 @@ namespace AlienFruit.Otml.Tests
 {
     public class OtmlParserTests
     {
-        private readonly string testDataFile = TestContext.CurrentContext.TestDirectory + @"\OtmlTestData.py";
+        private readonly string testDataFile = TestContext.CurrentContext.TestDirectory + @"\OtmlTestDataANSI.py";
 
         [Test]
         public void TestMethod1()
@@ -76,8 +75,8 @@ namespace AlienFruit.Otml.Tests
         {
             // Arrange
             var otmlString = File.ReadAllText(testDataFile);
-            var result1 = Enumerable.Empty<INode>();
-            var result2 = Enumerable.Empty<INode>();
+            var result1 = Enumerable.Empty<OtmlNode>();
+            var result2 = Enumerable.Empty<OtmlNode>();
 
             // Action
             result1 = new OtmlParser(new StringTextReader(otmlString)).Parse();
@@ -93,13 +92,13 @@ namespace AlienFruit.Otml.Tests
         [Test]
         public void Unparsing_then_parsing_should_not_change_source_object()
         {
-            var source = new INode[]
+            var source = new OtmlNode[]
             {
                 // Arrange
-                new ObjectNode("ObjectNode", new INode[]
+                new ObjectNode("ObjectNode", new OtmlNode[]
                 {
-                    new PropertyNode("Single value roperty1", new INode[]{ new ValueNode("simple value") }),
-                    new PropertyNode("MiltilineProperty", new INode[]
+                    new PropertyNode("Single value roperty1", new OtmlNode[]{ new ValueNode("simple value") }),
+                    new PropertyNode("MiltilineProperty", new OtmlNode[]
                     {
                         new ValueNode($"First line{Environment.NewLine}Second     line", true),
                         new ValueNode($"No string value"),
@@ -109,12 +108,12 @@ namespace AlienFruit.Otml.Tests
                     new ValueNode("string with quotes  \"  ' "),
                     new ValueNode("string with \\ backspase  "),
                     new ValueNode("string with backspace in the end \\")
-                    //new PropertyNode("", new INode)
+                    //new PropertyNode("", new OtmlNode)
                 }),
-                new ObjectNode("Object node", new INode[]
+                new ObjectNode("Object node", new OtmlNode[]
                 {
                     new ValueNode("asdasdasdad"),
-                    new PropertyNode("Property", new INode[]{ new ValueNode("value") })
+                    new PropertyNode("Property", new OtmlNode[]{ new ValueNode("value") })
                 }),
             };
 

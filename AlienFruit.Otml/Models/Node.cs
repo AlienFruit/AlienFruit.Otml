@@ -3,41 +3,43 @@ using System.Linq;
 
 namespace AlienFruit.Otml.Models
 {
-    internal abstract class Node : INode
+    internal abstract class Node : OtmlNode
     {
-        protected readonly List<INode> children;
+        protected readonly List<OtmlNode> children;
+        private readonly string name;
 
         public Node(string name)
         {
-            this.Name = name;
-            this.children = new List<INode>();
+            this.name = name;
+            this.children = new List<OtmlNode>();
         }
 
-        public Node(string name, IEnumerable<INode> children)
+        public Node(string name, IEnumerable<OtmlNode> children)
         {
-            this.Name = name;
+            this.name = name;
             this.children = children.ToList();
         }
 
-        public abstract void AddChild(INode child);
+        protected override string GetName() => this.name;
 
-        public abstract NodeType Type { get; }
+        protected override IEnumerable<OtmlNode> GetChildren() => children;
 
-        public virtual string Name { get; }
+        protected override bool GetMultilineState() => false;
 
-        public string Value
-        {
-            get
-            {
-                var values = children.Where(x => x.Type == NodeType.Value);
-                return values.Count() == 1 ? values.Single().Value : string.Empty;
-            }
-        }
+        protected override string GetValue() => string.Empty;
 
-        public virtual IEnumerable<INode> Children => children;
+        public abstract void AddChild(OtmlNode child);
 
-        public abstract bool IsMultiline { get; }
+        //public abstract NodeType Type { get; }
 
-        public void AddChild(IEnumerable<INode> children) => this.children.AddRange(children);
+        //public virtual string Name { get; }
+
+        //public string Value => string.Empty;
+
+        //public virtual IEnumerable<INode> Children => children;
+
+        //public abstract bool IsMultiline { get; }
+
+        public void AddChild(IEnumerable<OtmlNode> children) => this.children.AddRange(children);
     }
 }
