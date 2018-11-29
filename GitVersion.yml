@@ -1,6 +1,6 @@
 assembly-versioning-scheme: MajorMinorPatch
 assembly-informational-format: '{SemVer}'
-mode: ContinuousDeployment
+mode: ContinuousDelivery
 branches:
     master:
         increment: Patch
