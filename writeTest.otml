@@ -1,2 +1,4 @@
-﻿@testObject
+﻿@@version : 1.0
+
+@testObject
 	testProperty : test value

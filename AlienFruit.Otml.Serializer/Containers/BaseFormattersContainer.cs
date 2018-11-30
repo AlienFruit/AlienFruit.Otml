@@ -17,6 +17,10 @@ namespace AlienFruit.Otml.Serializer.Containers
                 x => x == typeof(string),
                 (f, v, args) => Activator.CreateInstance(f, args) as IFormatter);
 
+            RegisterFormatter(typeof(EnumFormatter<>),
+                x => x.IsEnum,
+                (f, v, args) => Activator.CreateInstance(f.MakeGenericType(v), args) as IFormatter);
+
             RegisterFormatter(typeof(NullableFormatter<>),
                 x => x.GetTypeInfo().IsGenericType && x.GetGenericTypeDefinition() == typeof(Nullable<>),
                 (f, v, args) => Activator.CreateInstance(f.MakeGenericType(v.GetTypeInfo().GetGenericArguments()), args) as IFormatter);

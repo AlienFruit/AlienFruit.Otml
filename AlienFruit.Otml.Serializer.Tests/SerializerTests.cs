@@ -2,6 +2,7 @@
 using AlienFruit.Otml.Serializer.Utils;
 using AutoFixture;
 using FluentAssertions;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -75,19 +76,142 @@ namespace AlienFruit.Otml.Serializer.Tests
             }
         }
 
-        public class Foo
+        public class Foo123
         {
             public int IntValue { get; set; }
             public string StringValue { get; set; }
+        }
+
+        public class Foo
+        {
+            public string Name { get; set; }
+            public string StringValue { get; set; }
+            public int IntValue { get; set; }
+            public double DoubleValue { get; set; }
+
+            public Dictionary<string, long> DictionaryValue { get; set; }
+
+            public IEnumerable<InnerObject> ObjectsValues { get; set; }
+
+            public class InnerObject
+            {
+                public enum FooEnum { First, Second }
+
+                public string Name { get; set; }
+                public string[] ArrayValue { get; set; }
+                public FooEnum Type { get; set; }
+            }
+        }
+
+        public static Foo CreateFoo()
+            => new Foo
+            {
+                Name = "Test class name",
+                StringValue = "This is a string value",
+                IntValue = 2147483647,
+                DoubleValue = 3.141592653589793238462643,
+                DictionaryValue = new Dictionary<string, long>
+                {
+                    { "the first key", 9223372036854775807 },
+                    { "the second key", -9223372036854775807 },
+                },
+                ObjectsValues = new[]
+                {
+                    new Foo.InnerObject
+                    {
+                        Name = "the first inner object name",
+                        ArrayValue = new [] { "the first value", "the second value" },
+                        Type = Foo.InnerObject.FooEnum.First
+                    },
+                    new Foo.InnerObject
+                    {
+                        Name = "the second inner object name",
+                        ArrayValue = new [] { "the first value", "the second value" },
+                        Type = Foo.InnerObject.FooEnum.Second
+                    }
+                },
+            };
+
+        public static string GetOtmlString()
+            => @"
+@Foo
+	Name : Test class name
+	StringValue : This is a string value
+	IntValue : 2147483647
+	DoubleValue : ""3,14159265358979""
+	DictionaryValue :
+		the first key : 9223372036854775807
+		the second key : -9223372036854775807
+	ObjectsValues :
+        @InnerObject
+            Name : the first inner object name
+            ArrayValue :
+				the first value
+                the second value
+            Type : First
+        @InnerObject
+            Name : the second inner object name
+            ArrayValue :
+				the first value
+                the second value
+            Type : Second";
+
+        [Test]
+        //[Ignore("should be deleted")]
+
+        //serialize to string
+        public void SerializeToString()
+        {
+            var foo = CreateFoo();
+            var serializer = OtmlSerializer.Create();
+            var otemlStringResult = serializer.Serialize(foo);
+
+            var jsonStringResult = JsonConvert.SerializeObject(foo, Formatting.Indented);
+        }
+
+        [Test]
+        public void DeserializeFromStringToObject()
+        {
+            var otmlString = GetOtmlString();
+            var serializer = OtmlSerializer.Create();
+
+            var foo = serializer.Deserialize<Foo>(otmlString);
+        }
+
+        [Test]
+        public void DeserializeFromStreamToObject()
+        {
+            var serializer = OtmlSerializer.Create();
+
+            using (var stream = File.OpenRead("C:\\test.otml"))
+            {
+                var foo = serializer.Deserialize<Foo>(stream);
+            }
+        }
+
+        [Test]
+        public void SerializeToStream()
+        {
+            var foo = CreateFoo();
+            var serializer = OtmlSerializer.Create();
+
+            using (var stream = new MemoryStream())
+            using (var streamReader = new StreamReader(stream))
+            {
+                serializer.Serialize(foo, stream, true);
+
+                stream.Seek(0, SeekOrigin.Begin);
+                var result = streamReader.ReadToEnd();
+            }
         }
 
         [Test]
         [Ignore("Because I can")]
         public void Test123()
         {
-            var serializer = Serializer.Build().WithContainer(new ExpressioinContainer()).Create();
+            var serializer = OtmlSerializer.Build().WithContainer(new ExpressioinContainer()).Create();
 
-            Expression<Func<Foo, bool>> expression = (x) => x.IntValue == 234;
+            Expression<Func<Foo123, bool>> expression = (x) => x.IntValue == 234;
 
             var result = serializer.Serialize(expression);
         }
@@ -96,7 +220,7 @@ namespace AlienFruit.Otml.Serializer.Tests
         public void Serialize_then_deserialize_should_return_same_object_that_the_sourse()
         {
             // Arrange
-            ISerializer serializer = Serializer.Build().Create();
+            ISerializer serializer = OtmlSerializer.Build().Create();
             var sourceObject = fixture.Build<TestObject>()
                 .With(x => x.Comment, new[] { $@"asdasdasdsd {Environment.NewLine} line2, asdasdasdads {Environment.NewLine} line4 adsasdasdasdasd", "asdasd" })
                 .Create();
@@ -113,7 +237,7 @@ namespace AlienFruit.Otml.Serializer.Tests
         public void Serialize_to_stream_then_deserialize_should_return_same_object_that_the_sourse2()
         {
             // Arrange
-            var serializer = Serializer.Build().WithEncoding(Encoding.UTF8).Create();
+            var serializer = OtmlSerializer.Build().WithEncoding(Encoding.UTF8).Create();
             var sourceObject = fixture.Create<TestObject>();
 
             // Action
@@ -132,7 +256,7 @@ namespace AlienFruit.Otml.Serializer.Tests
         public void Serialize_to_string_then_deserialize_should_return_same_object_that_the_sourse2()
         {
             // Arrange
-            var serializer = Serializer.Build().WithEncoding(Encoding.UTF8).Create();
+            var serializer = OtmlSerializer.Build().WithEncoding(Encoding.UTF8).Create();
             var sourceObject = fixture.Create<TestObject>();
 
             // Action
@@ -148,7 +272,7 @@ namespace AlienFruit.Otml.Serializer.Tests
         public void Serialize_then_desererialize_with_custom_formatter_should_change_string_property()
         {
             // Arrange
-            var serializer = Serializer.Build().WithContainer(new TestContainer()).Create();
+            var serializer = OtmlSerializer.Build().WithContainer(new TestContainer()).Create();
             var sourceObject = fixture.Create<InnerClass>();
 
             // Action
@@ -213,8 +337,11 @@ namespace AlienFruit.Otml.Serializer.Tests
 
         private class InnerClass
         {
+            public enum InnerType { FirstType, SecondType }
+
             public string Value { get; set; }
             public Dictionary<int, string> Collection { get; set; }
+            public InnerType Type { get; set; }
         }
 
         private class TestObject

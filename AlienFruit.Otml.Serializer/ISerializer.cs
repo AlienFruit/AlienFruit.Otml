@@ -9,16 +9,16 @@ namespace AlienFruit.Otml.Serializer
 
         string Serialize(Type valueType, object value);
 
-        void Serialize<T>(T value, Stream stream, bool leaveOpen);
+        void Serialize<T>(T value, Stream stream, bool leaveOpen = false);
 
-        void Serialize(Type valueType, object value, Stream stream, bool leaveOpen);
+        void Serialize(Type valueType, object value, Stream stream, bool leaveOpen = false);
 
         T Deserialize<T>(string value);
 
         object Deserialize(Type resultObjectType, string value);
 
-        T Deserialize<T>(Stream stream, bool leaveOpen);
+        T Deserialize<T>(Stream stream, bool leaveOpen = false);
 
-        object Deserialize(Type resultObjectType, Stream stream, bool leaveOpen);
+        object Deserialize(Type resultObjectType, Stream stream, bool leaveOpen = false);
     }
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace AlienFruit.Otml.Serializer.Containers
+﻿namespace AlienFruit.Otml.Serializer.Containers
 {
     internal class BaseObjectsContainer : ResolverContainer
     {

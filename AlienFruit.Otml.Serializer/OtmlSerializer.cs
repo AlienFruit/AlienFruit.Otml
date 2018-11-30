@@ -7,7 +7,7 @@ using System.Text;
 
 namespace AlienFruit.Otml.Serializer
 {
-    public class Serializer : ISerializer
+    public class OtmlSerializer : ISerializer
     {
         private IResolver resolver;
         private Encoding encoding;
@@ -15,11 +15,11 @@ namespace AlienFruit.Otml.Serializer
         private IUnparserFactory unparserFactory;
         private Version parserVersion;
 
-        public Serializer()
+        public OtmlSerializer()
         {
         }
 
-        public Serializer(Encoding encoding, IResolver resolver, IParserFactory factory, IUnparserFactory unparserFactory)
+        public OtmlSerializer(Encoding encoding, IResolver resolver, IParserFactory factory, IUnparserFactory unparserFactory)
         {
             this.encoding = encoding;
             this.resolver = resolver;
@@ -27,7 +27,7 @@ namespace AlienFruit.Otml.Serializer
             this.unparserFactory = unparserFactory;
         }
 
-        public Serializer(Encoding encoding, Version version, IResolver resolver, IParserFactory factory, IUnparserFactory unparserFactory)
+        public OtmlSerializer(Encoding encoding, Version version, IResolver resolver, IParserFactory factory, IUnparserFactory unparserFactory)
         {
             this.encoding = encoding;
             this.parserVersion = version;
@@ -46,9 +46,9 @@ namespace AlienFruit.Otml.Serializer
             return this.resolver.ThrowIfNull("Resolver was not initialized").GetFormatter(resultObjectType).DeserializeObject(parser.Parse());
         }
 
-        public T Deserialize<T>(Stream stream, bool leaveOpen) => (T)Deserialize(typeof(T), stream, leaveOpen);
+        public T Deserialize<T>(Stream stream, bool leaveOpen = false) => (T)Deserialize(typeof(T), stream, leaveOpen);
 
-        public object Deserialize(Type resultObjectType, Stream stream, bool leaveOpen)
+        public object Deserialize(Type resultObjectType, Stream stream, bool leaveOpen = false)
         {
             var parser = this.parserFactory.ThrowIfNull("Parser and parser factory was not initialized").GetParser(stream, leaveOpen);
             var result = this.resolver.ThrowIfNull("Resolver was not initialized")
@@ -67,9 +67,9 @@ namespace AlienFruit.Otml.Serializer
             return unparser.Unparse(treeModel);
         }
 
-        public void Serialize<T>(T value, Stream stream, bool leaveOpen) => Serialize(typeof(T), value, stream, leaveOpen);
+        public void Serialize<T>(T value, Stream stream, bool leaveOpen = false) => Serialize(typeof(T), value, stream, leaveOpen);
 
-        public void Serialize(Type valueType, object value, Stream stream, bool leaveOpen)
+        public void Serialize(Type valueType, object value, Stream stream, bool leaveOpen = false)
         {
             var unparser = GetUnparser();
             var tree = this.resolver.GetFormatter(valueType).SerializeObject(value, unparser.GetNodeFactory());
@@ -80,7 +80,7 @@ namespace AlienFruit.Otml.Serializer
 
         public static ISerializer Create() => Build().Create();
 
-        public static SerializerBuilder Build() => new SerializerBuilder(new Serializer());
+        public static SerializerBuilder Build() => new SerializerBuilder(new OtmlSerializer());
 
         private IUnparser GetUnparser()
         {
@@ -91,16 +91,17 @@ namespace AlienFruit.Otml.Serializer
 
         public class SerializerBuilder
         {
-            private readonly Serializer serializer;
+            private readonly OtmlSerializer serializer;
 
             private IResolver resolver;
             private Encoding encoding;
             private ResolverContainer customContainer;
             private IParserFactory parserFactory;
             private IUnparserFactory unparserFactory;
+
             private Version version;
 
-            public SerializerBuilder(Serializer serializer) => this.serializer = serializer;
+            public SerializerBuilder(OtmlSerializer serializer) => this.serializer = serializer;
 
             public SerializerBuilder WithEncoding(Encoding encoding)
             {
@@ -142,7 +143,7 @@ namespace AlienFruit.Otml.Serializer
             {
                 var serializer = this.serializer;
                 serializer.encoding = this.encoding ?? Encoding.UTF8;
-                serializer.parserVersion = this.version ?? new Version(1, 0);
+                serializer.parserVersion = this.version;
 
                 serializer.resolver = this.resolver
                     ?? new Resolver(new BaseFormattersContainer()

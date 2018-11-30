@@ -20,7 +20,7 @@ namespace PerformanceTests
 
         private readonly static Dictionary<string, Func<object, string>> toStringConverters = new Dictionary<string, Func<object, string>>
         {
-            { "AlienFruit.Otml", x => Serializer.Build().Create().Serialize(x) },
+            { "AlienFruit.Otml", x => OtmlSerializer.Build().Create().Serialize(x) },
             { "Newtonsoft.Json", x => JsonConvert.SerializeObject(x, Formatting.Indented)},
             { "JavaScriptSerializer", x => new JavaScriptSerializer().Serialize(x) },
             { "YamlDotNet", x => new YamlDotNet.Serialization.Serializer().Serialize(x)},
@@ -28,7 +28,7 @@ namespace PerformanceTests
 
         private readonly static Dictionary<string, Func<object>> toObjectConverters = new Dictionary<string, Func<object>>
         {
-            { "AlienFruit.Otml", () => Serializer.Build().Create().Deserialize<TestObject>(otmlInput) },
+            { "AlienFruit.Otml", () => OtmlSerializer.Build().Create().Deserialize<TestObject>(otmlInput) },
             { "Newtonsoft.Json", () => JsonConvert.DeserializeObject<TestObject>(jsonInput)},
             { "JavaScriptSerializer", () => new JavaScriptSerializer().Deserialize<TestObject>(jsonInput) },
             { "YamlDotNet", () => new YamlDotNet.Serialization.Deserializer().Deserialize(jsonInput, typeof(TestObject))},

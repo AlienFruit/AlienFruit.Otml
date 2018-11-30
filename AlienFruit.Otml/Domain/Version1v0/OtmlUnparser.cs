@@ -13,6 +13,8 @@ namespace AlienFruit.Otml.Domain.Version1v0
 
         private readonly Encoding encoding;
 
+        public Version Version => new Version(1, 0);
+
         public OtmlUnparser(Encoding encoding)
         {
             this.encoding = encoding;
@@ -22,6 +24,7 @@ namespace AlienFruit.Otml.Domain.Version1v0
         {
             var result = new StringBuilder();
             var level = 0;
+            result.AppendLine($"@@version : {this.Version}{Environment.NewLine}");
             UnparseTree(tree, result, null, level);
 
             return result.ToString();
@@ -32,6 +35,7 @@ namespace AlienFruit.Otml.Domain.Version1v0
             using (var writer = new StreamWriter(toStream, this.encoding, 1024, leaveOpen))
             {
                 int level = 0;
+                writer.WriteLine($"@@version : {this.Version}{Environment.NewLine}");
                 UnparseTree(tree, writer, null, level);
             }
         }
