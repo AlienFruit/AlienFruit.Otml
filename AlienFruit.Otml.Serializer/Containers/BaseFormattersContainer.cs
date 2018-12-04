@@ -29,6 +29,10 @@ namespace AlienFruit.Otml.Serializer.Containers
                 x => x == typeof(DateTime),
                 (f, v, args) => Activator.CreateInstance(f, args) as IFormatter);
 
+            RegisterFormatter<UriFormatter>(
+                x => x == typeof(Uri),
+                (f, v, args) => Activator.CreateInstance(f, args) as IFormatter);
+
             RegisterFormatter(typeof(ArrayFormatter<>), x => x.IsArray,
                 (f, v, args) => Activator.CreateInstance(f.MakeGenericType(v.GetElementType()), args) as IFormatter);
 

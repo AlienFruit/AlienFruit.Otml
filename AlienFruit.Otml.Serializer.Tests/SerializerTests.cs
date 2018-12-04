@@ -350,6 +350,7 @@ namespace AlienFruit.Otml.Serializer.Tests
             public long TemplateId { get; set; }
             public long Id { get; set; }
             public TestClass TestClass { get; set; }
+            public Uri Uri { get; set; }
             public decimal Amount { get; set; }
             public string[] Comment { get; set; }
             public DateTime CrDate { get; set; }
