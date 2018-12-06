@@ -9,7 +9,7 @@ namespace AlienFruit.Otml.Domain.Version1v0
 {
     internal class OtmlUnparser : IUnparser
     {
-        private static readonly char[] needForQuotes = { OtmlSyntax.CommentChar, OtmlSyntax.MultilineChar, OtmlSyntax.PropsListSeparator, OtmlSyntax.DoubleQuote, OtmlSyntax.SingleQuote };
+        private static readonly char[] needForQuotes = { OtmlSyntax.CommentChar, OtmlSyntax.MultilineChar, OtmlSyntax.PropsListSeparator, OtmlSyntax.DoubleQuote, OtmlSyntax.SingleQuote, OtmlSyntax.SplitChar };
 
         private readonly Encoding encoding;
 
@@ -85,11 +85,11 @@ namespace AlienFruit.Otml.Domain.Version1v0
                 case NodeType.Value:
                     if (item.IsMultiline)
                     {
-                        var lines = item.Value.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-                        result.AppendFormat("{0}{1}", ShieldValue(lines[0]), OtmlSyntax.MultilineChar);
+                        var lines = item.Value.Split(OtmlSyntax.LF);
+                        result.AppendFormat("{0}{1}", ShieldValue(lines[0].TrimEnd(OtmlSyntax.CR)), OtmlSyntax.MultilineChar);
                         for (int a = 1; a < lines.Length; a++)
                         {
-                            result.AppendFormat("{0}{1}{2}", Environment.NewLine, CreateTabs(level), ShieldValue(lines[a]));
+                            result.AppendFormat("{0}{1}{2}", Environment.NewLine, CreateTabs(level), ShieldValue(lines[a].TrimEnd(OtmlSyntax.CR)));
                             if (a < lines.Length - 1)
                                 result.Append(OtmlSyntax.MultilineChar);
                         }

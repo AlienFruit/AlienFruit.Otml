@@ -217,25 +217,32 @@ namespace AlienFruit.Otml.Serializer.Tests
             var result = serializer.Serialize(expression);
         }
 
-        public class Content
-        {
-            public string HtmlContent { get; set; }
-        }
+        //public class GetPageContentResponce
+        //{
+        //    public PageContent PageContent { get; set; }
+        //}
 
-        [Test]
-        public void SerializeLargeText()
-        {
-            var content = new Content
-            {
-                HtmlContent = File.ReadAllText(TestContext.CurrentContext.TestDirectory + @"\test.html")
-            };
+        //public class PageContent
+        //{
+        //    public string Name { get; set; }
+        //    public string Title { get; set; }
+        //    public string HtmlContent { get; set; }
+        //}
 
-            ISerializer serializer = OtmlSerializer.Create();
+        //[Test]
+        //public void SerializeLargeText()
+        //{
+        //    //var content = new Content
+        //    //{
+        //    //    HtmlContent = File.ReadAllText(TestContext.CurrentContext.TestDirectory + @"\test.html")
+        //    //};
 
-            var result = serializer.Serialize(content);
+        //    ISerializer serializer = OtmlSerializer.Create();
 
-            var res2 = serializer.Deserialize<Content>(result);
-        }
+        //    //var result = serializer.Serialize(content);
+
+        //    var res2 = serializer.Deserialize<GetPageContentResponce>(File.ReadAllText("C:/test.otml"));
+        //}
 
         [Test]
         public void Serialize_then_deserialize_should_return_same_object_that_the_sourse()
