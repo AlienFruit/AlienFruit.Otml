@@ -8,7 +8,7 @@ namespace AlienFruit.Otml
 
         OtmlNode CreateNode(NodeType type, string name, IEnumerable<OtmlNode> children);
 
-        OtmlNode CreateValue(string value, bool isPartial = false);
+        OtmlNode CreateValue(string value, bool isMultiline = false);
 
         void AddChild(OtmlNode toParrent, OtmlNode child);
     }

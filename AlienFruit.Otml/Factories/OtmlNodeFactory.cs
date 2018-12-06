@@ -42,7 +42,7 @@ namespace AlienFruit.Otml.Factories
             }
         }
 
-        public OtmlNode CreateValue(string value, bool isPartial = false)
-            => new ValueNode(value, isPartial);
+        public OtmlNode CreateValue(string value, bool isMultiline = false)
+            => new ValueNode(value, isMultiline);
     }
 }

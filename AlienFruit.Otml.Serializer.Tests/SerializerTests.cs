@@ -157,9 +157,7 @@ namespace AlienFruit.Otml.Serializer.Tests
             Type : Second";
 
         [Test]
-        //[Ignore("should be deleted")]
-
-        //serialize to string
+        [Ignore("should be deleted")]
         public void SerializeToString()
         {
             var foo = CreateFoo();
@@ -170,6 +168,7 @@ namespace AlienFruit.Otml.Serializer.Tests
         }
 
         [Test]
+        [Ignore("should be deleted")]
         public void DeserializeFromStringToObject()
         {
             var otmlString = GetOtmlString();
@@ -179,6 +178,7 @@ namespace AlienFruit.Otml.Serializer.Tests
         }
 
         [Test]
+        [Ignore("should be deleted")]
         public void DeserializeFromStreamToObject()
         {
             var serializer = OtmlSerializer.Create();
@@ -190,6 +190,7 @@ namespace AlienFruit.Otml.Serializer.Tests
         }
 
         [Test]
+        [Ignore("should be deleted")]
         public void SerializeToStream()
         {
             var foo = CreateFoo();
@@ -216,13 +217,33 @@ namespace AlienFruit.Otml.Serializer.Tests
             var result = serializer.Serialize(expression);
         }
 
+        public class Content
+        {
+            public string HtmlContent { get; set; }
+        }
+
+        [Test]
+        public void SerializeLargeText()
+        {
+            var content = new Content
+            {
+                HtmlContent = File.ReadAllText(TestContext.CurrentContext.TestDirectory + @"\test.html")
+            };
+
+            ISerializer serializer = OtmlSerializer.Create();
+
+            var result = serializer.Serialize(content);
+
+            var res2 = serializer.Deserialize<Content>(result);
+        }
+
         [Test]
         public void Serialize_then_deserialize_should_return_same_object_that_the_sourse()
         {
             // Arrange
             ISerializer serializer = OtmlSerializer.Build().Create();
             var sourceObject = fixture.Build<TestObject>()
-                .With(x => x.Comment, new[] { $@"asdasdasdsd {Environment.NewLine} line2, asdasdasdads {Environment.NewLine} line4 adsasdasdasdasd", "asdasd" })
+                .With(x => x.Comment, new[] { $@"asdasda""sdsd {Environment.NewLine} line2, asdasdasd""ad""s {Environment.NewLine} line4 adsasdasdasdasd", "asdasd" })
                 .Create();
 
             // Action

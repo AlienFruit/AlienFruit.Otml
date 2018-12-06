@@ -14,7 +14,7 @@ namespace AlienFruit.Otml.Tests
 {
     public class OtmlParserTests
     {
-        private readonly string testDataFile = TestContext.CurrentContext.TestDirectory + @"\OtmlTestDataANSI.py";
+        private readonly string testDataFile = TestContext.CurrentContext.TestDirectory + @"\OtmlTestData.py";
 
         [Test]
         public void TestMethod1()
