@@ -57,17 +57,7 @@ namespace AlienFruit.Otml.Serializer.Tests
                 RegisterCustomFormatter(typeof(ObjectFormatter),
                 x =>
                 {
-                    var result = x.GetTypeInfo().IsGenericType && x.GetGenericTypeDefinition() == typeof(Func<,>);//x == typeof(Expression);
-                    if (result)
-                    {
-                        int a = 0;
-                    }
-
-                    if (x == typeof(Func<,>))
-                    {
-                        int b = 0;
-                    }
-                    return result;
+                    return x.GetTypeInfo().IsGenericType && x.GetGenericTypeDefinition() == typeof(Func<,>);//x == typeof(Expression);
                 },
                 (f, v, args) =>
                 {
@@ -120,7 +110,7 @@ namespace AlienFruit.Otml.Serializer.Tests
                     new Foo.InnerObject
                     {
                         Name = "the first inner object name",
-                        ArrayValue = new [] { "the first value", "the second value" },
+                        ArrayValue = new [] { "the first value", "the second value", "" },
                         Type = Foo.InnerObject.FooEnum.First
                     },
                     new Foo.InnerObject
@@ -128,6 +118,10 @@ namespace AlienFruit.Otml.Serializer.Tests
                         Name = "the second inner object name",
                         ArrayValue = new [] { "the first value", "the second value" },
                         Type = Foo.InnerObject.FooEnum.Second
+                    },
+                    new Foo.InnerObject
+                    {
+                        Name = ""
                     }
                 },
             };
@@ -154,6 +148,10 @@ namespace AlienFruit.Otml.Serializer.Tests
             ArrayValue :
 				the first value
                 the second value
+            Type : Second
+        @InnerObject
+            Name :
+            ArrayValue :
             Type : Second";
 
         [Test]
@@ -217,33 +215,6 @@ namespace AlienFruit.Otml.Serializer.Tests
             var result = serializer.Serialize(expression);
         }
 
-        //public class GetPageContentResponce
-        //{
-        //    public PageContent PageContent { get; set; }
-        //}
-
-        //public class PageContent
-        //{
-        //    public string Name { get; set; }
-        //    public string Title { get; set; }
-        //    public string HtmlContent { get; set; }
-        //}
-
-        //[Test]
-        //public void SerializeLargeText()
-        //{
-        //    //var content = new Content
-        //    //{
-        //    //    HtmlContent = File.ReadAllText(TestContext.CurrentContext.TestDirectory + @"\test.html")
-        //    //};
-
-        //    ISerializer serializer = OtmlSerializer.Create();
-
-        //    //var result = serializer.Serialize(content);
-
-        //    var res2 = serializer.Deserialize<GetPageContentResponce>(File.ReadAllText("C:/test.otml"));
-        //}
-
         [Test]
         public void Serialize_then_deserialize_should_return_same_object_that_the_sourse()
         {
@@ -285,7 +256,8 @@ namespace AlienFruit.Otml.Serializer.Tests
         {
             // Arrange
             var serializer = OtmlSerializer.Build().WithEncoding(Encoding.UTF8).Create();
-            var sourceObject = fixture.Create<TestObject>();
+            var sourceObject = fixture.Build<TestObject>()
+                .With(x => x.Outercode, string.Empty).Create();
 
             // Action
             TestObject deserealizeResult = null;
