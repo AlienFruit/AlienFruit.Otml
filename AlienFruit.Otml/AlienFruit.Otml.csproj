@@ -8,6 +8,8 @@
     <Description>AlienFruit.Otml is an object tree model language .This package contains a parser. You can convert OTML to object model and vice versa.</Description>
     <Copyright>Copyright © Alexander Prokopovich 2018</Copyright>
     <Version>1.0.1</Version>
+    <RepositoryUrl>https://github.com/AlienFruit/AlienFruit.Otml</RepositoryUrl>
+    <PackageTags>otml</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

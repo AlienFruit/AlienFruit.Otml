@@ -7,6 +7,7 @@
     <Description>AlienFruit.Otml is an object tree model language .This package contains a OTML serializer/deserializer.</Description>
     <Copyright>Copyright © Alexander Prokopovich 2018</Copyright>
     <Version>1.0.1</Version>
+    <RepositoryType>https://github.com/AlienFruit/AlienFruit.Otml</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
