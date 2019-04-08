@@ -9,7 +9,6 @@ It is abstract, flexible and simple, there is no data standardization and no arr
 <br/><br/>
 
 ## OTML targets
---------------------------------
  - To be easily understandable to a man
  - To be minimalistic: have a syntax consisting of a minimum set of rules
  - To be as abstract and flexible as possible, allowing to describe as many different data structures as possible
@@ -268,7 +267,7 @@ is not inside double or single quotes.
 @node
 	nodeProperty : property value # a comment
 ```
-
+<br/><br/>
 
 # C# implementation of OTML parser
 
@@ -369,7 +368,7 @@ OtmlNode properties:
 You can create DOM elements using `OtmlNodeFactory`, which can be obtained through the` GetNodeFactory () `method of the` OtmlUnparser` class.
 Or write your own implementation for the elements without violating the conditions of the above table.
 
-
+<br/><br/>
 
 # C# serializer implementation
 
