@@ -284,14 +284,14 @@ Example:
 ```c
 var otmlFactory = new OtmlParserFactory();
 
-//чтение  из  потока  
+//read from a stream 
 using (var stream = File.OpenRead(@"C:\test.otml"))  
 {
 	var parser = otmlFactory.GetParser(stream);
 	var result = parser.Parse();
 }
 
-//чтение  из  строки
+//read from a string
 var text = File.ReadAllText(testDataFile);
 var parser = otmlFactory.GetParser(text);
 var result = parser.Parse();
