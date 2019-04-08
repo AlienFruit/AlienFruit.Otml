@@ -262,7 +262,7 @@ Value3
 A comment is everything what is located from the # character to the end of the line, if the `#` character
 is not inside double or single quotes.
 
-```py
+```
 #a comment
 @node
 	nodeProperty : property value # a comment
@@ -360,7 +360,7 @@ OtmlNode properties:
 
 |    Type           |    NodeType.Object                                    |    NodeType.Property                                  |    NodeType.Value                        |
 |-------------------|-------------------------------------------------------|-------------------------------------------------------|------------------------------------------|
-|    Name           |    The name of the object                             |    Property nam                                       |    Always blank line                     |
+|    Name           |    The name of the object                             |    Property name                                       |    Always blank line                     |
 |    Value          |    Always blank line                                  |    Always blank line                                  |    Contains value                        |
 |    IsMultiline    |    Always false                                       |    Always false                                       |    True for multi-line values            |
 |    Children       |    A collection of child elements of any NodeType     |    A collection of child elements of any NodeType     |    Always empty collection               |
