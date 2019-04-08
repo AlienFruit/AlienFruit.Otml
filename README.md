@@ -62,12 +62,12 @@ An object can contain both values and properties and always starts with the pref
 Values can be on the same line with the object, in this case the object is separated from the values by the `:` symbol.
 Values are separated from each other with a comma `,`.
 
-```py
+```
 @objectWithValues : "first node value", "second node value"
 ```
 or
 
-```py
+```
 @objectWithValues : first node value, second node value
 ```
 
@@ -95,26 +95,26 @@ This is the main difference between a property and an object.
 It may contain one or more values.
 
 
-```py
+```
 property name : propery value
 ```
 
 or
 
-```py
+```
 property name : propery value1, property value2
 ```
 
 or
 
-```py
+```
 property name:
 	property value
 ```
 
 or
 
-```py
+```
 property name :
 	first value
 	second value
@@ -122,7 +122,7 @@ property name :
 
 or
 
-```py
+```
 property name : propery value1, property value2
 	property value3
 	property value4
@@ -131,7 +131,7 @@ property name : propery value1, property value2
 It may contain other objects and properties.
 Objects and properties are described only with a new line.
 
-```py
+```
 property :
 	anyProperty: any property value
 	@anyObject
@@ -139,7 +139,7 @@ property :
 
 An example of using a property to describe a dictionary of values:
 
-```py
+```
 dictionary :
 	first key : first value
 	second key : second value
@@ -204,7 +204,7 @@ Only 2 characters must be escaped : `" `,`'`
 Escaping occurs with the `\` character.
 The character itself `\` is not escaped .
 
-```py
+```
 \property \with \backslash : \value\with\backslash
 ```
 
@@ -214,7 +214,7 @@ The characters `" `,`'`may not be escaped  in the following cases:
 
 In all other cases, quotes require escaping.
 
-```py
+```
 property :
 	value 1 with \' char
 	value 2 with \" char
