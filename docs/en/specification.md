@@ -3,20 +3,6 @@
 
 <br/>
 
-**OTML** is an object tree model language.
-It is a language that describes a tree of objects, which is easily readable by both man and machine. 
-It is abstract, flexible and simple, there is no data standardization and no arrays in it. OTML supports comments and stream processing.
-<br/><br/>
-
-## OTML targets
- - To be easily understandable to a man
- - To be minimalistic: have a syntax consisting of a minimum set of rules
- - To be as abstract and flexible as possible, allowing to describe as many different data structures as possible
- - To support data stream processing
- - To develop and change easily, have a version system
- - Forget about it: `{}`, this: `[]` and this: `()`
-<br/>
-
 ## Syntax
 
 A list of service characters used in the language: <br/>
@@ -38,7 +24,7 @@ and another `tab` character, `space` and `newline character`
 		property3 : value3
 ```
 
-### Document declarations
+## Document declarations
 
 They are specified only at the beginning of the OTML document with the characters `@@`.
 
@@ -47,7 +33,7 @@ They are specified only at the beginning of the OTML document with the character
 ```
 At the moment, only the declaration is used to indicate the version of the OTML document.
 
-### Hierarchy
+## Hierarchy
 
 The `Tab` character is responsible for the nesting level. 
 > The use of spaces from the beginning of the line to objects, properties and values is not allowed.
@@ -56,7 +42,7 @@ The left side is solely responsible for nesting and allows the use of the charac
 If the parent has 2 indents, then the child element must have 3 indents, if there are 4 indents, then OTML will report the error.
 
 
-### An object
+## An object
 
 An object can contain both values and properties and always starts with the prefix `@`.
 Values can be on the same line with the object, in this case the object is separated from the values by the `:` symbol.
@@ -88,7 +74,7 @@ Object properties can only be declared with a new line.
 ```
 
 
-### Property
+## Property
 
 A property always ends in `:`, even if the property has no values.
 This is the main difference between a property and an object.
@@ -146,7 +132,7 @@ dictionary :
 ```
 
 
-### Value
+## Value
 
 The value cannot have child elements. This is an atomic unit of OTML.
 The value has no standardization. Using quotes when specifying a value is optional.
@@ -198,7 +184,7 @@ or
 
 
 
-### Escaping special characters
+## Escaping special characters
 
 Only 2 characters must be escaped : `" `,`'`
 Escaping occurs with the `\` character.
@@ -224,7 +210,7 @@ property :
 
 
 
-### Multiline values
+## Multiline values
 
 In **OTML** there is a way to present multi-line text.
 It happens by concatenating the values with the insertion of a character or a sequence of newline characters between them.
@@ -257,7 +243,7 @@ Value3
 ```
 
 
-### Comments
+## Comments
 
 A comment is everything what is located from the # character to the end of the line, if the `#` character
 is not inside double or single quotes.
