@@ -42,7 +42,7 @@ The left side is solely responsible for nesting and allows the use of the charac
 If the parent has 2 indents, then the child element must have 3 indents, if there are 4 indents, then OTML will report the error.
 
 
-## An object
+## Object
 
 An object can contain both values and properties and always starts with the prefix `@`.
 Values can be on the same line with the object, in this case the object is separated from the values by the `:` symbol.
