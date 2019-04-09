@@ -36,11 +36,6 @@ namespace PerformanceTests
 
         private static void Main(string[] args)
         {
-            var foo = fixture.Create<FooObject>();
-            var otmlResult = OtmlSerializer.Create().Serialize(foo);
-            var jsonResult = JsonConvert.SerializeObject(foo, Formatting.Indented);
-            var yamlResult = new YamlDotNet.Serialization.Serializer().Serialize(foo);
-
             SerializationSpeedTest(args.Contains("info"));
             DeserializationSpeedTest();
             Console.ReadKey();
