@@ -67,7 +67,7 @@ public class Foo
 }
 ```
 
-### Serialization to `string`:
+### Serialization to **string**:
 
 ```c#
 var fooClass = new Foo
@@ -82,7 +82,7 @@ var serializer = OtmlSerializer.Create();
 string result = serializer.Serialize(fooClass);
 ```
 
-### Serialization to `Stream`:
+### Serialization to **Stream**:
 
 ```c#
 var fooClass = new Foo
@@ -102,7 +102,7 @@ using (var stream = File.OpenWrite("C:\\result.otml"))
 
 ## Deserialization
 
-### Deserialization  from `string`:
+### Deserialization  from **string**:
 
 ```c#
 var serializer = OtmlSerializer.Create();
@@ -116,7 +116,7 @@ var source =
 Foo result = serializer.Deserialize<Foo>(source);
 ```
 
-### Deserialization  from `Stream`:
+### Deserialization  from **Stream**:
 
 ```c#
 var source =
