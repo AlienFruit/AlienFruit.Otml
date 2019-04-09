@@ -5,11 +5,12 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <NeutralLanguage>en</NeutralLanguage>
-    <Description>AlienFruit.Otml is an object tree model language .This package contains a parser. You can convert OTML to object model and vice versa.</Description>
+    <Description>OTML is an object tree model language. It is a language that describes a tree of objects, which is easily readable by both man and machine. It is abstract, flexible and simple, there is no data standardization and no arrays in it. OTML supports comments and stream processing.</Description>
     <Copyright>Copyright © Alexander Prokopovich 2018</Copyright>
     <Version>1.0.1</Version>
     <RepositoryUrl>https://github.com/AlienFruit/AlienFruit.Otml</RepositoryUrl>
-    <PackageTags>otml</PackageTags>
+    <PackageTags>otml serializer parser deserializer unparser</PackageTags>
+    <PackageIconUrl>https://raw.githubusercontent.com/AlienFruit/AlienFruit.Otml/master/design/icons/256w/Artboard1.png</PackageIconUrl>
   </PropertyGroup>
 
   <ItemGroup>
