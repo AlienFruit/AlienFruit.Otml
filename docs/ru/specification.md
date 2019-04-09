@@ -8,7 +8,6 @@
 <br/><br/>
 
 ## Цели OTML
---------------------------------
  - Быть легко понятным человеку
  - Быть минималистичным: иметь синтаксис, состоящий из минимального набора правил
  - Быть максимально абстрактным и гибким, позволяя описывать максимально различные структуры данных
@@ -62,11 +61,11 @@
 Значения могут находиться на одной строке с объектом, в этом случае объект отделяется от значений символом `:`.
 Значения отделяются друг от друга при помощи запятой `,`.
 
-```py
+```
 @objectWithValues : "this is first node value", "this is second node value"
 ```
 или
-```py
+```
 @objectWithValues : this is first node value, this is second node value
 ```
 При описании значений в новых строках, символ `:` можно не использовать, но его использование, в данном случае, не будет считаться ошибкой
@@ -77,7 +76,7 @@
 	this is second node value
 ```
 Свойства объекта могут объявляться только с новой строки
-```py
+```
 @objectWithValue
 	firstNodeProperty : first property value
 	secondNodeProperty : second property value
@@ -90,26 +89,26 @@
 Это является основным отличием от объекта.
 Может содержать одно или несколько значений
 
-```py
+```
 property name : propery value
 ```
 или
-```py
+```
 property name : propery value1, property value2
 ```
 или
-```py
+```
 property name:
 	property value
 ```
 или
-```py
+```
 property name :
 	first value
 	second value
 ```
 или
-```py
+```
 property name : propery value1, property value2
 	property value3
 	property value4
@@ -118,7 +117,7 @@ property name : propery value1, property value2
 Может содержать другие объекты и свойства.
 Объекты и свойства описываются только с новой строки.
 
-```py
+```
 property :
 	anyProperty: any property value
 	@anyObject
@@ -174,7 +173,7 @@ dictionary :
 Экранирование происходит при помощи символа  `\`
 Сам символ `\` не экранируется.
 
-```py
+```
 \property \with \backslash : \value\with\backslash
 ```
 Символы `"`, `'` можно не экранировать в следующих случаях:
@@ -184,7 +183,7 @@ dictionary :
 
 Во всех остальных случаях для кавычек необходимо экранирование
 
-```py
+```
 property :
 	value 1 with \' char
 	value 2 with \" char
@@ -230,7 +229,7 @@ Value3
 
 Комментарием является все что находится от символа # до конца строки, если символ `#`
 не находится внутри двойных или одинарных кавычек.
-```py
+```
 #this is comment
 @node
 	nodeProperty : property value # this is comment to

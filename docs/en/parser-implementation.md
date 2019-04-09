@@ -14,14 +14,14 @@ Example:
 ```c
 var otmlFactory = new OtmlParserFactory();
 
-//чтение  из  потока  
+//read from stream  
 using (var stream = File.OpenRead(@"C:\test.otml"))  
 {
 	var parser = otmlFactory.GetParser(stream);
 	var result = parser.Parse();
 }
 
-//чтение  из  строки
+//read from string
 var text = File.ReadAllText(testDataFile);
 var parser = otmlFactory.GetParser(text);
 var result = parser.Parse();
@@ -90,7 +90,7 @@ OtmlNode properties:
 
 |    Type           |    NodeType.Object                                    |    NodeType.Property                                  |    NodeType.Value                        |
 |-------------------|-------------------------------------------------------|-------------------------------------------------------|------------------------------------------|
-|    Name           |    The name of the object                             |    Property nam                                       |    Always blank line                     |
+|    Name           |    The name of the object                             |    Property name                                       |    Always blank line                     |
 |    Value          |    Always blank line                                  |    Always blank line                                  |    Contains value                        |
 |    IsMultiline    |    Always false                                       |    Always false                                       |    True for multi-line values            |
 |    Children       |    A collection of child elements of any NodeType     |    A collection of child elements of any NodeType     |    Always empty collection               |

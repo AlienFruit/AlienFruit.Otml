@@ -9,7 +9,6 @@ It is abstract, flexible and simple, there is no data standardization and no arr
 <br/><br/>
 
 ## OTML targets
---------------------------------
  - To be easily understandable to a man
  - To be minimalistic: have a syntax consisting of a minimum set of rules
  - To be as abstract and flexible as possible, allowing to describe as many different data structures as possible
@@ -63,12 +62,12 @@ An object can contain both values and properties and always starts with the pref
 Values can be on the same line with the object, in this case the object is separated from the values by the `:` symbol.
 Values are separated from each other with a comma `,`.
 
-```py
+```
 @objectWithValues : "first node value", "second node value"
 ```
 or
 
-```py
+```
 @objectWithValues : first node value, second node value
 ```
 
@@ -82,7 +81,7 @@ When describing values in the new lines, the `:` symbol can be not used, but its
 
 Object properties can only be declared with a new line.
 
-```py
+```
 @objectWithValue
 	firstNodeProperty : first property value
 	secondNodeProperty : second property value
@@ -96,26 +95,26 @@ This is the main difference between a property and an object.
 It may contain one or more values.
 
 
-```py
+```
 property name : propery value
 ```
 
 or
 
-```py
+```
 property name : propery value1, property value2
 ```
 
 or
 
-```py
+```
 property name:
 	property value
 ```
 
 or
 
-```py
+```
 property name :
 	first value
 	second value
@@ -123,7 +122,7 @@ property name :
 
 or
 
-```py
+```
 property name : propery value1, property value2
 	property value3
 	property value4
@@ -132,7 +131,7 @@ property name : propery value1, property value2
 It may contain other objects and properties.
 Objects and properties are described only with a new line.
 
-```py
+```
 property :
 	anyProperty: any property value
 	@anyObject
@@ -205,7 +204,7 @@ Only 2 characters must be escaped : `" `,`'`
 Escaping occurs with the `\` character.
 The character itself `\` is not escaped .
 
-```py
+```
 \property \with \backslash : \value\with\backslash
 ```
 
@@ -215,7 +214,7 @@ The characters `" `,`'`may not be escaped  in the following cases:
 
 In all other cases, quotes require escaping.
 
-```py
+```
 property :
 	value 1 with \' char
 	value 2 with \" char
@@ -227,7 +226,7 @@ property :
 
 ### Multiline values
 
-In ** OTML ** there is a way to present multi-line text.
+In **OTML** there is a way to present multi-line text.
 It happens by concatenating the values with the insertion of a character or a sequence of newline characters between them.
 To add a new line at the end of the value, the symbol `+` is indicated.
 The next value will be added as a new line of the previous value.
@@ -263,7 +262,7 @@ Value3
 A comment is everything what is located from the # character to the end of the line, if the `#` character
 is not inside double or single quotes.
 
-```py
+```
 #a comment
 @node
 	nodeProperty : property value # a comment
