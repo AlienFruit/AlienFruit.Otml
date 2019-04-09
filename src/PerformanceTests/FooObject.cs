@@ -19,7 +19,9 @@ namespace PerformanceTests
         public DateTime OpDate { get; set; }
         public string Outercode { get; set; }
         public long PDADocNum { get; set; }
-        public IEnumerable<Item> Items { get; set; }
+
+        //public IEnumerable<Item> Items { get; set; }
+        public IEnumerable<ItemValue> Values { get; set; }
 
         public class Item
         {
