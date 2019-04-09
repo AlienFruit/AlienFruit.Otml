@@ -19,7 +19,7 @@ It is abstract, flexible and simple, there is no data standardization and no arr
 <br/>
 
 
-OTML example:
+## OTML example:
 
 ```py
 @FooObject
@@ -54,77 +54,79 @@ OTML example:
 			AnswerStr : AnswerStrstring145
 			Id : 204
 ```
-</br>
-YAML example:
+## Serialization
 
-```yaml
-TemplateId: 21
-Amount: 253
-Comments:
-- string71
-- string137
-- string201
-CrDate: 2019-08-09T22:47:01.3653125
-Deleted: true
-DistributorId: 77
-BusinessStatusId: 121
-OpDate: 2018-01-17T03:14:59.5554985
-Outercode: Outercodestring117
-PDADocNum: 122
-Values:
-- AnswerDate: 2020-01-11T00:01:18.4028131
-  AnswerNumber: 20
-  AnswerStr: AnswerStrstring141
-  Id: 2
-- AnswerDate: 2018-01-31T16:21:57.8621476
-  AnswerNumber: 222
-  AnswerStr: AnswerStrstring206
-  Id: 249
-- AnswerDate: 2021-03-06T16:35:05.4552944
-  AnswerNumber: 207
-  AnswerStr: AnswerStrstring230
-  Id: 165
+The next class will be used in examples:
 
-```
-</br>
-
-JSON example
-```json
+```c#
+public class Foo
 {
-  "TemplateId": 21,
-  "Amount": 253.0,
-  "Comments": [
-    "string71",
-    "string137",
-    "string201"
-  ],
-  "CrDate": "2019-08-09T22:47:01.3653125",
-  "Deleted": true,
-  "DistributorId": 77,
-  "BusinessStatusId": 121,
-  "IsEditOut": false,
-  "OpDate": "2018-01-17T03:14:59.5554985",
-  "Outercode": "Outercodestring117",
-  "PDADocNum": 122,
-  "Values": [
-    {
-      "AnswerDate": "2020-01-11T00:01:18.4028131",
-      "AnswerNumber": 20.0,
-      "AnswerStr": "AnswerStrstring141",
-      "Id": 2
-    },
-    {
-      "AnswerDate": "2018-01-31T16:21:57.8621476",
-      "AnswerNumber": 222.0,
-      "AnswerStr": "AnswerStrstring206",
-      "Id": 249
-    },
-    {
-      "AnswerDate": "2021-03-06T16:35:05.4552944",
-      "AnswerNumber": 207.0,
-      "AnswerStr": "AnswerStrstring230",
-      "Id": 165
-    }
-  ]
+	public string Name { get; set; }
+	public string StringValue { get; set; }
+	public int IntValue { get; set; }
+}
+```
+
+### Serialization to `string`:
+
+```c#
+var fooClass = new Foo
+{
+	Name = "Name",
+	StringValue =  "Value",
+	IntValue = 123
+};
+
+var serializer = OtmlSerializer.Create();
+
+string result = serializer.Serialize(fooClass);
+```
+
+### Serialization to `Stream`:
+
+```c#
+var fooClass = new Foo
+{
+	Name = "Name",
+	StringValue =  "Value",
+	IntValue = 123
+};
+
+var serializer = OtmlSerializer.Create();
+
+using (var stream = File.OpenWrite("C:\\result.otml"))
+{
+	serializer.Serialize(fooClass, stream);
+}
+```
+
+## Deserialization
+
+### Deserialization  from `string`:
+
+```c#
+var serializer = OtmlSerializer.Create();
+
+var source =
+	"@Foo\n" +
+	"\tName: Name\n" +
+	"\tStringValue : Value\n" +
+	"\tIntValue : 123";
+
+Foo result = serializer.Deserialize<Foo>(source);
+```
+
+### Deserialization  from `Stream`:
+
+```c#
+var source =
+	"@Foo\n" +
+	"\tName: Name\n" +
+	"\tStringValue : Value\n" +
+	"\tIntValue : 123";
+
+using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(source)))
+{
+	Foo result = serializer.Deserialize<Foo>(stream);
 }
 ```
