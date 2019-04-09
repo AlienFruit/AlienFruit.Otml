@@ -1,25 +1,23 @@
  ![Logo](https://raw.githubusercontent.com/AlienFruit/AlienFruit.Otml/master/design/icons/256w/Artboard1.png)
 
-**OTML** is an object tree model language.
-It is a language that describes a tree of objects, which is easily readable by both man and machine. 
-It is abstract, flexible and simple, there is no data standardization and no arrays in it. OTML supports comments and stream processing.
+**OTML** - язык модели дерева объектов.
+Это язык описания дерева объектов, который легко читается как человеком, так и машиной. Он абстрактен, гибок и прост, в нем нет типизации данных и нет массивов. OTML поддерживает комментарии и потоковую обработку.
 <br/><br/>
 
 - [Specification](https://github.com/AlienFruit/AlienFruit.Otml/blob/master/docs/en/specification.md)
 - [Parser C# implementation](https://github.com/AlienFruit/AlienFruit.Otml/blob/master/docs/en/parser-implementation.md)
 - [Serializer C# implementation](https://github.com/AlienFruit/AlienFruit.Otml/blob/master/docs/en/serializer-implementation.md)
 
-## OTML targets
- - To be easily understandable to a man
- - To be minimalistic: have a syntax consisting of a minimum set of rules
- - To be as abstract and flexible as possible, allowing to describe as many different data structures as possible
- - To support data stream processing
- - To develop and change easily, have a version system
- - Forget about it: `{}`, this: `[]` and this: `()`
+## Цели OTML
+ - Быть легко понятным человеку
+ - Быть минималистичным: иметь синтаксис, состоящий из минимального набора правил
+ - Быть максимально абстрактным и гибким, позволяя описывать максимально различные структуры данных
+ - Поддерживать потоковую обработку данных
+ - Развиваться и легко меняться, иметь систему версий
+ - Забыть про это: `{ }`, это:`[ ]` и это: `( )`
 <br/>
 
-
-## OTML example:
+## Пример OTML:
 
 ```py
 @FooObject
@@ -54,9 +52,9 @@ It is abstract, flexible and simple, there is no data standardization and no arr
 			AnswerStr : AnswerStrstring145
 			Id : 204
 ```
-## Serialization
+## Сериализация
 
-The next class will be used in examples:
+В примерах будет использован следующий класс:
 
 ```c#
 public class Foo
@@ -67,7 +65,7 @@ public class Foo
 }
 ```
 
-### Serialization to `string`:
+### Сериализация в `string`:
 
 ```c#
 var fooClass = new Foo
@@ -82,7 +80,7 @@ var serializer = OtmlSerializer.Create();
 string result = serializer.Serialize(fooClass);
 ```
 
-### Serialization to `Stream`:
+### Сериализация в `Stream`:
 
 ```c#
 var fooClass = new Foo
@@ -100,9 +98,9 @@ using (var stream = File.OpenWrite("C:\\result.otml"))
 }
 ```
 
-## Deserialization
+## Десериализация
 
-### Deserialization  from `string`:
+### Десериализация из `string`:
 
 ```c#
 var serializer = OtmlSerializer.Create();
@@ -116,7 +114,7 @@ var source =
 Foo result = serializer.Deserialize<Foo>(source);
 ```
 
-### Deserialization  from `Stream`:
+### Десериализация из `Stream`:
 
 ```c#
 var source =
