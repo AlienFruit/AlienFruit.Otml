@@ -53,6 +53,11 @@ It is abstract, flexible and simple, there is no data standardization and no arr
 			AnswerNumber : 222
 			AnswerStr : AnswerStrstring145
 			Id : 204
+	MultilineStringValue : 
+		"When an outburst occurs from gas very near the black hole," +
+		"the ejected gas collides with material flowing away from the massive stars in winds," +
+		"pushing this material backwards and causing it to glow in X-rays." +
+		"When the outburst dies down the winds return to normal and the X-rays fade."
 ```
 ## Serialization
 
