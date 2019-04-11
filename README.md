@@ -1,13 +1,17 @@
- ![Logo](https://raw.githubusercontent.com/AlienFruit/AlienFruit.Otml/master/design/icons/256w/Artboard1.png)
+<div align="center">
+    <img src="https://raw.githubusercontent.com/AlienFruit/AlienFruit.Otml/master/design/icons/256w/Artboard1.png">
+</div>
+<br>
+<br>
+
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=AlienFruit_AlienFruit.Otml&metric=alert_status)](https://sonarcloud.io/dashboard?id=AlienFruit_AlienFruit.Otml)
+[![GitHub](https://img.shields.io/github/license/keenanwoodall/Deform.svg)](https://github.com/AlienFruit/AlienFruit.Otml/blob/master/LICENSE.MIT)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-blue.svg)](https://github.com/AlienFruit/AlienFruit.Otml)
 
 **OTML** is an object tree model language.
 It is a language that describes a tree of objects, which is easily readable by both man and machine. 
 It is abstract, flexible and simple, there is no data standardization and no arrays in it. OTML supports comments and stream processing.
 <br/><br/>
-
-- [Specification](https://github.com/AlienFruit/AlienFruit.Otml/blob/master/docs/en/specification.md)
-- [Parser C# implementation](https://github.com/AlienFruit/AlienFruit.Otml/blob/master/docs/en/parser-implementation.md)
-- [Serializer C# implementation](https://github.com/AlienFruit/AlienFruit.Otml/blob/master/docs/en/serializer-implementation.md)
 
 ## OTML targets
  - To be easily understandable to a man
@@ -18,6 +22,18 @@ It is abstract, flexible and simple, there is no data standardization and no arr
  - Forget about it: `{}`, this: `[]` and this: `()`
 <br/>
 
+## Packages
+|  Package name | Package version            |
+|---------------|----------------------------|
+|    AlienFruit.Otml      |    [![Nuget](https://img.shields.io/nuget/v/AlienFruit.Otml.svg)](https://www.nuget.org/packages/AlienFruit.Otml)   |
+|    AlienfFruit.Otml.Serializer   | [![Nuget](https://img.shields.io/nuget/v/AlienFruit.Otml.Serializer.svg)](https://www.nuget.org/packages/AlienFruit.Otml.Serializer) |
+
+
+
+## Docs
+- [Specification](https://github.com/AlienFruit/AlienFruit.Otml/blob/master/docs/en/specification.md)
+- [Parser C# implementation](https://github.com/AlienFruit/AlienFruit.Otml/blob/master/docs/en/parser-implementation.md)
+- [Serializer C# implementation](https://github.com/AlienFruit/AlienFruit.Otml/blob/master/docs/en/serializer-implementation.md)
 
 ## OTML example:
 
