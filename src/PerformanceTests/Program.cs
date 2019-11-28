@@ -1,12 +1,13 @@
-﻿using AlienFruit.Otml.Serializer;
+﻿using AlienFruit.Otml.Factories;
+using AlienFruit.Otml.Serializer;
 using AutoFixture;
+using Nancy.Json;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Web.Script.Serialization;
 
 namespace PerformanceTests
 {
@@ -29,6 +30,7 @@ namespace PerformanceTests
         private readonly static Dictionary<string, Func<object>> toObjectConverters = new Dictionary<string, Func<object>>
         {
             { "AlienFruit.Otml", () => OtmlSerializer.Build().Create().Deserialize<TestObject>(otmlInput) },
+            { "AlienFruit.OnlyParser", () => new OtmlParserFactory().GetParser(otmlInput).Parse() },
             { "Newtonsoft.Json", () => JsonConvert.DeserializeObject<TestObject>(jsonInput)},
             { "JavaScriptSerializer", () => new JavaScriptSerializer().Deserialize<TestObject>(jsonInput) },
             { "YamlDotNet", () => new YamlDotNet.Serialization.Deserializer().Deserialize(jsonInput, typeof(TestObject))},

@@ -14,56 +14,17 @@ namespace AlienFruit.Otml.Tests
 {
     public class OtmlParserTests
     {
-        private readonly string testDataFile = TestContext.CurrentContext.TestDirectory + @"\OtmlTestData.py";
-
-        [Test]
-        public void TestMethod1()
-        {
-            Stopwatch sw = new Stopwatch();
-
-            var str = File.ReadAllText(testDataFile);
-            sw.Start();
-            //var result = OtmlParser.Parse(str);
-            sw.Stop();
-
-            //Debug.WriteLine($"ellapsed1: {sw.ElapsedTicks}");
-            string result4;
-            using (var stream = File.OpenRead(testDataFile))
-            {
-                sw.Reset();
-                sw.Start();
-                var result2 = new OtmlParser(new StreamTextReader(stream)).Parse();
-                sw.Stop();
-                Debug.WriteLine($"ellapsed2: {sw.ElapsedTicks}");
-
-                result4 = new OtmlUnparser(Encoding.UTF8).Unparse(result2);
-            }
-
-            //var result3 = OtmlParser.Unparse(result);
-            //using (var stream = File.OpenWrite(@"D:\test2.otml"))
-            //{
-            //    sw.Reset();
-            //    sw.Start();
-            //    OtmlParser.Unparse(result, stream, Encoding.UTF8);
-            //    sw.Stop();
-            //    Debug.WriteLine($"ellapsed3: {sw.ElapsedTicks}");
-            //}
-
-            //sw.Reset();
-            //sw.Start();
-            //var result3 = OtmlParser.Unparse(result);
-            //sw.Stop();
-            //Debug.WriteLine($"ellapsed4: {sw.ElapsedTicks}");
-        }
+        private readonly string testDataFile = TestContext.CurrentContext.TestDirectory + @"\OtmlTestData.otml";
 
         [Test]
         public void Parse_should_throw_exception_if_script_line_has_space_character_on_left_side()
         {
             // Arrange
             var script = " @property : value";
-
+            using var parser = new OtmlParser(new StringTextReader(script));
+            
             // Action
-            Action action = () => new OtmlParser(new StringTextReader(script)).Parse();
+            Action action = () => parser.Parse();
 
             // Assert
             action.Should().Throw<OtmlParseException>()
@@ -75,11 +36,11 @@ namespace AlienFruit.Otml.Tests
         {
             // Arrange
             var otmlString = File.ReadAllText(testDataFile);
-            var result1 = Enumerable.Empty<OtmlNode>();
             var result2 = Enumerable.Empty<OtmlNode>();
+            using var parser = new OtmlParser(new StringTextReader(otmlString));
 
             // Action
-            result1 = new OtmlParser(new StringTextReader(otmlString)).Parse();
+            var result1 = parser.Parse();
             using (var stream = File.OpenRead(testDataFile))
             {
                 result2 = new OtmlParser(new StreamTextReader(stream)).Parse();
@@ -119,7 +80,8 @@ namespace AlienFruit.Otml.Tests
 
             // Action
             var codeString = new OtmlUnparser(Encoding.UTF8).Unparse(source);//new OtmlParser(Encoding.UTF8).Unparse(source);
-            var result = new OtmlParser(new StringTextReader(codeString)).Parse();
+            using var parser = new OtmlParser(new StringTextReader(codeString));
+            var result = parser.Parse();
 
             // Assert
             result.Should().BeEquivalentTo(source);
@@ -389,7 +351,7 @@ namespace AlienFruit.Otml.Tests
             var location = new CurrentCharLocation();
 
             // Action
-            var result = OtmlParser.ParsePropertyValue(propertyString, location, out bool hasPlus, out int posOffset);
+            _ = OtmlParser.ParsePropertyValue(propertyString, location, out bool hasPlus, out int posOffset);
 
             // Assert
             hasPlus.Should().BeTrue();
@@ -403,7 +365,7 @@ namespace AlienFruit.Otml.Tests
             var location = new CurrentCharLocation();
 
             // Action
-            var result = OtmlParser.ParsePropertyValue(propertyString, location, out bool hasPlus, out int posOffset);
+            _ = OtmlParser.ParsePropertyValue(propertyString, location, out bool hasPlus, out int posOffset);
 
             // Assert
             hasPlus.Should().BeTrue();
@@ -417,7 +379,7 @@ namespace AlienFruit.Otml.Tests
             var location = new CurrentCharLocation();
 
             // Action
-            var result = OtmlParser.ParsePropertyValue(propertyString, location, out bool hasPlus, out int posOffset);
+            _ = OtmlParser.ParsePropertyValue(propertyString, location, out bool hasPlus, out int posOffset);
 
             // Assert
             hasPlus.Should().BeFalse();
@@ -431,7 +393,7 @@ namespace AlienFruit.Otml.Tests
             var location = new CurrentCharLocation();
 
             // Action
-            var result = OtmlParser.ParsePropertyValue(propertyString, location, out bool hasPlus, out int posOffset);
+            var result = OtmlParser.ParsePropertyValue(propertyString, location, out _, out _);
 
             // Assert
             result.Should().Be("\"pro\'perty");
@@ -459,7 +421,7 @@ namespace AlienFruit.Otml.Tests
             var location = new CurrentCharLocation();
 
             // Action
-            var result = OtmlParser.ParsePropertyValue(propertyString, location, out bool hasPlus, out int posOffset);
+            var result = OtmlParser.ParsePropertyValue(propertyString, location, out _, out _);
 
             // Assert
             result.Should().Be(" property value with ' ");
@@ -473,7 +435,7 @@ namespace AlienFruit.Otml.Tests
             var location = new CurrentCharLocation();
 
             // Action
-            var result = OtmlParser.ParsePropertyValue(propertyString, location, out bool hasPlus, out int posOffset);
+            var result = OtmlParser.ParsePropertyValue(propertyString, location, out _, out _);
 
             // Assert
             result.Should().Be(" property value with \" ");
@@ -487,7 +449,7 @@ namespace AlienFruit.Otml.Tests
             var location = new CurrentCharLocation();
 
             // Action
-            var result = OtmlParser.ParsePropertyValue(propertyString, location, out bool hasPlus, out int posOffset);
+            var result = OtmlParser.ParsePropertyValue(propertyString, location, out _, out _);
 
             // Assert
             result.Should().Be(@"D:\asdaad\asdasdasdasd\'");
@@ -501,7 +463,7 @@ namespace AlienFruit.Otml.Tests
             var location = new CurrentCharLocation();
 
             // Action
-            var result = OtmlParser.ParsePropertyValue(propertyString, location, out bool hasPlus, out int posOffset);
+            var result = OtmlParser.ParsePropertyValue(propertyString, location, out _, out _);
 
             // Assert
             result.Should().Be(@"D:\asdaad\asdasdasdasd\");

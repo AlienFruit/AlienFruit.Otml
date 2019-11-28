@@ -2,7 +2,6 @@
 using AlienFruit.Otml.Serializer.Utils;
 using AutoFixture;
 using FluentAssertions;
-using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -22,7 +21,6 @@ namespace AlienFruit.Otml.Serializer.Tests
         {
             protected override void Init()
             {
-                //RegisterCustomFormatter(typeof(ClassFormatter), x => x == typeof(Expression), (x, y, args) => new ClassFormatter());
                 RegisterCustomFormatter(typeof(ClassFormatter<>),
                 x =>
                 {
@@ -155,67 +153,6 @@ namespace AlienFruit.Otml.Serializer.Tests
             Type : Second";
 
         [Test]
-        [Ignore("should be deleted")]
-        public void SerializeToString()
-        {
-            var foo = CreateFoo();
-            var serializer = OtmlSerializer.Create();
-            var otemlStringResult = serializer.Serialize(foo);
-
-            var jsonStringResult = JsonConvert.SerializeObject(foo, Formatting.Indented);
-        }
-
-        [Test]
-        [Ignore("should be deleted")]
-        public void DeserializeFromStringToObject()
-        {
-            var otmlString = GetOtmlString();
-            var serializer = OtmlSerializer.Create();
-
-            var foo = serializer.Deserialize<Foo>(otmlString);
-        }
-
-        [Test]
-        [Ignore("should be deleted")]
-        public void DeserializeFromStreamToObject()
-        {
-            var serializer = OtmlSerializer.Create();
-
-            using (var stream = File.OpenRead("C:\\test.otml"))
-            {
-                var foo = serializer.Deserialize<Foo>(stream);
-            }
-        }
-
-        [Test]
-        [Ignore("should be deleted")]
-        public void SerializeToStream()
-        {
-            var foo = CreateFoo();
-            var serializer = OtmlSerializer.Create();
-
-            using (var stream = new MemoryStream())
-            using (var streamReader = new StreamReader(stream))
-            {
-                serializer.Serialize(foo, stream, true);
-
-                stream.Seek(0, SeekOrigin.Begin);
-                var result = streamReader.ReadToEnd();
-            }
-        }
-
-        [Test]
-        [Ignore("Because I can")]
-        public void Test123()
-        {
-            var serializer = OtmlSerializer.Build().WithContainer(new ExpressioinContainer()).Create();
-
-            Expression<Func<Foo123, bool>> expression = (x) => x.IntValue == 234;
-
-            var result = serializer.Serialize(expression);
-        }
-
-        [Test]
         public void Serialize_then_deserialize_should_return_same_object_that_the_sourse()
         {
             // Arrange
@@ -233,7 +170,7 @@ namespace AlienFruit.Otml.Serializer.Tests
         }
 
         [Test]
-        public void Serialize_to_stream_then_deserialize_should_return_same_object_that_the_sourse2()
+        public void Serialize_to_stream_then_deserialize_should_return_same_object_that_the_sourse()
         {
             // Arrange
             var serializer = OtmlSerializer.Build().WithEncoding(Encoding.UTF8).Create();
@@ -252,7 +189,7 @@ namespace AlienFruit.Otml.Serializer.Tests
         }
 
         [Test]
-        public void Serialize_to_string_then_deserialize_should_return_same_object_that_the_sourse2()
+        public void Serialize_to_string_then_deserialize_should_return_same_object_that_the_sourse()
         {
             // Arrange
             var serializer = OtmlSerializer.Build().WithEncoding(Encoding.UTF8).Create();

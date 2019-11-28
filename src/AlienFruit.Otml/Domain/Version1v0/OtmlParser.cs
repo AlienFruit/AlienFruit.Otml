@@ -1,5 +1,4 @@
 ﻿using AlienFruit.Otml.Exceptions;
-
 using AlienFruit.Otml.Models;
 using System;
 using System.Collections.Generic;
@@ -15,11 +14,17 @@ namespace AlienFruit.Otml.Domain.Version1v0
 
         private readonly ITextReader reader;
 
+        private bool disposed = false;
+
         public OtmlParser(ITextReader reader) => this.reader = reader;
 
         public IEnumerable<OtmlNode> Parse() => Parse(this.reader);
 
-        #region Private
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
         private static IEnumerable<OtmlNode> Parse(ITextReader reader)
         {
@@ -41,7 +46,9 @@ namespace AlienFruit.Otml.Domain.Version1v0
                 if (!OtmlSyntax.SpaceList.Contains(currentChar) && !newLineList.Contains(currentChar)) //parse object/property
                 {
                     if (tabCounter - lastLevel > 1)
+                    {
                         throw new OtmlParseException($"Unexpected node level. Excess tabs count: {tabCounter - lastLevel - 1}", reader.CurrentLocation);
+                    }
                     var newNode = currentChar == OtmlSyntax.ObjectChar
                         ? ParseItem(reader, true)
                         : ParseItem(reader, false, currentChar);
@@ -56,10 +63,14 @@ namespace AlienFruit.Otml.Domain.Version1v0
                 }
                 else
                 if (currentChar == OtmlSyntax.TabChar)
+                {
                     tabCounter++;
+                }
                 else
-                    if (currentChar == OtmlSyntax.SpaceChar)
+                if (currentChar == OtmlSyntax.SpaceChar)
+                {
                     throw new OtmlParseException("Unacceptable space character, should use only a tab character in this plase", reader.CurrentLocation);
+                }
             }
 
             return result;
@@ -282,6 +293,15 @@ namespace AlienFruit.Otml.Domain.Version1v0
             return result.ToArray();
         }
 
-        #endregion Private
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposed)
+                return;
+
+            if (disposing)
+                this.reader.Dispose();
+
+            disposed = true;
+        }
     }
 }

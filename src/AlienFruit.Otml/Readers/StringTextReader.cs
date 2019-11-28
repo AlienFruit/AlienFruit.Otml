@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace AlienFruit.Otml.Readers
 {
@@ -35,7 +34,7 @@ namespace AlienFruit.Otml.Readers
 
         public int Read()
         {
-            if (currentCharIndex == this.text.Length)
+            if (this.currentCharIndex == this.text.Length)
                 return -1;
             var current = this.text[currentCharIndex++];
 
