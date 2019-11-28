@@ -16,7 +16,7 @@ namespace AlienFruit.Otml.Tests
         {
             // Arrange
             var text = "1";
-            var reader = new StringTextReader(text) as ITextReader;
+            using var reader = new StringTextReader(text) as ITextReader;
 
             // Action
             var result = (char)reader.Read();
@@ -30,7 +30,7 @@ namespace AlienFruit.Otml.Tests
         {
             // Arrange
             var text = "";
-            var reader = new StringTextReader(text) as ITextReader;
+            using var reader = new StringTextReader(text) as ITextReader;
 
             // Action
             var result = reader.Read();
@@ -44,7 +44,7 @@ namespace AlienFruit.Otml.Tests
         {
             // Arrange
             var text = "f" + Environment.NewLine + "s";
-            var reader = new StringTextReader(text) as ITextReader;
+            using var reader = new StringTextReader(text) as ITextReader;
 
             // Action
             reader.ToLineEnd();
@@ -59,7 +59,7 @@ namespace AlienFruit.Otml.Tests
         {
             // Arrange
             var text = "first line" + Environment.NewLine + "second line";
-            var reader = new StringTextReader(text) as ITextReader;
+            using var reader = new StringTextReader(text) as ITextReader;
 
             // Action
             var line = reader.PeekToNextLine();
@@ -75,7 +75,7 @@ namespace AlienFruit.Otml.Tests
         {
             // Arrange
             var text = "first line" + Environment.NewLine + "second line" + Environment.NewLine + "third line";
-            var reader = new StringTextReader(text) as ITextReader;
+            using var reader = new StringTextReader(text) as ITextReader;
 
             // Action
             while (reader.Read() >= 0) { }
@@ -89,7 +89,7 @@ namespace AlienFruit.Otml.Tests
         {
             // Arrange
             var text = Environment.NewLine + Environment.NewLine + Environment.NewLine;
-            var reader = new StringTextReader(text) as ITextReader;
+            using var reader = new StringTextReader(text) as ITextReader;
 
             // Action
             while (reader.Read() >= 0) { }
@@ -103,8 +103,8 @@ namespace AlienFruit.Otml.Tests
         {
             // Arrange
             var text = "first line" + Environment.NewLine + "second line";
-            var reader = new StringTextReader(text) as ITextReader;
-
+            using var reader = new StringTextReader(text) as ITextReader;
+            
             // Action
             var result = reader.ReadLine();
 

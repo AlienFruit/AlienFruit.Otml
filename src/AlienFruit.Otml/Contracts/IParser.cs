@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace AlienFruit.Otml
 {
-    public interface IParser
+    public interface IParser : IDisposable
     {
         IEnumerable<OtmlNode> Parse();
     }

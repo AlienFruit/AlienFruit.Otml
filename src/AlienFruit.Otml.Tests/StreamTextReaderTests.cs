@@ -17,16 +17,14 @@ namespace AlienFruit.Otml.Tests
         {
             // Arrange
             var text = "1";
-            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(text)))
-            {
-                var reader = new StreamTextReader(stream) as ITextReader;
+            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(text));
+            using var reader = new StreamTextReader(stream) as ITextReader;
 
-                // Action
-                var result = (char)reader.Read();
+            // Action
+            var result = (char)reader.Read();
 
-                // Assert
-                result.Should().Be('1');
-            }
+            // Assert
+            result.Should().Be('1');
         }
 
         [Test]
@@ -34,16 +32,14 @@ namespace AlienFruit.Otml.Tests
         {
             // Arrange
             var text = "";
-            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(text)))
-            {
-                var reader = new StreamTextReader(stream) as ITextReader;
+            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(text));
+            using var reader = new StreamTextReader(stream) as ITextReader;
 
-                // Action
-                var result = reader.Read();
+            // Action
+            var result = reader.Read();
 
-                // Assert
-                result.Should().Be(-1);
-            }
+            // Assert
+            result.Should().Be(-1);
         }
 
         [Test]
@@ -51,17 +47,15 @@ namespace AlienFruit.Otml.Tests
         {
             // Arrange
             var text = "f" + Environment.NewLine + "s";
-            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(text)))
-            {
-                var reader = new StreamTextReader(stream) as ITextReader;
+            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(text));
+            using var reader = new StreamTextReader(stream) as ITextReader;
 
-                // Action
-                reader.ToLineEnd();
-                var result = (char)reader.Read();
+            // Action
+            reader.ToLineEnd();
+            var result = (char)reader.Read();
 
-                // Assert
-                result.Should().Be('s');
-            }
+            // Assert
+            result.Should().Be('s');
         }
 
         [Test]
@@ -69,18 +63,16 @@ namespace AlienFruit.Otml.Tests
         {
             // Arrange
             var text = "first line" + Environment.NewLine + "second line";
-            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(text)))
-            {
-                var reader = new StreamTextReader(stream) as ITextReader;
+            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(text));
+            using var reader = new StreamTextReader(stream) as ITextReader;
 
-                // Action
-                var line = reader.PeekToNextLine();
-                var result = (char)reader.Read();
+            // Action
+            var line = reader.PeekToNextLine();
+            var result = (char)reader.Read();
 
-                // Assert
-                line.Should().Be("first line");
-                result.Should().Be('f');
-            }
+            // Assert
+            line.Should().Be("first line");
+            result.Should().Be('f');
         }
 
         [Test]
@@ -88,16 +80,14 @@ namespace AlienFruit.Otml.Tests
         {
             // Arrange
             var text = "first line" + Environment.NewLine + "second line" + Environment.NewLine + "third line";
-            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(text)))
-            {
-                var reader = new StreamTextReader(stream) as ITextReader;
+            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(text));
+            using var reader = new StreamTextReader(stream) as ITextReader;
 
-                // Action
-                while (reader.Read() >= 0) { }
+            // Action
+            while (reader.Read() >= 0) { }
 
-                // Assert
-                reader.CurrentLocation.Line.Should().Be(3);
-            }
+            // Assert
+            reader.CurrentLocation.Line.Should().Be(3);
         }
 
         [Test]
@@ -105,16 +95,14 @@ namespace AlienFruit.Otml.Tests
         {
             // Arrange
             var text = Environment.NewLine + Environment.NewLine + Environment.NewLine;
-            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(text)))
-            {
-                var reader = new StreamTextReader(stream) as ITextReader;
+            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(text));
+            using var reader = new StreamTextReader(stream) as ITextReader;
 
-                // Action
-                while (reader.Read() >= 0) { }
+            // Action
+            while (reader.Read() >= 0) { }
 
-                // Assert
-                reader.CurrentLocation.Line.Should().Be(4);
-            }
+            // Assert
+            reader.CurrentLocation.Line.Should().Be(4);
         }
 
         [Test]
@@ -122,16 +110,14 @@ namespace AlienFruit.Otml.Tests
         {
             // Arrange
             var text = "first line" + Environment.NewLine + "second line";
-            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(text)))
-            {
-                var reader = new StreamTextReader(stream) as ITextReader;
+            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(text));
+            using var reader = new StreamTextReader(stream) as ITextReader;
 
-                // Action
-                var result = reader.ReadLine();
+            // Action
+            var result = reader.ReadLine();
 
-                // Assert
-                result.Should().Be("first line");
-            }
+            // Assert
+            result.Should().Be("first line");
         }
     }
 }

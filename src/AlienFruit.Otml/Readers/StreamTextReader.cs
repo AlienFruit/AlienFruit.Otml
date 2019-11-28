@@ -13,10 +13,11 @@ namespace AlienFruit.Otml.Readers
         private const char cr = '\r';
         private static readonly char[] newLineList = { cr, lf };
 
-        private Queue<char> peekBuffer = new Queue<char>();
+        private readonly Queue<char> peekBuffer = new Queue<char>();
 
         private ulong currentLine;
         private int inLinePosition;
+        private bool disposed = false;
 
         public event EventHandler OnNewLine;
 
@@ -85,6 +86,21 @@ namespace AlienFruit.Otml.Readers
                     break;
         }
 
-        public void Dispose() => reader.Dispose();
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (this.disposed)
+                return;
+
+            if (disposing)
+                this.reader.Dispose();
+
+            disposed = true;   
+        }
     }
 }

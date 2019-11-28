@@ -42,20 +42,22 @@ namespace AlienFruit.Otml.Serializer
 
         public object Deserialize(Type resultObjectType, string value)
         {
-            var parser = this.parserFactory.ThrowIfNull("Parser and parser factory was not initialized").GetParser(value);
-            return this.resolver.ThrowIfNull("Resolver was not initialized").GetFormatter(resultObjectType).DeserializeObject(parser.Parse());
+            using (var parser = this.parserFactory.ThrowIfNull("Parser and parser factory was not initialized").GetParser(value))
+                return this.resolver.ThrowIfNull("Resolver was not initialized").GetFormatter(resultObjectType).DeserializeObject(parser.Parse());
         }
 
         public T Deserialize<T>(Stream stream, bool leaveOpen = false) => (T)Deserialize(typeof(T), stream, leaveOpen);
 
         public object Deserialize(Type resultObjectType, Stream stream, bool leaveOpen = false)
         {
-            var parser = this.parserFactory.ThrowIfNull("Parser and parser factory was not initialized").GetParser(stream, leaveOpen);
-            var result = this.resolver.ThrowIfNull("Resolver was not initialized")
-                .GetFormatter(resultObjectType).DeserializeObject(parser.Parse());
-            if (!leaveOpen)
-                stream.Dispose();
-            return result;
+            using (var parser = this.parserFactory.ThrowIfNull("Parser and parser factory was not initialized").GetParser(stream, leaveOpen))
+            {
+                var result = this.resolver.ThrowIfNull("Resolver was not initialized")
+                    .GetFormatter(resultObjectType).DeserializeObject(parser.Parse());
+                if (!leaveOpen)
+                    stream.Dispose();
+                return result;
+            }
         }
 
         public string Serialize<T>(T value) => Serialize(typeof(T), value);
