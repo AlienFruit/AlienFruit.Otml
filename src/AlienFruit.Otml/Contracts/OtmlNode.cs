@@ -51,10 +51,9 @@ namespace AlienFruit.Otml
                 {
                     case NodeType.Object:
                     case NodeType.Property:
-                        return string.IsNullOrEmpty(value)
-                            ? string.Empty
-                            : throw new InvalidOperationException($"The {Type} can't have a value");
-
+                        if(value != null)
+                            throw new InvalidOperationException($"The {Type} can't have a value");
+                        return null;
                     default: return value;
                 }
             }

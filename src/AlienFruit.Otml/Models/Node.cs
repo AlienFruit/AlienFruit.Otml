@@ -26,7 +26,7 @@ namespace AlienFruit.Otml.Models
 
         protected override bool GetMultilineState() => false;
 
-        protected override string GetValue() => string.Empty;
+        protected override string GetValue() => null;
 
         public abstract void AddChild(OtmlNode child);
 

@@ -16,6 +16,10 @@ namespace AlienFruit.Otml.Serializer.Formatters
         {
             if (node.Count() > 1)
                 throw new OtmlDeserializeException($"The string value can build from only one node, but founded {node.Count()}");
+
+            if (node.Count() == 0)
+                return null;
+
             if (node.Single().Type != NodeType.Value)
                 throw new OtmlDeserializeException($"The string nodes should be a ValueNode type");
 
@@ -25,11 +29,9 @@ namespace AlienFruit.Otml.Serializer.Formatters
         public object DeserializeObject(IEnumerable<OtmlNode> value) => Deserialize(value);
 
         public IEnumerable<OtmlNode> Serialize(string value, INodeFactory nodeFactory)
-        {
-            return value is null
+            => value is null
                 ? Enumerable.Empty<OtmlNode>()
                 : nodeFactory.CreateValue(value, value.Contains(Environment.NewLine)).Singleton();
-        }
 
         public IEnumerable<OtmlNode> SerializeObject(object value, INodeFactory nodeFactory) => Serialize((string)value, nodeFactory);
     }

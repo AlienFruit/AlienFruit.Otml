@@ -125,7 +125,7 @@ namespace AlienFruit.Otml.Domain.Version1v0
             string GetChildValue(OtmlNode property)
             {
                 var values = property.Children.Where(x => x.Type == NodeType.Value);
-                return values.Count() == 1 ? values.Single().Value : string.Empty;
+                return values.Count() == 1 ? values.Single().Value : null;
             }
         }
 
@@ -139,8 +139,10 @@ namespace AlienFruit.Otml.Domain.Version1v0
 
         private static string ShieldValue(string value)
         {
-            if (string.IsNullOrEmpty(value))
+            if (value is null)
                 return string.Empty;
+            if (value.Length == 0)
+                return "\"\"";
             var result = value
                 //.Replace(shieldChar.ToString(), $"{shieldChar}{shieldChar}")
                 .Replace(OtmlSyntax.DoubleQuote.ToString(), $"{OtmlSyntax.ShieldChar}{OtmlSyntax.DoubleQuote}")
