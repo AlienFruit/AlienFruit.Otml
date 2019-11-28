@@ -14,16 +14,18 @@ OtmlParser считывает OTML  из потока/строки и форми
 var otmlFactory = new OtmlParserFactory();
 
 //чтение  из  потока  
-using (var stream = File.OpenRead(@"C:\test.otml"))  
+using (var stream = File.OpenRead(@"C:\test.otml"))
+using (var parser = otmlFactory.GetParser(stream))  
 {
-	var parser = otmlFactory.GetParser(stream);
 	var result = parser.Parse();
 }
 
 //чтение  из  строки
 var text = File.ReadAllText(testDataFile);
-var parser = otmlFactory.GetParser(text);
-var result = parser.Parse();
+using (var parser = otmlFactory.GetParser(text))
+{
+	var result = parser.Parse();
+}
 ```
 
 ## Класс OtmlUnparser

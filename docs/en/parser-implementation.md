@@ -15,16 +15,18 @@ Example:
 var otmlFactory = new OtmlParserFactory();
 
 //read from stream  
-using (var stream = File.OpenRead(@"C:\test.otml"))  
+using (var stream = File.OpenRead(@"C:\test.otml"))
+using (var parser = otmlFactory.GetParser(stream))  
 {
-	var parser = otmlFactory.GetParser(stream);
 	var result = parser.Parse();
 }
 
 //read from string
 var text = File.ReadAllText(testDataFile);
-var parser = otmlFactory.GetParser(text);
-var result = parser.Parse();
+using (var parser = otmlFactory.GetParser(text))
+{
+	var result = parser.Parse();
+}
 ```
 
 ## OtmlUnparser class
