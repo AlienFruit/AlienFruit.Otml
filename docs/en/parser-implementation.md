@@ -40,8 +40,8 @@ Example:
 ```c
 var otmlFactory = new OtmlUnparserFactory();
 var otmlUnparser = otmlFactory.GetDefaultUnparser();
-
 // or otmlFactory.GetUnparser(new Version(1, 0));
+
 var otmlNodeFactory = otmlUnparser.GetNodeFactory();
 
 var dom = new[]
