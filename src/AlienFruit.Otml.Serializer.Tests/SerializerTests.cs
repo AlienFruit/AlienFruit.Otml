@@ -5,6 +5,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
@@ -77,6 +78,8 @@ namespace AlienFruit.Otml.Serializer.Tests
             public int IntValue { get; set; }
             public double DoubleValue { get; set; }
 
+            public Color ColorValue { get; set; }
+
             public Dictionary<string, long> DictionaryValue { get; set; }
 
             public IEnumerable<InnerObject> ObjectsValues { get; set; }
@@ -98,6 +101,7 @@ namespace AlienFruit.Otml.Serializer.Tests
                 StringValue = "This is a string value",
                 IntValue = 2147483647,
                 DoubleValue = 3.141592653589793238462643,
+                ColorValue = Color.FromArgb(10, 200, 100, 20),
                 DictionaryValue = new Dictionary<string, long>
                 {
                     { "the first key", 9223372036854775807 },
@@ -159,6 +163,7 @@ namespace AlienFruit.Otml.Serializer.Tests
             ISerializer serializer = OtmlSerializer.Build().Create();
             var sourceObject = fixture.Build<TestObject>()
                 .With(x => x.Comment, new[] { $@"asdasda""sdsd {Environment.NewLine} line2, asdasdasd""ad""s {Environment.NewLine} line4 adsasdasdasdasd", "asdasd" })
+                .With(x => x.ColorValue, Color.FromArgb(fixture.Create<int>()))
                 .Create();
 
             // Action
@@ -174,7 +179,9 @@ namespace AlienFruit.Otml.Serializer.Tests
         {
             // Arrange
             var serializer = OtmlSerializer.Build().WithEncoding(Encoding.UTF8).Create();
-            var sourceObject = fixture.Create<TestObject>();
+            var sourceObject = fixture.Build<TestObject>()
+                .With(x => x.ColorValue, Color.FromArgb(fixture.Create<int>()))
+                .Create();
 
             // Action
             TestObject deserealizeResult = null;
@@ -194,7 +201,9 @@ namespace AlienFruit.Otml.Serializer.Tests
             // Arrange
             var serializer = OtmlSerializer.Build().WithEncoding(Encoding.UTF8).Create();
             var sourceObject = fixture.Build<TestObject>()
-                .With(x => x.Outercode, string.Empty).Create();
+                .With(x => x.Outercode, string.Empty)
+                .With(x => x.ColorValue, Color.FromArgb(fixture.Create<int>()))
+                .Create();
 
             // Action
             TestObject deserealizeResult = null;
@@ -287,6 +296,7 @@ namespace AlienFruit.Otml.Serializer.Tests
             public long TemplateId { get; set; }
             public long Id { get; set; }
             public TestClass TestClass { get; set; }
+            public Color ColorValue { get; set; }
             public Uri Uri { get; set; }
             public decimal Amount { get; set; }
             public string[] Comment { get; set; }

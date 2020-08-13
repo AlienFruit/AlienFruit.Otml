@@ -1,6 +1,7 @@
 ﻿using AlienFruit.Otml.Serializer.Formatters;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Reflection;
 
 namespace AlienFruit.Otml.Serializer.Containers
@@ -31,6 +32,10 @@ namespace AlienFruit.Otml.Serializer.Containers
 
             RegisterFormatter<UriFormatter>(
                 x => x == typeof(Uri),
+                (f, v, args) => Activator.CreateInstance(f, args) as IFormatter);
+
+            RegisterFormatter<ColorFormatter>(
+                x => x == typeof(Color),
                 (f, v, args) => Activator.CreateInstance(f, args) as IFormatter);
 
             RegisterFormatter(typeof(ArrayFormatter<>), x => x.IsArray,

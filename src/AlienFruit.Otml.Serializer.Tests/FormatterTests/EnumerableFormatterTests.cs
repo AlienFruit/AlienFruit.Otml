@@ -19,7 +19,7 @@ namespace AlienFruit.Otml.Serializer.Tests.FormatterTests
             var value = fixture.CreateMany<string>().ToArray();
 
             // Action
-            var result = formatter.Serialize(value, null);
+            var result = formatter.Serialize(value, null).ToList();
 
             // Assert
             result.Select((x, i) => value[i] == x.Value).All(x => true).Should().BeTrue();

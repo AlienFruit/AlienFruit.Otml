@@ -5,7 +5,6 @@ using AlienFruit.Otml.Readers;
 using FluentAssertions;
 using NUnit.Framework;
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;

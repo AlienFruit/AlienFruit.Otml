@@ -15,7 +15,7 @@ namespace AlienFruit.Otml.Serializer.Formatters
         public string Deserialize(IEnumerable<OtmlNode> node)
         {
             if (node.Count() > 1)
-                throw new OtmlDeserializeException($"The string value can build from only one node, but founded {node.Count()}");
+                throw new OtmlDeserializeException($"The string value can be built from only one node, but founded {node.Count()}");
 
             if (node.Count() == 0)
                 return null;

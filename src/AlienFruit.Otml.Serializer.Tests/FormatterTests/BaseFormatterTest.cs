@@ -31,7 +31,8 @@ namespace AlienFruit.Otml.Serializer.Tests.FormatterTests
 
             public object DeserializeObject(IEnumerable<OtmlNode> value) => default(T);
 
-            public IEnumerable<OtmlNode> Serialize(T value, INodeFactory nodeFactory) => new OtmlNode[] { fixture.Create<StubNode>().Complete() };
+            public IEnumerable<OtmlNode> Serialize(T value, INodeFactory nodeFactory) => fixture.Build<StubNode>()
+                .With(x => x.NodeType, NodeType.Value).CreateMany(1);
 
             public IEnumerable<OtmlNode> SerializeObject(object value, INodeFactory nodeFactory) => new OtmlNode[] { fixture.Create<StubNode>().Complete() };
         }
