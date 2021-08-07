@@ -39,35 +39,32 @@ It is abstract, flexible and simple, there is no data standardization and no arr
 
 ```py
 @FooObject
-	TemplateId : 252
+	TestId : 252
 	Amount : 226
 	Comments : 
 		string129
 		string93
 		string190
-	CrDate : "2020-03-29T16:04:35.4042938"
-	Deleted : True
-	DistributorId : 191
-	BusinessStatusId : 253
-	IsEditOut : False
-	OpDate : "2020-08-22T08:31:25.9223099"
-	Outercode : Outercodestring48
-	PDADocNum : 51
+	Date : "2020-03-29T16:04:35.4042938"
+	StatusId : 253
+	IsReadOnly : False
+	NextDate : "2020-08-22T08:31:25.9223099"
+	Code : Codestring48
 	Values : 
 		@ItemValue
-			AnswerDate : "2017-08-21T10:32:51.6801390"
-			AnswerNumber : 15
-			AnswerStr : AnswerStrstring229
+			Date : "2017-08-21T10:32:51.6801390"
+			Number : 15
+			SomeStr : AnswerStrstring229
 			Id : 30
 		@ItemValue
-			AnswerDate : "2017-12-17T04:07:10.4458521"
-			AnswerNumber : 178
-			AnswerStr : AnswerStrstring69
+			Date : "2017-12-17T04:07:10.4458521"
+			Number : 178
+			SomeStr : AnswerStrstring69
 			Id : 225
 		@ItemValue
-			AnswerDate : "2017-09-20T03:52:18.1241429"
-			AnswerNumber : 222
-			AnswerStr : AnswerStrstring145
+			Date : "2017-09-20T03:52:18.1241429"
+			Number : 222
+			SomeStr : AnswerStrstring145
 			Id : 204
 	MultilineStringValue : 
 		"When an outburst occurs from gas very near the black hole," +
