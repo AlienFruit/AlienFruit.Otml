@@ -10,7 +10,7 @@
 
 **OTML** is an object tree model language.
 It is a language that describes a tree of objects, which is easily readable by both man and machine. 
-It is abstract, flexible and simple, there is no data standardization and no arrays in it. OTML supports comments and stream processing.
+It is abstract, flexible and simple. There is no data standardization and no arrays in it. OTML supports comments and stream processing.
 <br/><br/>
 
 ## OTML targets
@@ -18,7 +18,7 @@ It is abstract, flexible and simple, there is no data standardization and no arr
  - To be minimalistic: have a syntax consisting of a minimum set of rules
  - To be as abstract and flexible as possible, allowing to describe as many different data structures as possible
  - To support data stream processing
- - To develop and change easily, have a version system
+ - To develop and change easily, have a versioning system
  - Forget about it: `{}`, this: `[]` and this: `()`
 <br/>
 
