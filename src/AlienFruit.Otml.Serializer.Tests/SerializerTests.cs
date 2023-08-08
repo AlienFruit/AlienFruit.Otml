@@ -330,6 +330,7 @@ namespace AlienFruit.Otml.Serializer.Tests
             public string PrnDocNum { get; set; }
             public string StatusSentMail { get; set; }
             public IEnumerable<Item> Items { get; set; }
+            public TimeSpan Duration { get; set; }
 
             public class Item
             {
