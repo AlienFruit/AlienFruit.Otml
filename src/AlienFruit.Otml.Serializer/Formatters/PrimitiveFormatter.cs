@@ -1,5 +1,6 @@
 ﻿using AlienFruit.Otml.Serializer.Exceptions;
 using AlienFruit.Otml.Serializer.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -25,7 +26,7 @@ namespace AlienFruit.Otml.Serializer.Formatters
 
         public object DeserializeObject(IEnumerable<OtmlNode> value) => Deserialize(value);
 
-        public IEnumerable<OtmlNode> Serialize(T value, INodeFactory nodeFactory) => nodeFactory.CreateValue(value.ToString()).Singleton();
+        public IEnumerable<OtmlNode> Serialize(T value, INodeFactory nodeFactory) => nodeFactory.CreateValue(FormattableString.Invariant($"{value}")).Singleton();
 
         public IEnumerable<OtmlNode> SerializeObject(object value, INodeFactory nodeFactory) => Serialize((T)value, nodeFactory);
     }

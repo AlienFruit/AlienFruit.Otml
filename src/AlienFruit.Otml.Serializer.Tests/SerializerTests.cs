@@ -220,6 +220,7 @@ namespace AlienFruit.Otml.Serializer.Tests
             // Arrange
             var serializer = OtmlSerializer.Build().WithContainer(new TestContainer()).Create();
             var sourceObject = fixture.Create<InnerClass>();
+            sourceObject.DoubleValue = 654.123;
 
             // Action
             var serializeResult = serializer.Serialize(sourceObject);
@@ -288,6 +289,7 @@ namespace AlienFruit.Otml.Serializer.Tests
             public string Value { get; set; }
             public Dictionary<int, string> Collection { get; set; }
             public InnerType Type { get; set; }
+            public double DoubleValue { get; set; }
         }
 
         private class TestObject
