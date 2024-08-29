@@ -2,7 +2,7 @@
 using AlienFruit.Otml.Serializer.Utils;
 using AutoFixture;
 using FluentAssertions;
-using NUnit.Framework;
+using Xunit;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -156,7 +156,7 @@ namespace AlienFruit.Otml.Serializer.Tests
             ArrayValue :
             Type : Second";
 
-        [Test]
+        [Fact]
         public void Serialize_then_deserialize_should_return_same_object_that_the_sourse()
         {
             // Arrange
@@ -174,7 +174,7 @@ namespace AlienFruit.Otml.Serializer.Tests
             deserealizeResult.Should().BeEquivalentTo(sourceObject);
         }
 
-        [Test]
+        [Fact]
         public void Serialize_to_stream_then_deserialize_should_return_same_object_that_the_sourse()
         {
             // Arrange
@@ -195,7 +195,7 @@ namespace AlienFruit.Otml.Serializer.Tests
             deserealizeResult.Should().BeEquivalentTo(sourceObject);
         }
 
-        [Test]
+        [Fact]
         public void Serialize_to_string_then_deserialize_should_return_same_object_that_the_sourse()
         {
             // Arrange
@@ -214,7 +214,7 @@ namespace AlienFruit.Otml.Serializer.Tests
             deserealizeResult.Should().BeEquivalentTo(sourceObject);
         }
 
-        [Test]
+        [Fact]
         public void Serialize_then_desererialize_with_custom_formatter_should_change_string_property()
         {
             // Arrange

@@ -1,6 +1,6 @@
 ﻿using AlienFruit.Otml.Readers;
 using FluentAssertions;
-using NUnit.Framework;
+using Xunit;
 using System;
 using System.IO;
 using System.Text;
@@ -9,7 +9,7 @@ namespace AlienFruit.Otml.Tests
 {
     public class StreamTextReaderTests
     {
-        [Test]
+        [Fact]
         public void Read_should_return_char_if_text_is_not_empty()
         {
             // Arrange
@@ -24,7 +24,7 @@ namespace AlienFruit.Otml.Tests
             result.Should().Be('1');
         }
 
-        [Test]
+        [Fact]
         public void Read_should_return_negative_value_if_text_is_empty()
         {
             // Arrange
@@ -39,7 +39,7 @@ namespace AlienFruit.Otml.Tests
             result.Should().Be(-1);
         }
 
-        [Test]
+        [Fact]
         public void Read_should_return_new_line_char_if_was_called_ToLineEnd()
         {
             // Arrange
@@ -55,7 +55,7 @@ namespace AlienFruit.Otml.Tests
             result.Should().Be('s');
         }
 
-        [Test]
+        [Fact]
         public void PeekToNextLine_should_not_change_current_position()
         {
             // Arrange
@@ -72,7 +72,7 @@ namespace AlienFruit.Otml.Tests
             result.Should().Be('f');
         }
 
-        [Test]
+        [Fact]
         public void Location_should_contain_correct_lines_count()
         {
             // Arrange
@@ -87,7 +87,7 @@ namespace AlienFruit.Otml.Tests
             reader.CurrentLocation.Line.Should().Be(3);
         }
 
-        [Test]
+        [Fact]
         public void Location_should_contain_correct_lines_count_if_text_has_only_new_line_chars()
         {
             // Arrange
@@ -102,7 +102,7 @@ namespace AlienFruit.Otml.Tests
             reader.CurrentLocation.Line.Should().Be(4);
         }
 
-        [Test]
+        [Fact]
         public void ReadLine_should_return_current_line()
         {
             // Arrange

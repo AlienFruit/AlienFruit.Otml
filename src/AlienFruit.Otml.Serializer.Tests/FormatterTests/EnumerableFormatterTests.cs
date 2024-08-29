@@ -1,16 +1,15 @@
 ﻿using AlienFruit.Otml.Serializer.Formatters;
 using AutoFixture;
 using FluentAssertions;
-using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
+using Xunit;
 
 namespace AlienFruit.Otml.Serializer.Tests.FormatterTests
 {
-    [Parallelizable(ParallelScope.Children)]
     public class EnumerableFormatterTests : BaseFormatterTest
     {
-        [Test]
+        [Fact]
         public void Serialize_should_return_tree_model_if_value_is_string_array()
         {
             // Arrange
@@ -25,7 +24,7 @@ namespace AlienFruit.Otml.Serializer.Tests.FormatterTests
             result.Select((x, i) => value[i] == x.Value).All(x => true).Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public void SerilizeObject_should_return_tree_model_if_value_is_string_array()
         {
             // Arrange
@@ -40,7 +39,7 @@ namespace AlienFruit.Otml.Serializer.Tests.FormatterTests
             result.Select((x, i) => value[i] == x.Value).All(x => true).Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public void Deserialize_should_return_string_array()
         {
             // Arrange
@@ -55,7 +54,7 @@ namespace AlienFruit.Otml.Serializer.Tests.FormatterTests
             value.Select((x, i) => result.ElementAt(i) == x.Value).All(x => true).Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public void DeserializeObject_should_return_string_array()
         {
             // Arrange

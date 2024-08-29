@@ -4,19 +4,18 @@ using AlienFruit.Otml.Serializer.Utils;
 using AutoFixture;
 using FluentAssertions;
 using Moq;
-using NUnit.Framework;
 using System;
 using System.Drawing;
 using System.Linq;
+using Xunit;
 
 namespace AlienFruit.Otml.Serializer.Tests.FormatterTests
 {
-    [Parallelizable(ParallelScope.Children)]
     public class ColorFormatterTests : BaseFormatterTest
     {
         private static string ColorToHex(Color color) => $"#{color.A:X2}{color.R:X2}{color.G:X2}{color.B:X2}";
 
-        [Test]
+        [Fact]
         public void Serialize_ShouldReturnsHexColor_IfValueIsCorrectHexCode()
         {
             // Arrange
@@ -35,7 +34,7 @@ namespace AlienFruit.Otml.Serializer.Tests.FormatterTests
             nodeFactory.Verify(x => x.CreateValue(It.Is<string>(arg => arg == ColorToHex(color)), It.IsAny<bool>()));
         }
 
-        [Test]
+        [Fact]
         public void Deserialize_ShouldReturnsColor_IfValuIsHexColor()
         {
             // Arrange
@@ -58,7 +57,7 @@ namespace AlienFruit.Otml.Serializer.Tests.FormatterTests
             result.Should().Be(color);
         }
 
-        [Test]
+        [Fact]
         public void Deserialize_ShouldThrowException_IfNodeHasMoreThenOneValue()
         {
             // Arrange
@@ -74,7 +73,7 @@ namespace AlienFruit.Otml.Serializer.Tests.FormatterTests
                 .WithMessage($"The Color value can be built from only one node, but founded {node.Count()}");
         }
 
-        [Test]
+        [Fact]
         public void Deserialize_ShouldThrowException_IfNodeHasNoAnyValues()
         {
             // Arrange
@@ -89,7 +88,7 @@ namespace AlienFruit.Otml.Serializer.Tests.FormatterTests
                 .WithMessage("The Color value cannot be null");
         }
 
-        [Test]
+        [Fact]
         public void Deserialize_ShouldThrowException_IfNodeTypeisNotValue()
         {
             // Arrange
@@ -107,7 +106,7 @@ namespace AlienFruit.Otml.Serializer.Tests.FormatterTests
                 .WithMessage("The Color nodes should be a ValueNode type");
         }
 
-        [Test]
+        [Fact]
         public void Deserialize_ShouldThrowException_IfNodeValueHasMoreThenNineChars()
         {
             // Arrange
@@ -126,7 +125,7 @@ namespace AlienFruit.Otml.Serializer.Tests.FormatterTests
                 .WithMessage("The Color value has incorrect format");
         }
 
-        [Test]
+        [Fact]
         public void Deserialize_ShouldThrowException_IfNodeValueIsIncorrectColorHex()
         {
             // Arrange

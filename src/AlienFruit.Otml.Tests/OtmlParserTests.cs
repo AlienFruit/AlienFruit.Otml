@@ -3,7 +3,7 @@ using AlienFruit.Otml.Exceptions;
 using AlienFruit.Otml.Models;
 using AlienFruit.Otml.Readers;
 using FluentAssertions;
-using NUnit.Framework;
+using Xunit;
 using System;
 using System.IO;
 using System.Linq;
@@ -13,9 +13,9 @@ namespace AlienFruit.Otml.Tests
 {
     public class OtmlParserTests
     {
-        private readonly string testDataFile = TestContext.CurrentContext.TestDirectory + @"\OtmlTestData.otml";
+        private readonly string testDataFile = @"OtmlTestData.otml";
 
-        [Test]
+        [Fact]
         public void Parse_should_throw_exception_if_script_line_has_space_character_on_left_side()
         {
             // Arrange
@@ -30,7 +30,7 @@ namespace AlienFruit.Otml.Tests
                 .WithMessage("Unacceptable space character, should use only a tab character in this plase, in line: 1, position: 1");
         }
 
-        [Test]
+        [Fact]
         public void Parse_result_from_string_should_be_equal_result_from_stream()
         {
             // Arrange
@@ -49,7 +49,7 @@ namespace AlienFruit.Otml.Tests
             result1.Should().BeEquivalentTo(result2);
         }
 
-        [Test]
+        [Fact]
         public void Unparsing_then_parsing_should_not_change_source_object()
         {
             var source = new OtmlNode[]
@@ -88,7 +88,7 @@ namespace AlienFruit.Otml.Tests
 
         #region IsPropertyHasPlus
 
-        [Test]
+        [Fact]
         public void IsPropertyHasPlus_should_return_true_if_has_plus_on_right_side()
         {
             // Arrange
@@ -101,7 +101,7 @@ namespace AlienFruit.Otml.Tests
             result.Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public void IsPropertyHasPlus_should_return_false_if_property_has_plus_inside_quotetion_marks()
         {
             // Arrange
@@ -118,7 +118,7 @@ namespace AlienFruit.Otml.Tests
 
         #region TrimProperty
 
-        [Test]
+        [Fact]
         public void TrimProperty_should_return_property_without_spaces_and_qoutes()
         {
             // Arrange
@@ -131,7 +131,7 @@ namespace AlienFruit.Otml.Tests
             result.Should().Be("Property value");
         }
 
-        [Test]
+        [Fact]
         public void TrimProperty_should_not_trim_spaces_inside_qoutes()
         {
             // Arrange
@@ -144,7 +144,7 @@ namespace AlienFruit.Otml.Tests
             result.Should().Be("  Property value  ");
         }
 
-        [Test]
+        [Fact]
         public void TrimProperty_should_return_property_without_spaces()
         {
             // Arrange
@@ -157,7 +157,7 @@ namespace AlienFruit.Otml.Tests
             result.Should().Be("Property value");
         }
 
-        [Test]
+        [Fact]
         public void TrimProperty_should_return_property_with_quotation_mark_in_right_side()
         {
             // Arrange
@@ -170,7 +170,7 @@ namespace AlienFruit.Otml.Tests
             result.Should().Be(propertyString);
         }
 
-        [Test]
+        [Fact]
         public void TrimProperty_should_return_property_with_shielded_quotation_mark_in_right_side_if_quote_has_shield()
         {
             // Arrange
@@ -183,7 +183,7 @@ namespace AlienFruit.Otml.Tests
             result.Should().Be(propertyString);
         }
 
-        [Test]
+        [Fact]
         public void TrimProperty_should_throw_exception_if_property_has_single_quotation_mark_and_has_not_closing_quotation_mark()
         {
             // Arrange
@@ -194,7 +194,7 @@ namespace AlienFruit.Otml.Tests
             action.Should().Throw<OtmlParseException>().WithMessage("Missing closing quotation mark ('), in line: 1, position: 16");
         }
 
-        [Test]
+        [Fact]
         public void TrimProperty_should_throw_exception_if_property_has_double_quotation_mark_and_has_not_closing_quotation_mark()
         {
             // Arrange
@@ -205,7 +205,7 @@ namespace AlienFruit.Otml.Tests
             action.Should().Throw<OtmlParseException>().WithMessage("Missing closing quotation mark (\"), in line: 1, position: 17");
         }
 
-        [Test]
+        [Fact]
         public void TrimProperty_should_return_property_without_plus_and_quotes()
         {
             // Arrange
@@ -218,7 +218,7 @@ namespace AlienFruit.Otml.Tests
             result.Should().Be("Property value");
         }
 
-        [Test]
+        [Fact]
         public void TrimProperty_should_return_null_quote_char_if_value_is_not_inside_quotes_marks()
         {
             // Arrange
@@ -231,7 +231,7 @@ namespace AlienFruit.Otml.Tests
             quoteChar.Should().BeNull();
         }
 
-        [Test]
+        [Fact]
         public void TrimProperty_should_return_single_quote_char_if_property_value_inside_a_single_quotes()
         {
             // Arrange
@@ -244,7 +244,7 @@ namespace AlienFruit.Otml.Tests
             quoteChar.Should().Be('\'');
         }
 
-        [Test]
+        [Fact]
         public void TrimProperty_should_return_double_quote_char_if_property_value_inside_a_double_quotes()
         {
             // Arrange
@@ -261,7 +261,7 @@ namespace AlienFruit.Otml.Tests
 
         #region ParsePropertyValue
 
-        [Test]
+        [Fact]
         public void ParsePropertyValue_should_throw_exception_if_closing_single_quatation_mark_is_missed()
 
         {
@@ -272,7 +272,7 @@ namespace AlienFruit.Otml.Tests
             action.Should().Throw<OtmlParseException>().WithMessage("Missing closing quotation mark ('), in line: 1, position: 22");
         }
 
-        [Test]
+        [Fact]
         public void ParsePropertyValue_should_throw_exception_if_closing_double_quotation_mark_is_missed()
         {
             // Arrange
@@ -282,7 +282,7 @@ namespace AlienFruit.Otml.Tests
             action.Should().Throw<OtmlParseException>().WithMessage("Missing closing quotation mark (\"), in line: 1, position: 24");
         }
 
-        [Test]
+        [Fact]
         public void ParsePropertyValue_should_throw_exception_if_unexpected_chars_exists_after_closing_quotation_mark()
         {
             // Arrange
@@ -292,7 +292,7 @@ namespace AlienFruit.Otml.Tests
             action.Should().Throw<OtmlParseException>().WithMessage("Missing closing quotation mark (\"), in line: 1, position: 41");
         }
 
-        [Test]
+        [Fact]
         public void ParsePropertyValue_should_throw_exception_if_property_string_contains_only_whitespaces()
         {
             // Arrange
@@ -302,7 +302,7 @@ namespace AlienFruit.Otml.Tests
             action.Should().Throw<OtmlParseException>().WithMessage("Empty property cannot be parsed, in line: 1, position: 0");
         }
 
-        [Test]
+        [Fact]
         public void ParsePropertyValue_should_throw_exception_if_value_has_unshielded_double_quote()
         {
             // Arrange
@@ -312,7 +312,7 @@ namespace AlienFruit.Otml.Tests
             action.Should().Throw<OtmlParseException>().WithMessage("Unshielded quotation mark char (\"), in line: 1, position: 7");
         }
 
-        [Test]
+        [Fact]
         public void ParsePropertyValue_should_throw_exception_if_value_has_unshielded_single_quote()
         {
             // Arrange
@@ -322,7 +322,7 @@ namespace AlienFruit.Otml.Tests
             action.Should().Throw<OtmlParseException>().WithMessage("Unshielded quotation mark char ('), in line: 1, position: 7");
         }
 
-        [Test]
+        [Fact]
         public void ParsePropertyValue_should_throw_exception_if_value_inside_double_quotes_has_unshielded_double_quote()
         {
             // Arrange
@@ -332,7 +332,7 @@ namespace AlienFruit.Otml.Tests
             action.Should().Throw<OtmlParseException>().WithMessage("Unshielded quotation mark char (\"), in line: 1, position: 8");
         }
 
-        [Test]
+        [Fact]
         public void ParsePropertyValue_should_throw_exception_if_value_inside_single_quotes_has_unshielded_single_quote()
         {
             // Arrange
@@ -342,7 +342,7 @@ namespace AlienFruit.Otml.Tests
             action.Should().Throw<OtmlParseException>().WithMessage("Unshielded quotation mark char ('), in line: 1, position: 8");
         }
 
-        [Test]
+        [Fact]
         public void ParsePropertyValue_hasPlus_should_return_true_if_property_has_a_plus_char_after_closing_quotation_mark()
         {
             // Arrange
@@ -356,7 +356,7 @@ namespace AlienFruit.Otml.Tests
             hasPlus.Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public void ParsePropertyValue_hasPlus_should_return_true_if_property_has_a_plus_char_in_the_end_of_line()
         {
             // Arrange
@@ -370,7 +370,7 @@ namespace AlienFruit.Otml.Tests
             hasPlus.Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public void ParsePropertyValue_hasPlus_should_return_false_if_property_has_a_plus_char_inside_the_quotes()
         {
             // Arrange
@@ -384,7 +384,7 @@ namespace AlienFruit.Otml.Tests
             hasPlus.Should().BeFalse();
         }
 
-        [Test]
+        [Fact]
         public void ParsePropertyValue_should_return_value_with_shielded_quotation_mark_if_propery_is_not_inside_quotes()
         {
             // Arrange
@@ -398,7 +398,7 @@ namespace AlienFruit.Otml.Tests
             result.Should().Be("\"pro\'perty");
         }
 
-        [Test]
+        [Fact]
         public void ParsePropertyValue_should_return_value_without_shielded_quotetion_mark_if_property_is_not_inside_quotes()
         {
             // Arrange
@@ -412,7 +412,7 @@ namespace AlienFruit.Otml.Tests
             result.Should().Be("\"property");
         }
 
-        [Test]
+        [Fact]
         public void ParsePropertyValue_should_return_value_with_single_quote_if_property_is_inside_double_quotes()
         {
             // Arrange
@@ -426,7 +426,7 @@ namespace AlienFruit.Otml.Tests
             result.Should().Be(" property value with ' ");
         }
 
-        [Test]
+        [Fact]
         public void ParsePropertyValue_should_return_value_with_double_quote_if_property_is_inside_single_quotes()
         {
             // Arrange
@@ -440,7 +440,7 @@ namespace AlienFruit.Otml.Tests
             result.Should().Be(" property value with \" ");
         }
 
-        [Test]
+        [Fact]
         public void ParsePropertyValue_should_return_value_with_single_back_slash_in_the_end()
         {
             // Arrange
@@ -454,7 +454,7 @@ namespace AlienFruit.Otml.Tests
             result.Should().Be(@"D:\asdaad\asdasdasdasd\'");
         }
 
-        [Test]
+        [Fact]
         public void ParsePropertyValue_should_return_value_without_quotes_if_value_is_in_quotes_and_last_char_after_last_quote_is_back_slash()
         {
             // Arrange
@@ -472,7 +472,7 @@ namespace AlienFruit.Otml.Tests
 
         #region SplitInlineProperies
 
-        [Test]
+        [Fact]
         public void SplitInlineProperies_should_ignore_comma_char_inside_quotation_and_return_two_values()
         {
             // Arrange
@@ -488,7 +488,7 @@ namespace AlienFruit.Otml.Tests
             result[1].Should().Be(secondValue);
         }
 
-        [Test]
+        [Fact]
         public void SplitInlineProperies_should_ignore_comma_after_comment_char_and_return_two_values()
         {
             // Arrange
@@ -505,7 +505,7 @@ namespace AlienFruit.Otml.Tests
             result[1].Should().Be("this is second value");
         }
 
-        [Test]
+        [Fact]
         public void SplitInlineProperies_test()
         {
             // Arrange
@@ -523,7 +523,7 @@ namespace AlienFruit.Otml.Tests
 
         #region GetNameAndValues
 
-        [Test]
+        [Fact]
         public void GetNameAndValues_should_return_only_value_if_the_white_space_at_the_end_if_comment_placed_before_colon()
         {
             // Arrange
@@ -537,7 +537,7 @@ namespace AlienFruit.Otml.Tests
             result.Item2.Should().BeNull();
         }
 
-        [Test]
+        [Fact]
         public void GetNameAndValues_should_return_only_name_if_comment_placed_after_colon()
         {
             // Arrange
@@ -551,7 +551,7 @@ namespace AlienFruit.Otml.Tests
             result.Item2.Should().Be(" ");
         }
 
-        [Test]
+        [Fact]
         public void GetNameAndValues_should_return_only_first_name_if_colons_more_then_one()
         {
             // Arrange
@@ -565,7 +565,7 @@ namespace AlienFruit.Otml.Tests
             result.Item2.Should().Be(" name2: name3: value ");
         }
 
-        [Test]
+        [Fact]
         public void GetNameAndValues_test1()
         {
             // Arrange
