@@ -17,6 +17,8 @@
     <PackageProjectUrl>https://github.com/AlienFruit/AlienFruit.Otml</PackageProjectUrl>
     <PackageIcon>Artboard1.png</PackageIcon>
     <Title>OTML serializer</Title>
+    <AssemblyVersion></AssemblyVersion>
+    <FileVersion></FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="GitVersion.MsBuild" Version="6.0.2">
+    <PackageReference Include="GitVersionTask" Version="5.5.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
