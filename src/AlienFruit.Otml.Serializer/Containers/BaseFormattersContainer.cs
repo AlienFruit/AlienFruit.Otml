@@ -38,6 +38,10 @@ namespace AlienFruit.Otml.Serializer.Containers
                 x => x == typeof(Color),
                 (f, v, args) => Activator.CreateInstance(f, args) as IFormatter);
 
+            RegisterFormatter<TimeSpanFormatter>(
+                x => x == typeof(TimeSpan),
+                (f, v, args) => Activator.CreateInstance(f, args) as IFormatter);
+
             RegisterFormatter(typeof(ArrayFormatter<>), x => x.IsArray,
                 (f, v, args) => Activator.CreateInstance(f.MakeGenericType(v.GetElementType()), args) as IFormatter);
 
