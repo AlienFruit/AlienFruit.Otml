@@ -2,15 +2,14 @@
 using AlienFruit.Otml.Serializer.Utils;
 using FluentAssertions;
 using Moq;
-using NUnit.Framework;
 using System;
+using Xunit;
 
 namespace AlienFruit.Otml.Serializer.Tests.FormatterTests
 {
-    [Parallelizable(ParallelScope.Children)]
     public class TimeSpanFormatterTests : BaseFormatterTest
     {
-        [Test]
+        [Fact]
         public void Serialize_ShouldReturnsSerializedValue_IfValueIsCorrectTimeSpan()
         {
             // Arrange
@@ -27,7 +26,7 @@ namespace AlienFruit.Otml.Serializer.Tests.FormatterTests
             nodeFactory.Verify(x => x.CreateValue(It.Is<string>(arg => arg == "142.12:05:23"), It.IsAny<bool>()));
         }
 
-        [Test]
+        [Fact]
         public void Deserialize_ShouldReturnsTimeSpan_IfValuIsCorectTimsSpan()
         {
             // Arrange

@@ -6,7 +6,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <NeutralLanguage>en</NeutralLanguage>
     <Description>OTML is an object tree model language. It is a language that describes a tree of objects, which is easily readable by both man and machine. It is abstract, flexible and simple, there is no data standardization and no arrays in it. OTML supports comments and stream processing.</Description>
-    <Copyright>Copyright © Alexander Prokopovich 2020</Copyright>
+    <Copyright>Copyright © Alexander Prokopovich 2024</Copyright>
     <Version>1.0.1</Version>
     <RepositoryUrl>https://github.com/AlienFruit/AlienFruit.Otml.git</RepositoryUrl>
     <PackageTags>otml serializer parser deserializer unparser</PackageTags>
