@@ -5,7 +5,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <NeutralLanguage>en</NeutralLanguage>
     <Description>OTML is an object tree model language. It is a language that describes a tree of objects, which is easily readable by both man and machine. It is abstract, flexible and simple, there is no data standardization and no arrays in it. OTML supports comments and stream processing.</Description>
-    <Copyright>Copyright © Alexander Prokopovich 2018</Copyright>
+    <Copyright>Copyright © Alexander Prokopovich 2024</Copyright>
     <Version>1.0.1</Version>
     <RepositoryType></RepositoryType>
     <RepositoryUrl>https://github.com/AlienFruit/AlienFruit.Otml.git</RepositoryUrl>
@@ -15,7 +15,16 @@
     <Company>AlienFruit</Company>
     <Product>AlienFruit.Otml</Product>
     <PackageProjectUrl>https://github.com/AlienFruit/AlienFruit.Otml</PackageProjectUrl>
+    <PackageIcon>Artboard1.png</PackageIcon>
+    <Title>OTML serializer</Title>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\design\icons\256w\Artboard1.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="GitVersion.MsBuild" Version="6.0.2">

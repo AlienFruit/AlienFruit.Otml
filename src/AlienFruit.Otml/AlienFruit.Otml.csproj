@@ -17,6 +17,7 @@
     <Product>AlienFruit.Otml</Product>
     <PackageIcon>Artboard1.png</PackageIcon>
     <PackageReadmeFile>summary.md</PackageReadmeFile>
+    <Title>OTML parser</Title>
   </PropertyGroup>
 
   <ItemGroup>

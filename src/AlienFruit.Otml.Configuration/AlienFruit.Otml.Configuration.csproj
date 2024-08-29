@@ -3,7 +3,28 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <Nullable>enable</Nullable>
+    <Title>OTML configuration</Title>
+    <Copyright>Copyright © Alexander Prokopovich 2024</Copyright>
+    <Authors>Alexander Prokopovich</Authors>
+    <Company>AlienFruit</Company>
+    <Description>This library allows using an otml configuration file instead of the standard appsettings.json</Description>
+    <PackageIcon>Artboard1.png</PackageIcon>
+    <PackageProjectUrl>https://github.com/AlienFruit/AlienFruit.Otml</PackageProjectUrl>
+    <PackageReadmeFile>summary.md</PackageReadmeFile>
+    <PackageTags>otml configuration config</PackageTags>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\design\icons\256w\Artboard1.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\..\docs\en\summary.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
