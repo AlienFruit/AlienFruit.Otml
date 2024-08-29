@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29318.209
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35222.181
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlienFruit.Otml", "AlienFruit.Otml\AlienFruit.Otml.csproj", "{CDDCC32D-8041-4A79-A142-EB0880D3D289}"
 EndProject
@@ -9,9 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlienFruit.Otml.Serializer"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PerformanceTests", "PerformanceTests\PerformanceTests.csproj", "{7DB12C7D-DD43-44D0-A078-41EF8925456C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlienFruit.Otml.Tests", "AlienFruit.Otml.Tests\AlienFruit.Otml.Tests.csproj", "{56B55A3A-56E6-47BC-BAFF-EC686626E23C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlienFruit.Otml.Tests", "AlienFruit.Otml.Tests\AlienFruit.Otml.Tests.csproj", "{56B55A3A-56E6-47BC-BAFF-EC686626E23C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlienFruit.Otml.Serializer.Tests", "AlienFruit.Otml.Serializer.Tests\AlienFruit.Otml.Serializer.Tests.csproj", "{F3F09E1C-5AF8-4639-947D-B0A172830C6A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlienFruit.Otml.Serializer.Tests", "AlienFruit.Otml.Serializer.Tests\AlienFruit.Otml.Serializer.Tests.csproj", "{F3F09E1C-5AF8-4639-947D-B0A172830C6A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlienFruit.Otml.Configuration", "AlienFruit.Otml.Configuration\AlienFruit.Otml.Configuration.csproj", "{26D1A2C4-764D-43AD-93AE-55BED20555C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{F3F09E1C-5AF8-4639-947D-B0A172830C6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F3F09E1C-5AF8-4639-947D-B0A172830C6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F3F09E1C-5AF8-4639-947D-B0A172830C6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26D1A2C4-764D-43AD-93AE-55BED20555C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26D1A2C4-764D-43AD-93AE-55BED20555C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26D1A2C4-764D-43AD-93AE-55BED20555C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26D1A2C4-764D-43AD-93AE-55BED20555C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
