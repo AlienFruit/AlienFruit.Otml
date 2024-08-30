@@ -10,7 +10,7 @@
     <Version>1.0.1</Version>
     <RepositoryUrl>https://github.com/AlienFruit/AlienFruit.Otml.git</RepositoryUrl>
     <PackageTags>otml serializer parser deserializer unparser</PackageTags>
-    <PackageIconUrl>H:\Visual Studio 2010 project\C#\Common\NET.Standart\AlienFruit.Nuget\Github.AlienFruit.Otml\src\AlienFruit.Otml</PackageIconUrl>
+    <PackageIconUrl>Artboard1.png</PackageIconUrl>
     <Authors>Alexander Prokopovich</Authors>
     <Company>AlienFruit</Company>
     <PackageProjectUrl>https://github.com/AlienFruit/AlienFruit.Otml</PackageProjectUrl>

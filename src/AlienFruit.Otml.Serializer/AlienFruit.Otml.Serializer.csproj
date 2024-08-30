@@ -19,10 +19,15 @@
     <Title>OTML serializer</Title>
     <AssemblyVersion></AssemblyVersion>
     <FileVersion></FileVersion>
+    <PackageReadmeFile>serializer-implementation.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
     <None Include="..\..\design\icons\256w\Artboard1.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\..\docs\en\serializer-implementation.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
