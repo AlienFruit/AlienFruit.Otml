@@ -73,6 +73,7 @@ namespace AlienFruit.Otml.Serializer.Tests
 
         public class Foo
         {
+            public required Guid GuidTest { get; set; }
             public string Name { get; set; }
             public string StringValue { get; set; }
             public int IntValue { get; set; }
@@ -97,6 +98,7 @@ namespace AlienFruit.Otml.Serializer.Tests
         public static Foo CreateFoo()
             => new Foo
             {
+                GuidTest = Guid.NewGuid(),
                 Name = "Test class name",
                 StringValue = "This is a string value",
                 IntValue = 2147483647,
