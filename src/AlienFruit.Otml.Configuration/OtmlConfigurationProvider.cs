@@ -44,7 +44,19 @@ namespace AlienFruit.Otml.Configuration
 
                 if (item.Type == NodeType.Property)
                 {
-                    Data.Add(GetKey(key, item.Name), GetValue(item));
+                    var values = GetValues(item);
+
+                    if (values.Length > 1)
+                    {
+                        for (int i = 0; i < values.Length; i++)
+                        {
+                            Data.Add(GetKey(key, item.Name) + ':' +i, values[i]);
+                        }
+                    }
+                    else
+                    {
+                        Data.Add(GetKey(key, item.Name), values[0]);
+                    }
                 }
             }
         }
@@ -52,16 +64,13 @@ namespace AlienFruit.Otml.Configuration
         private static string GetKey(string parrentKey, string currentName)
             => string.IsNullOrWhiteSpace(parrentKey) ? currentName : $"{parrentKey}:{currentName}";
 
-        private static string GetValue(OtmlNode node)
+        private static string[] GetValues(OtmlNode node)
         {
             var values = node.Children.Where(x => x.Type == NodeType.Value).ToArray();
-            if (values.Length > 1)
-                throw new ArgumentException($"Property cannot has more then one value. Property name:{node.Name}");
-
             if (values.Length == 0)
                 throw new ArgumentException($"Property cannot be empty. Property name:{node.Name}");
 
-            return values.First().Value;
+            return values.Select(x => x.Value).ToArray();
         }
     }
 }
