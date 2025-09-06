@@ -46,7 +46,7 @@ namespace AlienFruit.Otml.Configuration
                 {
                     var values = GetValues(item);
 
-                    if (values.Length > 1)
+                    if (item.IsArray)
                     {
                         for (int i = 0; i < values.Length; i++)
                         {
