@@ -17,7 +17,7 @@ namespace AlienFruit.Otml.Models
 
         protected override IEnumerable<OtmlNode> GetChildren() => Enumerable.Empty<OtmlNode>();
 
-        protected override bool GetMultilineState() => this.isMultiline;
+        protected override bool GetMultilineTextState() => this.isMultiline;
 
         protected override string GetName() => string.Empty;
 
@@ -43,9 +43,11 @@ namespace AlienFruit.Otml.Models
         public void Merge(ValueNode value)
         {
             this.value += Environment.NewLine + value.value;
-            this.IsMergeable = value.IsMultiline;
+            this.IsMergeable = value.IsMultilineText;
         }
 
         public override string ToString() => this.value;
+
+        protected override bool IsArrayProperty() => false;
     }
 }

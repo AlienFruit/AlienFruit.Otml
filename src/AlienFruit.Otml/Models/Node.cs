@@ -24,21 +24,11 @@ namespace AlienFruit.Otml.Models
 
         protected override IEnumerable<OtmlNode> GetChildren() => children;
 
-        protected override bool GetMultilineState() => false;
+        protected override bool GetMultilineTextState() => false;
 
         protected override string GetValue() => null;
 
         public abstract void AddChild(OtmlNode child);
-
-        //public abstract NodeType Type { get; }
-
-        //public virtual string Name { get; }
-
-        //public string Value => string.Empty;
-
-        //public virtual IEnumerable<INode> Children => children;
-
-        //public abstract bool IsMultiline { get; }
 
         public void AddChild(IEnumerable<OtmlNode> children) => this.children.AddRange(children);
     }

@@ -50,7 +50,7 @@ namespace AlienFruit.Otml.Domain.Version1v0
             {
                 if (item is null)
                     continue;
-                if (item.Type == NodeType.Value && !item.IsMultiline && parrent != null && (tree.Count() == 1 && parrent.Type == NodeType.Property || parrent.Type == NodeType.Object))
+                if (item.Type == NodeType.Value && !item.IsMultilineText && parrent != null && (tree.Count() == 1 && parrent.Type == NodeType.Property || parrent.Type == NodeType.Object))
                     continue;
 
                 builder.AppendLine(ItemToString(item, level));
@@ -65,7 +65,7 @@ namespace AlienFruit.Otml.Domain.Version1v0
             {
                 if (item is null)
                     continue;
-                if (item.Type == NodeType.Value && !item.IsMultiline && parrent != null && (tree.Count() == 1 && parrent.Type == NodeType.Property || parrent.Type == NodeType.Object))
+                if (item.Type == NodeType.Value && !item.IsMultilineText && parrent != null && (tree.Count() == 1 && parrent.Type == NodeType.Property || parrent.Type == NodeType.Object))
                     continue;
 
                 writer.WriteLine(ItemToString(item, level));
@@ -83,7 +83,7 @@ namespace AlienFruit.Otml.Domain.Version1v0
             switch (item.Type)
             {
                 case NodeType.Value:
-                    if (item.IsMultiline)
+                    if (item.IsMultilineText)
                     {
                         var lines = item.Value.Split(OtmlSyntax.LF);
                         result.AppendFormat("{0}{1}", ShieldValue(lines[0].TrimEnd(OtmlSyntax.CR)), OtmlSyntax.MultilineChar);
@@ -100,7 +100,7 @@ namespace AlienFruit.Otml.Domain.Version1v0
 
                 case NodeType.Object:
                     result.Append(item.Name + (item.Children.Any(x => x.Type == NodeType.Value) ? $" {OtmlSyntax.SplitChar} " : null));
-                    var values = item.Children.Where(x => x.Type == NodeType.Value && !x.IsMultiline);
+                    var values = item.Children.Where(x => x.Type == NodeType.Value && !x.IsMultilineText);
                     if (values.Any())
                     {
                         result.Append(string.Join(OtmlSyntax.PropsListSeparator.ToString() + ' ', values.Select(x => ShieldValue(x.Value))));
@@ -120,7 +120,7 @@ namespace AlienFruit.Otml.Domain.Version1v0
             bool IsArrayProperty(OtmlNode property) => property.Children.Count() > 1;
 
             bool IsMultilineProperty(OtmlNode property)
-                => property.Children.SingleOrDefault()?.IsMultiline ?? false;
+                => property.Children.SingleOrDefault()?.IsMultilineText ?? false;
 
             string GetChildValue(OtmlNode property)
             {

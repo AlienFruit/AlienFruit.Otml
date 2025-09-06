@@ -15,5 +15,7 @@ namespace AlienFruit.Otml.Models
         public override NodeType Type => NodeType.Object;
 
         public override void AddChild(OtmlNode child) => base.children.Add(child);
+
+        protected override bool IsArrayProperty() => false;
     }
 }

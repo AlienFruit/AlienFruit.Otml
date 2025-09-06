@@ -17,7 +17,9 @@ namespace AlienFruit.Otml
 
         protected abstract string GetValue();
 
-        protected abstract bool GetMultilineState();
+        protected abstract bool GetMultilineTextState();
+
+        protected abstract bool IsArrayProperty();
 
         protected abstract IEnumerable<OtmlNode> GetChildren();
 
@@ -59,20 +61,38 @@ namespace AlienFruit.Otml
             }
         }
 
-        public bool IsMultiline
+        public bool IsMultilineText
         {
             get
             {
-                var isMultiline = GetMultilineState();
+                var isMultiline = GetMultilineTextState();
                 switch (Type)
                 {
                     case NodeType.Object:
                     case NodeType.Property:
                         return isMultiline
-                            ? throw new InvalidOperationException($"The {Type} cannot be multiline")
+                            ? throw new InvalidOperationException($"The {Type} cannot be multiline text")
                             : false;
 
                     default: return isMultiline;
+                }
+            }
+        }
+
+        public bool IsArray
+        {
+            get
+            {
+                var isArray = IsArrayProperty();
+                switch (Type)
+                {
+                    case NodeType.Object:
+                    case NodeType.Value:
+                        return isArray
+                            ? throw new InvalidOperationException($"The {Type} cannot be array")
+                            : false;
+
+                    default: return isArray;
                 }
             }
         }

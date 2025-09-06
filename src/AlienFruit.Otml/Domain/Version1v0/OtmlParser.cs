@@ -103,7 +103,7 @@ namespace AlienFruit.Otml.Domain.Version1v0
 
             OtmlNode parrent = isObject
                 ? new ObjectNode(propertyName) as OtmlNode
-                : new PropertyNode(propertyName);
+                : new PropertyNode(propertyName, hasArraySyntax: string.IsNullOrWhiteSpace(property.Item2));
             AddToParrent(parrent, property.Item2 is null ? Enumerable.Empty<OtmlNode>() : valueNodes, location);
             return parrent;
 
