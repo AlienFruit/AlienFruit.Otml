@@ -266,9 +266,11 @@ namespace AlienFruit.Otml.Serializer.Tests
 
             protected override string GetValue() => this.value;
 
-            protected override bool GetMultilineState() => false;
+            protected override bool GetMultilineTextState() => false;
 
             protected override IEnumerable<OtmlNode> GetChildren() => Enumerable.Empty<OtmlNode>();
+
+            protected override bool IsArrayProperty() => false;
         }
 
         private class TestClass

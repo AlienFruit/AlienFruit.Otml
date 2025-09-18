@@ -55,11 +55,13 @@ namespace AlienFruit.Otml.Serializer.Tests.FormatterTests
 
             protected override IEnumerable<OtmlNode> GetChildren() => Children;
 
-            protected override bool GetMultilineState() => IsMultiline;
+            protected override bool GetMultilineTextState() => IsMultiline;
 
             protected override string GetName() => Name;
 
             protected override string GetValue() => Value;
+
+            protected override bool IsArrayProperty() => false;
 
             public StubNode Complete()
             {
