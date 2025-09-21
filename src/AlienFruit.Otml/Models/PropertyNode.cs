@@ -23,6 +23,18 @@ namespace AlienFruit.Otml.Models
         public override void AddChild(OtmlNode child) => base.children.Add(child);
 
         protected override bool IsArrayProperty()
-            => base.Children.Count() > 1 && base.Children.First().IsMultilineText == false || this.hasArraySyntax;
+        {
+            if (base.Children.Count() > 1)
+            {
+                return true;
+            }
+
+            if (base.Children.Count() == 1 && base.Children.First().IsMultilineText == true)
+            {
+                return false;
+            }
+
+            return this.hasArraySyntax;
+        }
     }
 }
