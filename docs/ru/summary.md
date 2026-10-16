@@ -138,8 +138,7 @@ using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(source)))
 
 ## Конфигурация и секреты
 
-Пакет `AlienFruit.Otml.Configuration` загружает OTML-файл как источник `IConfiguration`.
-Значения свойств могут ссылаться на внешние секреты через маркер `{{secret:<имя>}}`:
+Секретам не место в конфигурационных файлах — они не должны попадать в репозиторий и кочевать между окружениями. Пакет `AlienFruit.Otml.Configuration` делает OTML-файл обычным источником `IConfiguration` — как `appsettings.json`, — и позволяет прямо в файле сослаться на хранилище секретов:
 
 ```py
 @database
@@ -147,43 +146,26 @@ using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(source)))
 	connString : "Server=db;Password={{secret:DB_PASSWORD}};Pool=5"
 ```
 
-Маркеры разрешаются лениво, при первом чтении значения (не в `Load()`).
-Зарегистрированные хранилища перебираются в порядке регистрации, побеждает первое непустое
-значение; хранилище возвращает `null`, если ключа в нём нет. Если значение не найдено ни в одном
-хранилище, чтение завершается исключением `SecretNotFoundException`. Значения без маркеров
-и маркеры с неизвестным тегом (например `{{vault:key}}`) остаются без изменений.
+При чтении значения маркер `{{secret:DB_PASSWORD}}` заменяется на настоящий секрет из подключённого хранилища — self-hosted сервера [Keyraft](https://github.com/keyraft/keyrafted) или переменных окружения. Подключение — две строки:
 
 ```c#
-public interface ISecretProvider
-{
-    string Name { get; }             // имя хранилища, используется в сообщениях об ошибках
-    string? GetSecret(string name);  // null, если это хранилище не содержит ключ
-}
-```
-
-```c#
+// сначала регистрируем хранилище, потом подключаем файл — порядок важен
 builder.Services.AddKeyraftSecretProvider(options => { /* BaseUrl, Token, Namespace */ });
-builder.Configuration.AddOtmlConfigurationFile("settings.otml"); // провайдеры должны быть зарегистрированы до этого вызова
-
-// собственные хранилища, перебираются после зарегистрированных:
-builder.Configuration.AddOtmlConfigurationFile(o =>
-{
-    o.OtmlFile = "settings.otml";
-    o.CustomSecretProviders = new ISecretProvider[] { new EnvironmentVariableSecretProvider() };
-});
+builder.Configuration.AddOtmlConfigurationFile("settings.otml");
 ```
 
-Пакет `AlienFruit.Otml.Configuration.Keyraft` реализует `ISecretProvider` поверх HTTP API
-self-hosted сервера [Keyraft](https://github.com/keyraft/keyrafted):
+Чтение ничем не отличается от обычной конфигурации — значение напрямую или секция целиком через `IOptions`:
 
 ```c#
-services.AddKeyraftSecretProvider(options =>
-{
-    options.BaseUrl = "http://localhost:7200";
-    options.Token = configuration["Keyraft:Token"];
-    options.Namespace = "myapp/prod";
-});
+var password = configuration["database:password"]; // секрет подтянется из хранилища
+
+builder.Services.Configure<DatabaseOptions>(builder.Configuration.GetSection("database"));
+// в конструкторе сервиса: IOptions<DatabaseOptions> → options.Value.Password
 ```
 
-Полное справочное описание API: [C# реализация конфигурации](https://github.com/AlienFruit/AlienFruit.Otml/blob/master/docs/ru/configuration-implementation.md),
-[Хранилище секретов Keyraft](https://github.com/AlienFruit/AlienFruit.Otml/blob/master/docs/ru/keyraft-implementation.md).
+Полезно знать:
+ - секции и привязка к классам работают в точности как с `appsettings.json`;
+ - хранилища перебираются по очереди, побеждает первое найденное значение;
+ - если секрета нет ни в одном хранилище, чтение упадёт с понятной ошибкой `SecretNotFoundException`, а не отдаст пустой пароль.
+
+Как устроены маркеры, готовые хранилища и как подключить своё: [C# реализация конфигурации](https://github.com/AlienFruit/AlienFruit.Otml/blob/master/docs/ru/configuration-implementation.md), [Хранилище секретов Keyraft](https://github.com/AlienFruit/AlienFruit.Otml/blob/master/docs/ru/keyraft-implementation.md).

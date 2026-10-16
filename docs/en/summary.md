@@ -140,8 +140,7 @@ using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(source)))
 
 ## Configuration and secrets
 
-The `AlienFruit.Otml.Configuration` package loads an OTML file as an `IConfiguration` source.
-Property values may reference external secrets with the marker `{{secret:<name>}}`:
+Secrets don't belong in configuration files — they should never end up in a repository or be copied between environments. The `AlienFruit.Otml.Configuration` package loads an OTML file as an ordinary `IConfiguration` source — just like `appsettings.json` — and lets you reference a secret storage directly in the file:
 
 ```py
 @database
@@ -149,43 +148,26 @@ Property values may reference external secrets with the marker `{{secret:<name>}
 	connString : "Server=db;Password={{secret:DB_PASSWORD}};Pool=5"
 ```
 
-Markers are resolved lazily, on the first read of a value (not at `Load()`).
-Registered storages are tried in registration order and the first non-empty answer wins;
-a storage returns `null` when it does not contain the key. If nothing resolves, the read
-fails with `SecretNotFoundException`. Values without markers and markers with other tags
-(for example `{{vault:key}}`) are left untouched.
+When the value is read, the `{{secret:DB_PASSWORD}}` marker is replaced with the real secret from a connected storage — a self-hosted [Keyraft](https://github.com/keyraft/keyrafted) server or environment variables. Connecting takes two lines:
 
 ```c#
-public interface ISecretProvider
-{
-    string Name { get; }             // storage name used in error messages
-    string? GetSecret(string name);  // null when this storage does not contain the key
-}
-```
-
-```c#
+// register the storage first, then add the file — the order matters
 builder.Services.AddKeyraftSecretProvider(options => { /* BaseUrl, Token, Namespace */ });
-builder.Configuration.AddOtmlConfigurationFile("settings.otml"); // providers must be registered before this call
-
-// your own storages, tried after the registered ones:
-builder.Configuration.AddOtmlConfigurationFile(o =>
-{
-    o.OtmlFile = "settings.otml";
-    o.CustomSecretProviders = new ISecretProvider[] { new EnvironmentVariableSecretProvider() };
-});
+builder.Configuration.AddOtmlConfigurationFile("settings.otml");
 ```
 
-The `AlienFruit.Otml.Configuration.Keyraft` package implements `ISecretProvider` over the
-HTTP API of a self-hosted [Keyraft](https://github.com/keyraft/keyrafted) server:
+Reading is no different from ordinary configuration — a single value or a whole section via `IOptions`:
 
 ```c#
-services.AddKeyraftSecretProvider(options =>
-{
-    options.BaseUrl = "http://localhost:7200";
-    options.Token = configuration["Keyraft:Token"];
-    options.Namespace = "myapp/prod";
-});
+var password = configuration["database:password"]; // the secret comes from the storage
+
+builder.Services.Configure<DatabaseOptions>(builder.Configuration.GetSection("database"));
+// in the service constructor: IOptions<DatabaseOptions> → options.Value.Password
 ```
 
-Full API reference: [Configuration C# implementation](https://github.com/AlienFruit/AlienFruit.Otml/blob/master/docs/en/configuration-implementation.md),
-[Keyraft secrets storage](https://github.com/AlienFruit/AlienFruit.Otml/blob/master/docs/en/keyraft-implementation.md).
+Worth knowing:
+ - sections and binding work exactly like with `appsettings.json`;
+ - storages are tried one after another, the first found value wins;
+ - if no storage contains the secret, reading fails with a clear `SecretNotFoundException` instead of silently passing an empty password.
+
+Marker semantics, built-in storages and plugging in your own: [Configuration C# implementation](https://github.com/AlienFruit/AlienFruit.Otml/blob/master/docs/en/configuration-implementation.md), [Keyraft secrets storage](https://github.com/AlienFruit/AlienFruit.Otml/blob/master/docs/en/keyraft-implementation.md).
