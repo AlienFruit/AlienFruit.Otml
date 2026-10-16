@@ -1,0 +1,6 @@
+@AlienFruit.Otml.Configuration.WebApplicationTest_HostAddress = http://localhost:5081
+
+GET {{AlienFruit.Otml.Configuration.WebApplicationTest_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
