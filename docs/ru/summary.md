@@ -4,9 +4,11 @@
 Это язык описания дерева объектов, который легко читается как человеком, так и машиной. Он абстрактен, гибок и прост, в нем нет типизации данных и нет массивов. OTML поддерживает комментарии и потоковую обработку.
 <br/><br/>
 
-- [Specification](https://github.com/AlienFruit/AlienFruit.Otml/blob/master/docs/en/specification.md)
-- [Parser C# implementation](https://github.com/AlienFruit/AlienFruit.Otml/blob/master/docs/en/parser-implementation.md)
-- [Serializer C# implementation](https://github.com/AlienFruit/AlienFruit.Otml/blob/master/docs/en/serializer-implementation.md)
+- [Спецификация](https://github.com/AlienFruit/AlienFruit.Otml/blob/master/docs/ru/specification.md)
+- [C# реализация парсера](https://github.com/AlienFruit/AlienFruit.Otml/blob/master/docs/ru/parser-implementation.md)
+- [C# реализация сериализатора](https://github.com/AlienFruit/AlienFruit.Otml/blob/master/docs/ru/serializer-implementation.md)
+- [C# реализация конфигурации](https://github.com/AlienFruit/AlienFruit.Otml/blob/master/docs/ru/configuration-implementation.md)
+- [Хранилище секретов Keyraft](https://github.com/AlienFruit/AlienFruit.Otml/blob/master/docs/ru/keyraft-implementation.md)
 
 ## Цели OTML
  - Быть легко понятным человеку
@@ -133,3 +135,55 @@ using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(source)))
 	Foo result = serializer.Deserialize<Foo>(stream);
 }
 ```
+
+## Конфигурация и секреты
+
+Пакет `AlienFruit.Otml.Configuration` загружает OTML-файл как источник `IConfiguration`.
+Значения свойств могут ссылаться на внешние секреты через маркер `{{secret:<имя>}}`:
+
+```py
+@database
+	password : {{secret:DB_PASSWORD}}
+	connString : "Server=db;Password={{secret:DB_PASSWORD}};Pool=5"
+```
+
+Маркеры разрешаются лениво, при первом чтении значения (не в `Load()`).
+Зарегистрированные хранилища перебираются в порядке регистрации, побеждает первое непустое
+значение; хранилище возвращает `null`, если ключа в нём нет. Если значение не найдено ни в одном
+хранилище, чтение завершается исключением `SecretNotFoundException`. Значения без маркеров
+и маркеры с неизвестным тегом (например `{{vault:key}}`) остаются без изменений.
+
+```c#
+public interface ISecretProvider
+{
+    string Name { get; }             // имя хранилища, используется в сообщениях об ошибках
+    string? GetSecret(string name);  // null, если это хранилище не содержит ключ
+}
+```
+
+```c#
+builder.Services.AddKeyraftSecretProvider(options => { /* BaseUrl, Token, Namespace */ });
+builder.Configuration.AddOtmlConfigurationFile("settings.otml"); // провайдеры должны быть зарегистрированы до этого вызова
+
+// собственные хранилища, перебираются после зарегистрированных:
+builder.Configuration.AddOtmlConfigurationFile(o =>
+{
+    o.OtmlFile = "settings.otml";
+    o.CustomSecretProviders = new ISecretProvider[] { new EnvironmentVariableSecretProvider() };
+});
+```
+
+Пакет `AlienFruit.Otml.Configuration.Keyraft` реализует `ISecretProvider` поверх HTTP API
+self-hosted сервера [Keyraft](https://github.com/keyraft/keyrafted):
+
+```c#
+services.AddKeyraftSecretProvider(options =>
+{
+    options.BaseUrl = "http://localhost:7200";
+    options.Token = configuration["Keyraft:Token"];
+    options.Namespace = "myapp/prod";
+});
+```
+
+Полное справочное описание API: [C# реализация конфигурации](https://github.com/AlienFruit/AlienFruit.Otml/blob/master/docs/ru/configuration-implementation.md),
+[Хранилище секретов Keyraft](https://github.com/AlienFruit/AlienFruit.Otml/blob/master/docs/ru/keyraft-implementation.md).

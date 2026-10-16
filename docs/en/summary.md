@@ -8,6 +8,8 @@ It is abstract, flexible and simple, there is no data standardization and no arr
 - [Specification](https://github.com/AlienFruit/AlienFruit.Otml/blob/master/docs/en/specification.md)
 - [Parser C# implementation](https://github.com/AlienFruit/AlienFruit.Otml/blob/master/docs/en/parser-implementation.md)
 - [Serializer C# implementation](https://github.com/AlienFruit/AlienFruit.Otml/blob/master/docs/en/serializer-implementation.md)
+- [Configuration C# implementation](https://github.com/AlienFruit/AlienFruit.Otml/blob/master/docs/en/configuration-implementation.md)
+- [Keyraft secrets storage](https://github.com/AlienFruit/AlienFruit.Otml/blob/master/docs/en/keyraft-implementation.md)
 
 ## OTML targets
  - To be easily understandable to a man
@@ -135,3 +137,55 @@ using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(source)))
 	Foo result = serializer.Deserialize<Foo>(stream);
 }
 ```
+
+## Configuration and secrets
+
+The `AlienFruit.Otml.Configuration` package loads an OTML file as an `IConfiguration` source.
+Property values may reference external secrets with the marker `{{secret:<name>}}`:
+
+```py
+@database
+	password : {{secret:DB_PASSWORD}}
+	connString : "Server=db;Password={{secret:DB_PASSWORD}};Pool=5"
+```
+
+Markers are resolved lazily, on the first read of a value (not at `Load()`).
+Registered storages are tried in registration order and the first non-empty answer wins;
+a storage returns `null` when it does not contain the key. If nothing resolves, the read
+fails with `SecretNotFoundException`. Values without markers and markers with other tags
+(for example `{{vault:key}}`) are left untouched.
+
+```c#
+public interface ISecretProvider
+{
+    string Name { get; }             // storage name used in error messages
+    string? GetSecret(string name);  // null when this storage does not contain the key
+}
+```
+
+```c#
+builder.Services.AddKeyraftSecretProvider(options => { /* BaseUrl, Token, Namespace */ });
+builder.Configuration.AddOtmlConfigurationFile("settings.otml"); // providers must be registered before this call
+
+// your own storages, tried after the registered ones:
+builder.Configuration.AddOtmlConfigurationFile(o =>
+{
+    o.OtmlFile = "settings.otml";
+    o.CustomSecretProviders = new ISecretProvider[] { new EnvironmentVariableSecretProvider() };
+});
+```
+
+The `AlienFruit.Otml.Configuration.Keyraft` package implements `ISecretProvider` over the
+HTTP API of a self-hosted [Keyraft](https://github.com/keyraft/keyrafted) server:
+
+```c#
+services.AddKeyraftSecretProvider(options =>
+{
+    options.BaseUrl = "http://localhost:7200";
+    options.Token = configuration["Keyraft:Token"];
+    options.Namespace = "myapp/prod";
+});
+```
+
+Full API reference: [Configuration C# implementation](https://github.com/AlienFruit/AlienFruit.Otml/blob/master/docs/en/configuration-implementation.md),
+[Keyraft secrets storage](https://github.com/AlienFruit/AlienFruit.Otml/blob/master/docs/en/keyraft-implementation.md).
