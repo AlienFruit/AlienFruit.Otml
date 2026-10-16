@@ -10,7 +10,9 @@ The `AlienFruit.Otml.Configuration.Keyraft` package adds resolution of `{{secret
 `AlienFruit.Otml.Configuration` targets `netstandard2.1`, the Keyraft adapter targets `net8.0`.
 
 Extension methods live in the `AlienFruit.Otml.Configuration.Extensions` namespace, `ISecretProvider` —
-in `AlienFruit.Otml.Configuration.Abstractions`.
+in `AlienFruit.Otml.Configuration.Abstractions`, the built-in environment-variable provider
+`EnvironmentVariableSecretProvider` — in `AlienFruit.Otml.Configuration.SecretProviders`,
+its registration `AddEnvironmentVariableSecretProvider` — in the same `AlienFruit.Otml.Configuration.Extensions` as the configuration methods.
 
 <br/>
 
@@ -41,6 +43,7 @@ secret storages.
 ```c#
 using AlienFruit.Otml.Configuration.Abstractions; // ISecretProvider
 using AlienFruit.Otml.Configuration.Extensions;
+using AlienFruit.Otml.Configuration.SecretProviders; // EnvironmentVariableSecretProvider
 
 builder.Configuration.AddOtmlConfigurationFile(o =>
 {
@@ -65,7 +68,7 @@ hostBuilder.AddOtmlConfiguration(o =>
 
 Resolution order: registry providers first (in registration order), then custom providers; the first
 non-empty answer wins. The complete provider list is captured **at the call time**, so register providers
-(`AddKeyraftSecretProvider`, `SecretProviderRegistry.Register`) before calling the extension method.
+(`AddKeyraftSecretProvider`, `AddEnvironmentVariableSecretProvider`, `SecretProviderRegistry.Register`) before calling the extension method.
 
 <br/>
 
@@ -147,6 +150,29 @@ One timing note for `IHostBuilder`: `AddOtmlConfiguration` captures the registry
 `ConfigureServices` runs later, during `Build()` — so `services.AddKeyraftSecretProvider` inside
 `ConfigureServices` is too late to affect configuration resolution (the provider is still injected into services).
 On `WebApplicationBuilder`/`ConfigurationManager` the natural order — register providers, then add the file — works.
+
+<br/>
+
+## Environment variable secrets storage
+
+The built-in `EnvironmentVariableSecretProvider` resolves the `{{secret:NAME}}` marker to the value of
+the environment variable `NAME`. A missing variable is not an error: the provider returns `null` and
+resolution moves on to the next storage. Variable names follow the OS semantics: case-insensitive on
+Windows, case-sensitive on Linux. The storage name in error messages is `environment`.
+
+DI registration mirrors Keyraft: the provider is added to the `SecretProviderRegistry` (for marker
+resolution in configuration) and injected into DI as an `ISecretProvider` singleton. Overloads are
+available for `IServiceCollection` and `IHostApplicationBuilder`:
+
+```c#
+using AlienFruit.Otml.Configuration.Extensions; // AddEnvironmentVariableSecretProvider
+
+// WebApplicationBuilder / IHostApplicationBuilder:
+builder.AddEnvironmentVariableSecretProvider();
+
+// IServiceCollection:
+services.AddEnvironmentVariableSecretProvider();
+```
 
 <br/>
 

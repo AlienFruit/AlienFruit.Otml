@@ -11,8 +11,8 @@ builder.Services.AddKeyraftSecretProvider(o =>
     o.Token = "XXXX";
     o.Namespace = "oracular/production";
 });
+builder.Services.AddEnvironmentVariableSecretProvider();
 builder.Configuration.AddOtmlConfigurationFile("appsettings.otml");
-
 
 var testConfig = builder.Configuration.GetSection(TestConfiguration.Name)
     .Get<TestConfiguration>();

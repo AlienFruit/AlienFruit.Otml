@@ -10,7 +10,9 @@
 `AlienFruit.Otml.Configuration` таргетирует `netstandard2.1`, адаптер Keyraft — `net8.0`.
 
 Методы расширения находятся в пространстве имён `AlienFruit.Otml.Configuration.Extensions`, `ISecretProvider` —
-в `AlienFruit.Otml.Configuration.Abstractions`.
+в `AlienFruit.Otml.Configuration.Abstractions`, встроенный провайдер переменных окружения
+`EnvironmentVariableSecretProvider` — в `AlienFruit.Otml.Configuration.SecretProviders`,
+его регистрация `AddEnvironmentVariableSecretProvider` — в том же `AlienFruit.Otml.Configuration.Extensions`, что и методы конфигурации.
 
 <br/>
 
@@ -41,6 +43,7 @@ Host.CreateDefaultBuilder(args)
 ```c#
 using AlienFruit.Otml.Configuration.Abstractions; // ISecretProvider
 using AlienFruit.Otml.Configuration.Extensions;
+using AlienFruit.Otml.Configuration.SecretProviders; // EnvironmentVariableSecretProvider
 
 builder.Configuration.AddOtmlConfigurationFile(o =>
 {
@@ -65,7 +68,7 @@ hostBuilder.AddOtmlConfiguration(o =>
 
 Порядок разрешения: сначала провайдеры из реестра (в порядке регистрации), затем собственные;
 побеждает первое непустое значение. Полный список провайдеров фиксируется **в момент вызова**,
-поэтому провайдеры (`AddKeyraftSecretProvider`, `SecretProviderRegistry.Register`) нужно зарегистрировать
+поэтому провайдеры (`AddKeyraftSecretProvider`, `AddEnvironmentVariableSecretProvider`, `SecretProviderRegistry.Register`) нужно зарегистрировать
 до вызова метода расширения.
 
 <br/>
@@ -150,6 +153,29 @@ static ISecretProvider[] GetAll()                // в порядке регис
 внутри `ConfigureServices` не успеет повлиять на разрешение секретов в конфигурации
 (в сервисы провайдер при этом внедрится). Для `WebApplicationBuilder`/`ConfigurationManager`
 естественный порядок — сначала регистрация провайдеров, затем подключение файла — работает.
+
+<br/>
+
+## Хранилище секретов из переменных окружения
+
+Встроенный провайдер `EnvironmentVariableSecretProvider` разрешает маркер `{{secret:NAME}}` в значение
+переменной окружения `NAME`. Отсутствие переменной — не ошибка: провайдер возвращает `null`,
+и разрешение переходит к следующему хранилищу. Имена переменных читаются с семантикой ОС:
+без учёта регистра в Windows, с учётом — в Linux. Имя хранилища в сообщениях об ошибках — `environment`.
+
+Регистрация в DI — как у Keyraft: провайдер попадает в `SecretProviderRegistry` (для разрешения маркеров
+в конфигурации) и внедряется в DI как синглтон `ISecretProvider`. Есть перегрузки для
+`IServiceCollection` и `IHostApplicationBuilder`:
+
+```c#
+using AlienFruit.Otml.Configuration.Extensions; // AddEnvironmentVariableSecretProvider
+
+// WebApplicationBuilder / IHostApplicationBuilder:
+builder.AddEnvironmentVariableSecretProvider();
+
+// IServiceCollection:
+services.AddEnvironmentVariableSecretProvider();
+```
 
 <br/>
 
