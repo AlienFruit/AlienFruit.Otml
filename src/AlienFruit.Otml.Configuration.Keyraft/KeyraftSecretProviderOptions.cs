@@ -28,6 +28,34 @@ namespace AlienFruit.Otml.Configuration.Keyraft
         /// </summary>
         public TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(30);
 
+        /// <summary>
+        /// Timeout of the standalone <see cref="System.Net.Http.HttpClient"/> created by the DI
+        /// registration path (<c>AddKeyraftSecretProvider</c>). Default:
+        /// <see cref="System.Threading.Timeout.InfiniteTimeSpan"/> — individual requests are bounded
+        /// by <see cref="Timeout"/>; this value caps the whole client lifetime per request round-trip
+        /// and matters when a custom handler pipeline can hang outside the cancellation token.
+        /// Must be a positive <see cref="TimeSpan"/> or <see cref="System.Threading.Timeout.InfiniteTimeSpan"/>.
+        /// </summary>
+        public TimeSpan ClientTimeout { get; set; } = System.Threading.Timeout.InfiniteTimeSpan;
+
+        /// <summary>
+        /// Retry policy for transient Keyraft failures (HTTP 408/429/5xx, transport errors,
+        /// request timeouts). Assigning <see langword="null"/> fails validation.
+        /// </summary>
+        public KeyraftRetryOptions Retry { get; set; } = new KeyraftRetryOptions();
+
+        /// <summary>
+        /// Memberwise snapshot used by the options overload of
+        /// <see cref="KeyraftServiceCollectionExtensions.AddKeyraftSecretProvider(IServiceCollection, KeyraftSecretProviderOptions)"/>:
+        /// later mutation of the caller's instance does not leak into the registered provider.
+        /// </summary>
+        internal KeyraftSecretProviderOptions Clone()
+        {
+            var clone = (KeyraftSecretProviderOptions)MemberwiseClone();
+            clone.Retry = Retry?.Clone()!; // null stays null: Validate reports it as required
+            return clone;
+        }
+
         internal void Validate()
         {
             if (string.IsNullOrWhiteSpace(this.BaseUrl))
@@ -43,6 +71,16 @@ namespace AlienFruit.Otml.Configuration.Keyraft
 
             if (string.IsNullOrWhiteSpace(this.Namespace))
                 throw new InvalidOperationException($"'{nameof(KeyraftSecretProviderOptions)}.{nameof(this.Namespace)}' is required");
+
+            if (this.ClientTimeout != System.Threading.Timeout.InfiniteTimeSpan && this.ClientTimeout <= TimeSpan.Zero)
+                throw new InvalidOperationException(
+                    $"'{nameof(KeyraftSecretProviderOptions)}.{nameof(this.ClientTimeout)}' must be positive or Timeout.InfiniteTimeSpan");
+
+            if (this.Retry is null)
+                throw new InvalidOperationException(
+                    $"'{nameof(KeyraftSecretProviderOptions)}.{nameof(this.Retry)}' is required");
+
+            this.Retry.Validate();
         }
     }
 }

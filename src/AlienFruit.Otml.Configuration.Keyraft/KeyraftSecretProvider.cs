@@ -67,13 +67,14 @@ namespace AlienFruit.Otml.Configuration.Keyraft
         /// </summary>
         /// <returns>The secret value, or <see langword="null"/> when the name is empty
         /// or the key does not exist in the configured namespace (HTTP 404).</returns>
-        /// <exception cref="KeyraftCommunicationException">Auth, transport, timeout or malformed-payload failure.</exception>
+        /// <exception cref="KeyraftCommunicationException">Auth, transport, timeout or malformed-payload failure
+        /// after the transient-failure retries configured by <see cref="KeyraftSecretProviderOptions.Retry"/> are exhausted.</exception>
         public async Task<string?> GetSecretAsync(string name, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrWhiteSpace(name))
                 return null;
 
-            var response = await SendGetAsync(name, cancellationToken).ConfigureAwait(false);
+            var response = await SendGetWithRetryAsync(name, cancellationToken).ConfigureAwait(false);
 
             using (response)
             {
@@ -87,6 +88,75 @@ namespace AlienFruit.Otml.Configuration.Keyraft
             }
         }
 
+        /// <summary>
+        /// Sends the GET through <see cref="SendGetAsync"/> and retries transient failures per
+        /// <see cref="KeyraftSecretProviderOptions.Retry"/>: HTTP 408/429/5xx responses, transport
+        /// errors and per-request timeouts. Caller cancellation aborts immediately. The final
+        /// attempt always yields a response when it is not a transport failure/timeout, so
+        /// <see cref="EnsureSuccessAsync"/> surfaces the status and body as usual.
+        /// </summary>
+        private async Task<HttpResponseMessage> SendGetWithRetryAsync(string name, CancellationToken cancellationToken)
+        {
+            var maxRetries = this.options.Retry.MaxRetryAttempts;
+
+            for (var attempt = 0; ; attempt++)
+            {
+                HttpResponseMessage response;
+                try
+                {
+                    response = await SendGetAsync(name, cancellationToken).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+                {
+                    // The caller gave up: a hard abort, not a transient failure.
+                    throw;
+                }
+                catch (OperationCanceledException ex)
+                {
+                    if (attempt >= maxRetries)
+                        throw new KeyraftCommunicationException(
+                            $"Keyraft request for the secret '{name}' timed out after {this.options.Timeout} per attempt.", ex);
+
+                    await DelayBeforeRetryAsync(attempt, cancellationToken).ConfigureAwait(false);
+                    continue;
+                }
+                catch (HttpRequestException ex)
+                {
+                    if (attempt >= maxRetries)
+                        throw new KeyraftCommunicationException(
+                            $"Cannot reach the Keyraft server at '{this.options.BaseUrl}'.", ex);
+
+                    await DelayBeforeRetryAsync(attempt, cancellationToken).ConfigureAwait(false);
+                    continue;
+                }
+
+                if (attempt < maxRetries && IsTransientStatusCode(response.StatusCode))
+                {
+                    response.Dispose();
+                    await DelayBeforeRetryAsync(attempt, cancellationToken).ConfigureAwait(false);
+                    continue;
+                }
+
+                return response;
+            }
+        }
+
+        private async Task DelayBeforeRetryAsync(int retryIndex, CancellationToken cancellationToken)
+        {
+            var delay = this.options.Retry.GetDelay(retryIndex);
+            if (delay > TimeSpan.Zero)
+                await Task.Delay(delay, cancellationToken).ConfigureAwait(false);
+        }
+
+        // 503 from Keyraft usually means raft quorum trouble: transient, safe to retry a read.
+        private static bool IsTransientStatusCode(HttpStatusCode statusCode)
+            => statusCode == HttpStatusCode.RequestTimeout          // 408
+               || statusCode == HttpStatusCode.TooManyRequests      // 429
+               || statusCode == HttpStatusCode.InternalServerError  // 500
+               || statusCode == HttpStatusCode.BadGateway           // 502
+               || statusCode == HttpStatusCode.ServiceUnavailable   // 503
+               || statusCode == HttpStatusCode.GatewayTimeout;      // 504
+
         private async Task<HttpResponseMessage> SendGetAsync(string name, CancellationToken cancellationToken)
         {
             var client = CreateClient();
@@ -98,20 +168,8 @@ namespace AlienFruit.Otml.Configuration.Keyraft
             using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             timeoutCts.CancelAfter(this.options.Timeout);
 
-            try
-            {
-                return await client.SendAsync(request, HttpCompletionOption.ResponseContentRead, timeoutCts.Token)
-                    .ConfigureAwait(false);
-            }
-            catch (OperationCanceledException ex) when (!cancellationToken.IsCancellationRequested)
-            {
-                throw new KeyraftCommunicationException(
-                    $"Keyraft request for the secret '{name}' timed out after {this.options.Timeout}.", ex);
-            }
-            catch (HttpRequestException ex)
-            {
-                throw new KeyraftCommunicationException($"Cannot reach the Keyraft server at '{this.options.BaseUrl}'.", ex);
-            }
+            return await client.SendAsync(request, HttpCompletionOption.ResponseContentRead, timeoutCts.Token)
+                .ConfigureAwait(false);
         }
 
         private static async Task EnsureSuccessAsync(HttpResponseMessage response, string name, CancellationToken cancellationToken)

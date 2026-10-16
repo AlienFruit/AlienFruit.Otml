@@ -37,8 +37,8 @@ KeyraftSecretProvider(HttpClient httpClient, KeyraftSecretProviderOptions option
 ```
 
 The client is used as-is for the provider lifetime. This is the path used by `services.AddKeyraftSecretProvider`
-(see below), which creates a standalone client with infinite timeout; per-request cancellation is handled by
-`KeyraftSecretProviderOptions.Timeout`.
+(see below), which creates a standalone client with the `ClientTimeout` timeout (infinite by default);
+per-request cancellation is handled by `KeyraftSecretProviderOptions.Timeout`.
 
 Both constructors validate the options immediately. `Name` is `keyraft:{namespace}`, used in resolution errors.
 
@@ -50,6 +50,8 @@ Both constructors validate the options immediately. `Name` is `keyraft:{namespac
 | `Token` | yes | bearer token with read access to the `Namespace` |
 | `Namespace` | yes | namespace with the secrets, for example `myapp/prod` |
 | `Timeout` | no | request timeout, default 30 seconds |
+| `ClientTimeout` | no | timeout of the standalone `HttpClient` created by the DI registration path; default infinite, must be positive or `Timeout.InfiniteTimeSpan` |
+| `Retry` | no | retry policy for transient failures (`KeyraftRetryOptions`), see below |
 
 **GetSecret / GetSecretAsync behavior**
 
@@ -59,14 +61,36 @@ Both constructors validate the options immediately. `Name` is `keyraft:{namespac
 | `404` | `null` — the key is not in this storage, resolution falls through to the next provider |
 | empty/whitespace secret name | `null` without calling the network |
 | `401` / `403` | `KeyraftCommunicationException` (access denied, `StatusCode` set) |
-| other status codes | `KeyraftCommunicationException` with status and (truncated) server body |
+| `408` / `429` / `5xx` | retried per `Retry`; after exhaustion — like "other status codes" |
+| other (non-transient) status codes | `KeyraftCommunicationException` with status and (truncated) server body |
 | malformed or empty `200` payload | `KeyraftCommunicationException` |
-| timeout / unreachable server | `KeyraftCommunicationException` |
+| timeout / unreachable server | retried per `Retry`, then `KeyraftCommunicationException` |
 
 ```c#
 string? GetSecret(string name)
 Task<string?> GetSecretAsync(string name, CancellationToken cancellationToken = default)
 ```
+
+<br/>
+
+## Request retries
+
+Transient failures are retried according to `KeyraftSecretProviderOptions.Retry` (`KeyraftRetryOptions`):
+
+| Property | Default | Description |
+|----------|---------|-------------|
+| `MaxRetryAttempts` | 2 | retries after the initial request (the request budget is `MaxRetryAttempts + 1` requests at most) |
+| `InitialDelay` | 200 ms | pause before the first retry |
+| `BackoffMultiplier` | 2.0 | factor by which the pause grows for every next retry |
+| `MaxDelay` | 5 s | upper bound of the pause |
+
+The delay before retry N (0-based) is `InitialDelay * BackoffMultiplier^N`, capped at `MaxDelay`; there is no jitter.
+
+Retried: HTTP `408`, `429`, `5xx` responses, transport errors and `Timeout` overruns. Not retried:
+`401`/`403`, `404` (a key miss, not a failure), other status codes and malformed payloads. Cancellation
+through the caller token aborts resolution immediately, without retries. Once retries are exhausted the
+failure surfaces as usual: transport/timeout → `KeyraftCommunicationException` ("Cannot reach…" /
+"timed out…"), a transient status → the regular exception with the status and body of the last response.
 
 <br/>
 

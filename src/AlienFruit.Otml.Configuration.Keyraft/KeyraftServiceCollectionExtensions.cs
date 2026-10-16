@@ -40,18 +40,8 @@ namespace AlienFruit.Otml.Configuration.Keyraft
 
             var providerOptions = new KeyraftSecretProviderOptions();
             configure(providerOptions);
-            providerOptions.Validate();
 
-            var client = CreateStandaloneClient();
-            var provider = new KeyraftSecretProvider(client, providerOptions);
-            
-            // Register in static registry for configuration resolution
-            SecretProviderRegistry.Register(provider);
-            
-            // Register in DI for consumers
-            services.AddSingleton<ISecretProvider>(provider);
-
-            return services;
+            return AddProviderCore(services, providerOptions);
         }
 
         /// <summary>
@@ -62,15 +52,30 @@ namespace AlienFruit.Otml.Configuration.Keyraft
             this IServiceCollection services,
             KeyraftSecretProviderOptions options)
         {
+            ArgumentNullException.ThrowIfNull(services);
             ArgumentNullException.ThrowIfNull(options);
 
-            return services.AddKeyraftSecretProvider(configure: o =>
-            {
-                o.BaseUrl = options.BaseUrl;
-                o.Token = options.Token;
-                o.Namespace = options.Namespace;
-                o.Timeout = options.Timeout;
-            });
+            // Snapshot: the registered provider keeps its own clone, so later mutation
+            // of the caller's instance cannot change resolution behavior.
+            return AddProviderCore(services, options.Clone());
+        }
+
+        private static IServiceCollection AddProviderCore(
+            IServiceCollection services,
+            KeyraftSecretProviderOptions providerOptions)
+        {
+            providerOptions.Validate();
+
+            var client = CreateStandaloneClient(providerOptions);
+            var provider = new KeyraftSecretProvider(client, providerOptions);
+
+            // Register in static registry for configuration resolution
+            SecretProviderRegistry.Register(provider);
+
+            // Register in DI for consumers
+            services.AddSingleton<ISecretProvider>(provider);
+
+            return services;
         }
 
         /// <summary>
@@ -111,9 +116,10 @@ namespace AlienFruit.Otml.Configuration.Keyraft
             return builder;
         }
 
-        // No BaseAddress: BuildRequestUri composes the full URL from options.BaseUrl,
-        // identical to the default named client produced by the DI path.
-        private static HttpClient CreateStandaloneClient()
-            => new(){ Timeout = System.Threading.Timeout.InfiniteTimeSpan };
+        // No BaseAddress: BuildRequestUri composes the full URL from options.BaseUrl.
+        // Client lifetime timeout comes from options.ClientTimeout (default infinite);
+        // individual requests are bounded by options.Timeout via a linked cancellation token.
+        internal static HttpClient CreateStandaloneClient(KeyraftSecretProviderOptions options)
+            => new() { Timeout = options.ClientTimeout };
     }
 }
