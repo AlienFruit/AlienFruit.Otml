@@ -14,13 +14,15 @@ namespace AlienFruit.Otml.Configuration
         private readonly string otmlFile;
         private readonly ISecretProvider[] secretProviders;
         private readonly object syncRoot = new object();
-        private Dictionary<string, string?> resolvedCache = new Dictionary<string, string?>();
+        private Dictionary<string, string?> resolvedCache = new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
 
         public OtmlConfigurationProvider(string otmlFile, ISecretProvider[] secrets)
         {
             this.otmlFile = otmlFile ?? throw new ArgumentNullException(nameof(otmlFile));
             this.secretProviders = secrets ?? throw new ArgumentNullException(nameof(secrets));
-            this.Data = new Dictionary<string, string?>();
+            // Match the Microsoft.Extensions.Configuration convention (JSON/XML/INI
+            // providers): keys are looked up case-insensitively.
+            this.Data = new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
         }
 
         public override void Load()

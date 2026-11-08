@@ -12,7 +12,7 @@ namespace AlienFruit.Otml.Configuration.Tests
     /// <summary>
     /// Covers array flattening and specific document shapes in <see cref="OtmlConfigurationProvider"/>:
     /// inline and blocked arrays, multiline (+) joins, quoted commas, section access and binding,
-    /// case sensitivity, reload semantics, and the failure modes of malformed documents.
+    /// case-insensitive key lookup, reload semantics, and the failure modes of malformed documents.
     /// The <c>{{secret:...}}</c> provider-ordering contract is covered by
     /// <see cref="OtmlConfigurationProviderSecretTests"/>; only array/multiline interactions
     /// with markers are exercised here.
@@ -195,28 +195,29 @@ namespace AlienFruit.Otml.Configuration.Tests
         #region keys and sections
 
         [Fact]
-        public void Keys_are_case_sensitive()
+        public void Keys_are_case_insensitive()
         {
-            // The provider backs Data with an ordinal dictionary; unlike the JSON
-            // provider, upper-cased lookups miss.
+            // The provider backs Data with an OrdinalIgnoreCase dictionary, matching
+            // the JSON/XML/INI providers, so upper-cased lookups resolve.
             Write("@db\n\tpass : secret-value\n");
 
             var config = Build();
 
             config["db:pass"].Should().Be("secret-value");
-            config["DB:PASS"].Should().BeNull();
-            config.GetSection("DB:PASS").Value.Should().BeNull();
+            config["DB:PASS"].Should().Be("secret-value");
+            config.GetSection("DB:PASS").Value.Should().Be("secret-value");
         }
 
         [Fact]
-        public void Differently_cased_property_names_coexist_as_separate_keys()
+        public void Differently_cased_property_names_collide_on_one_key()
         {
+            // Keys are case-insensitive, so "A" and "a" map to the same
+            // configuration key; the second add fails like any duplicate name.
             Write("@s\n\tA : 1\n\ta : 2\n");
 
-            var config = Build();
+            var act = () => Build();
 
-            config["s:A"].Should().Be("1");
-            config["s:a"].Should().Be("2");
+            act.Should().Throw<ArgumentException>().WithMessage("*already been added*s:a*");
         }
 
         [Fact]
