@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 
 namespace AlienFruit.Otml.Readers
@@ -9,81 +8,120 @@ namespace AlienFruit.Otml.Readers
     internal class StreamTextReader : ITextReader
     {
         private readonly TextReader reader;
+        // Design decision: OTML is a new format, only '\n' counts as a line break
+        // ('\r\n' is also accepted: the trailing '\r' is cut off in ReadLine/PeekToNextLine).
+        // A lone '\r' (the classic Mac OS line break) is an ordinary character and is
+        // NOT a line break. We do not support backward compatibility with pre-2001 systems.
         private const char lf = '\n';
         private const char cr = '\r';
-        private static readonly char[] newLineList = { cr, lf };
 
         private readonly Queue<char> peekBuffer = new Queue<char>();
 
-        private ulong currentLine;
-        private int inLinePosition;
-        private bool disposed = false;
+        private ulong currentLine = 1;
+        private int inLinePosition = 0;
+        private bool disposed;
 
         public event EventHandler OnNewLine;
 
         public StreamTextReader(Stream stream)
         {
+            if (stream == null)
+                throw new ArgumentNullException(nameof(stream));
             this.reader = new StreamReader(stream, true);
-            this.currentLine = 1;
-            this.inLinePosition = 0;
         }
 
         public StreamTextReader(Stream stream, Encoding encoding, bool leaveOpen)
         {
+            if (stream == null)
+                throw new ArgumentNullException(nameof(stream));
+            if (encoding == null)
+                throw new ArgumentNullException(nameof(encoding));
+
             this.reader = new StreamReader(stream, encoding, true, 1024, leaveOpen);
         }
 
-        public CurrentCharLocation CurrentLocation => new CurrentCharLocation(this.currentLine, this.inLinePosition);
+        public CurrentCharLocation CurrentLocation =>
+            new CurrentCharLocation(this.currentLine, this.inLinePosition);
 
         public int Read()
         {
-            var current = peekBuffer.Count > 0 ? peekBuffer.Dequeue() : reader.Read();
-            char c = (char)current;
+            if (this.disposed)
+                return -1;
+
+            int current = this.peekBuffer.Count > 0
+                ? this.peekBuffer.Dequeue()
+                : this.reader.Read();
+
+            if (current < 0)
+                return -1;
+
             if (current == lf)
             {
                 this.inLinePosition = 0;
                 this.currentLine++;
-                OnNewLine?.Invoke(this, new EventArgs());
+                OnNewLine?.Invoke(this, EventArgs.Empty);
             }
             else
                 this.inLinePosition++;
+
             return current;
         }
 
         public string ReadLine()
         {
-            var result = new List<char>();
-            int currentchar = 0;
-            while ((currentchar = peekBuffer.Count > 0 ? peekBuffer.Dequeue() : reader.Read()) >= 0)
+            var firstChar = Read();
+            if (firstChar < 0)
+                return null; // EOF: there is no next line (System.Text.TextReader contract)
+
+            var result = new StringBuilder();
+            int currentChar = firstChar;
+            while (currentChar >= 0 && currentChar != lf)
             {
-                if (newLineList.Contains((char)currentchar))
-                    break;
-                result.Add((char)currentchar);
+                result.Append((char)currentChar);
+                currentChar = Read();
             }
-            return new string(result.ToArray());
+
+            // CRLF: cut off the trailing '\r'
+            if (result.Length > 0 && result[result.Length - 1] == cr)
+                result.Length--;
+
+            return result.ToString();
         }
 
         public string PeekToNextLine()
         {
-            var result = new List<char>();
-            int currentChar = 0;
-            while ((currentChar = reader.Read()) >= 0)
-            {
-                peekBuffer.Enqueue((char)currentChar);
+            // peek without moving the position: read characters up to and including '\n'
+            // into a temporary list, then put them back into peekBuffer.
+            if (this.disposed)
+                return string.Empty;
 
-                if (newLineList.Contains((char)currentChar))
+            var peeked = new List<char>();
+            var result = new StringBuilder();
+            int current;
+            while ((current = this.peekBuffer.Count > 0
+                        ? this.peekBuffer.Dequeue()
+                        : this.reader.Read()) >= 0)
+            {
+                peeked.Add((char)current);
+                if (current == lf)
                     break;
-                result.Add((char)currentChar);
+                result.Append((char)current);
             }
-            return new string(result.ToArray());
+
+            foreach (var c in peeked)
+                this.peekBuffer.Enqueue(c);
+
+            // CRLF: cut off the trailing '\r'
+            if (result.Length > 0 && result[result.Length - 1] == cr)
+                result.Length--;
+
+            return result.ToString();
         }
 
         public void ToLineEnd()
         {
-            int currentChar = 0;
-            while ((currentChar = Read()) >= 0)
-                if (newLineList.Contains((char)currentChar) && (reader.Peek() < 0 || !newLineList.Contains((char)reader.Peek())))
-                    break;
+            int currentChar;
+            while ((currentChar = Read()) >= 0 && currentChar != lf) { }
         }
 
         public void Dispose()
@@ -100,7 +138,7 @@ namespace AlienFruit.Otml.Readers
             if (disposing)
                 this.reader.Dispose();
 
-            disposed = true;   
+            this.disposed = true;
         }
     }
 }
