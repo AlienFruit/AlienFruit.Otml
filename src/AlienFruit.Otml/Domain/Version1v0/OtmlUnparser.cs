@@ -85,6 +85,8 @@ namespace AlienFruit.Otml.Domain.Version1v0
                 case NodeType.Value:
                     if (item.IsMultilineText)
                     {
+                        // newlines inside the value are platform-specific, just like the rest of
+                        // the document (AppendLine): the round-trip is stable on a single OS
                         var lines = item.Value.Split(OtmlSyntax.LF);
                         result.AppendFormat("{0}{1}", ShieldValue(lines[0].TrimEnd(OtmlSyntax.CR)), OtmlSyntax.MultilineChar);
                         for (int a = 1; a < lines.Length; a++)
@@ -99,7 +101,9 @@ namespace AlienFruit.Otml.Domain.Version1v0
                     break;
 
                 case NodeType.Object:
-                    result.Append(item.Name + (item.Children.Any(x => x.Type == NodeType.Value) ? $" {OtmlSyntax.SplitChar} " : null));
+                    // the name is escaped like a value: ':'/'#' inside a name otherwise
+                    // breaks the round-trip (the name gets cut at ':' or truncated by a comment)
+                    result.Append(ShieldValue(item.Name) + (item.Children.Any(x => x.Type == NodeType.Value) ? $" {OtmlSyntax.SplitChar} " : null));
                     var values = item.Children.Where(x => x.Type == NodeType.Value && !x.IsMultilineText);
                     if (values.Any())
                     {
@@ -108,7 +112,8 @@ namespace AlienFruit.Otml.Domain.Version1v0
                     break;
 
                 case NodeType.Property:
-                    result.Append(item.Name + $" {OtmlSyntax.SplitChar} ");
+                    // see the comment in NodeType.Object: names with ':'/'#' require escaping
+                    result.Append(ShieldValue(item.Name) + $" {OtmlSyntax.SplitChar} ");
                     if (!IsArrayProperty(item) && !IsMultilineProperty(item))
                     {
                         result.Append(ShieldValue(GetChildValue(item)));
