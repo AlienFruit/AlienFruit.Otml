@@ -9,7 +9,7 @@ namespace AlienFruit.Otml.Domain.Version1v0
     internal class OtmlParser : IParser
     {
         private static readonly char[] newLineList = { OtmlSyntax.CR, OtmlSyntax.LF };
-        private static readonly List<char> quotesList = new List<char> { OtmlSyntax.SingleQuote, OtmlSyntax.DoubleQuote };
+        private static readonly char[] quotesList = { OtmlSyntax.SingleQuote, OtmlSyntax.DoubleQuote };
         private static readonly char[] needForShield = { OtmlSyntax.DoubleQuote, OtmlSyntax.SingleQuote };
 
         private readonly ITextReader reader;
@@ -49,16 +49,26 @@ namespace AlienFruit.Otml.Domain.Version1v0
                     {
                         throw new OtmlParseException($"Unexpected node level. Excess tabs count: {tabCounter - lastLevel - 1}", reader.CurrentLocation);
                     }
+
+                    // ReadLine consumes the line together with the '\n' newline, so
+                    // OnNewLine resets tabCounter already inside ParseItem.
+                    // The node level is captured before the call, otherwise nesting is lost.
+                    var nodeLevel = tabCounter;
+
+                    // Node coordinates are captured BEFORE ReadLine: after '\n' is consumed,
+                    // CurrentLocation points at the next line (line +1, position 0/-1).
+                    var nodeLocation = reader.CurrentLocation;
+
                     var newNode = currentChar == OtmlSyntax.ObjectChar
-                        ? ParseItem(reader, true)
-                        : ParseItem(reader, false, currentChar);
+                        ? ParseItem(reader, true, nodeLocation)
+                        : ParseItem(reader, false, nodeLocation, currentChar);
 
                     if (newNode.Name.FirstOrDefault() != OtmlSyntax.ObjectChar) //skip declaration object which start with @@
                     {
-                        AddItem(newNode, result, levels, tabCounter, reader.CurrentLocation);
-                        levels[tabCounter] = newNode;
+                        AddItem(newNode, result, levels, nodeLevel, nodeLocation);
+                        levels[nodeLevel] = newNode;
                     }
-                    lastLevel = tabCounter;
+                    lastLevel = nodeLevel;
                     tabCounter = 0;
                 }
                 else
@@ -76,13 +86,16 @@ namespace AlienFruit.Otml.Domain.Version1v0
             return result;
         }
 
-        private static OtmlNode ParseItem(ITextReader reader, bool isObject, char? lostChar = null)
+        private static OtmlNode ParseItem(ITextReader reader, bool isObject, CurrentCharLocation nodeLocation, char? lostChar = null)
         {
-            var line = reader.ReadLine();
+            // ReadLine returns null only at EOF; here there is still a character before EOF,
+            // but the line may be empty — keep the parser's previous behavior.
+            var line = reader.ReadLine() ?? string.Empty;
             if (lostChar == null)
-                return ParseLine(line, isObject, reader.CurrentLocation);
+                return ParseLine(line, isObject, nodeLocation);
             else
-                return ParseLine(lostChar + line, isObject, new CurrentCharLocation(reader.CurrentLocation.Line, reader.CurrentLocation.Position - 1));
+                // nodeLocation was captured after reading lostChar: line start is one character to the left
+                return ParseLine(lostChar + line, isObject, new CurrentCharLocation(nodeLocation.Line, nodeLocation.Position - 1));
         }
 
         private static OtmlNode ParseLine(string line, bool isObject, CurrentCharLocation location)
@@ -90,7 +103,11 @@ namespace AlienFruit.Otml.Domain.Version1v0
             var property = GetNameAndValues(line);
             var offset = property.Item2 is null ? 0 : property.Item1.Length + 1 /*':'*/;
             var valueNodes = SplitInlineProperies(property.Item2 ?? property.Item1)
-                .Select(x => new ValueNode(ParsePropertyValue(x, GetRelativeLocation(location, offset), out var hasPlus, out offset), hasPlus));
+                .Select(x =>
+                {
+                    var value = ParsePropertyValue(x, GetRelativeLocation(location, offset), out var hasPlus, out offset);
+                    return new ValueNode(value, hasPlus);
+                });
 
             if (property.Item2 is null && !isObject)
             {
@@ -99,7 +116,8 @@ namespace AlienFruit.Otml.Domain.Version1v0
                 return valueNodes.First();
             }
 
-            var propertyName = property.Item1.Trim();
+            // the name may be quoted (the unparser escapes ':'/'#'/' ' in names) — strip the quotes
+            var propertyName = TrimName(property.Item1);
 
             OtmlNode parrent = isObject
                 ? new ObjectNode(propertyName) as OtmlNode
@@ -160,7 +178,7 @@ namespace AlienFruit.Otml.Domain.Version1v0
                 if (isShielded && !needForShield.Contains(currChar))
                     result.Add(OtmlSyntax.ShieldChar);
 
-                var quoteIndex = quotesList.IndexOf(currChar);
+                var quoteIndex = Array.IndexOf(quotesList, currChar);
 
                 if (quoteIndex >= 0 && !isShielded && (trimmedQuotes is null || trimmedQuotes == currChar))
                     throw new OtmlParseException($"Unshielded quotation mark char ({quotesList[quoteIndex]})", location.Line, location.Position + trimOffset + inlinePos);
@@ -185,12 +203,47 @@ namespace AlienFruit.Otml.Domain.Version1v0
         internal static bool IsPropertyHasPlus(string property)
             => property.TrimEnd().LastOrDefault() == OtmlSyntax.MultilineChar;
 
+        /// <summary>
+        /// Strips surrounding quotes from a name (the unparser uses them to escape ':'/'#'/' ')
+        /// and unescapes shield-character sequences, mirroring the value handling.
+        /// Unlike values, unescaped quotes inside a name are not an error:
+        /// the name is returned as is to avoid breaking parsing backward compatibility.
+        /// </summary>
+        internal static string TrimName(string name)
+        {
+            var result = name.Trim(OtmlSyntax.SpaceList);
+            if (result.Length < 2 || !quotesList.Contains(result[0]) || result[^1] != result[0])
+                return result;
+
+            var inner = result.Substring(1, result.Length - 2);
+            var unescaped = new List<char>();
+            var isShielded = false;
+            foreach (var currChar in inner)
+            {
+                if (isShielded && !quotesList.Contains(currChar))
+                    unescaped.Add(OtmlSyntax.ShieldChar);
+
+                if (currChar == OtmlSyntax.ShieldChar)
+                    isShielded = true;
+                else
+                {
+                    unescaped.Add(currChar);
+                    isShielded = false;
+                }
+            }
+
+            if (isShielded)
+                unescaped.Add(OtmlSyntax.ShieldChar);
+
+            return new string(unescaped.ToArray());
+        }
+
         internal static string TrimProperty(string property, CurrentCharLocation location, out int posOffset, out char? trimmedQuotes)
         {
             trimmedQuotes = null;
             var result = property.TrimStart(OtmlSyntax.SpaceList);
 
-            var startQuoteIndex = quotesList.IndexOf(result.FirstOrDefault());
+            var startQuoteIndex = Array.IndexOf(quotesList, result.FirstOrDefault());
             if (startQuoteIndex >= 0)
                 result = result.Substring(1);
 
@@ -198,7 +251,7 @@ namespace AlienFruit.Otml.Domain.Version1v0
 
             result = result.TrimEnd(new[] { OtmlSyntax.MultilineChar }.Concat(OtmlSyntax.SpaceList).ToArray());
 
-            var endQuoteIndex = quotesList.IndexOf(result.LastOrDefault());
+            var endQuoteIndex = Array.IndexOf(quotesList, result.LastOrDefault());
 
             if (startQuoteIndex >= 0)
                 if (startQuoteIndex != endQuoteIndex)
@@ -226,7 +279,7 @@ namespace AlienFruit.Otml.Domain.Version1v0
             {
                 if (!isShielded)
                 {
-                    var findedQuotationMark = quotesList.IndexOf(text[a]);
+                    var findedQuotationMark = Array.IndexOf(quotesList, text[a]);
                     if (findedQuotationMark >= 0)
                     {
                         if (findedQuotationMark == openedQuotationMark)
@@ -267,7 +320,7 @@ namespace AlienFruit.Otml.Domain.Version1v0
             {
                 if (!isShielded)
                 {
-                    var findedQuotationMark = quotesList.IndexOf(text[a]);
+                    var findedQuotationMark = Array.IndexOf(quotesList, text[a]);
                     if (findedQuotationMark >= 0)
                     {
                         if (findedQuotationMark == openedQuotationMark)
