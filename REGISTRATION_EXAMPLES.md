@@ -1,6 +1,6 @@
 # SecretsBuilder Registration Examples
 
-## Пример 1: Keyraft в конфигурации (до построения DI)
+## Example 1: Keyraft in configuration (before DI is built)
 
 ```csharp
 using AlienFruit.Otml.Configuration;
@@ -22,7 +22,7 @@ var host = Host.CreateDefaultBuilder(args)
     })
     .ConfigureServices((context, services) =>
     {
-        // DI сервисы, если нужны
+        // DI services, if needed
         services.AddLogging();
     })
     .Build();
@@ -32,7 +32,7 @@ await host.RunAsync();
 
 ---
 
-## Пример 2: Несколько провайдеров секретов
+## Example 2: Multiple secret providers
 
 ```csharp
 var secrets = new SecretsBuilder()
@@ -44,7 +44,7 @@ var secrets = new SecretsBuilder()
     })
     .AddKeyraftSecretProvider(options =>
     {
-        // Второй провайдер (другой namespace)
+        // Second provider (different namespace)
         options.BaseUrl = Environment.GetEnvironmentVariable("KEYRAFT_URL")!;
         options.Token = Environment.GetEnvironmentVariable("KEYRAFT_TOKEN")!;
         options.Namespace = "shared/common";
@@ -60,13 +60,13 @@ Host.CreateDefaultBuilder(args)
 
 ---
 
-## Пример 3: Конфигурация БЕЗ секретов (только статические значения)
+## Example 3: Configuration WITHOUT secrets (static values only)
 
 ```csharp
 Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration((context, config) =>
     {
-        // secrets = null, конфигурация без {{secret:...}} маркеров
+        // secrets = null, configuration without {{secret:...}} markers
         config.AddOtmlConfigurationFile("settings.otml");
     })
     .ConfigureServices((context, services) =>
@@ -78,7 +78,7 @@ Host.CreateDefaultBuilder(args)
 
 ---
 
-## Пример 4: ConfigurationManager (без Host)
+## Example 4: ConfigurationManager (without Host)
 
 ```csharp
 using AlienFruit.Otml.Configuration;
@@ -95,25 +95,25 @@ var secrets = new SecretsBuilder()
 var configManager = new ConfigurationManager();
 configManager.AddOtmlConfigurationFile("config.otml", secrets);
 
-// Используем configManager напрямую
+// Use configManager directly
 var connectionString = configManager["Database:ConnectionString"];
 var apiKey = configManager["Api:Key"];
 ```
 
 ---
 
-## Пример 5: Регистрация в DI (отдельно от конфигурации)
+## Example 5: Registration in DI (separate from configuration)
 
 ```csharp
-// Конфигурация БЕЗ секретов
+// Configuration WITHOUT secrets
 Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration((context, config) =>
     {
-        config.AddOtmlConfigurationFile("settings.otml");  // ← без секретов
+        config.AddOtmlConfigurationFile("settings.otml");  // ← no secrets
     })
     .ConfigureServices((context, services) =>
     {
-        // Регистрируем Keyraft в DI для использования в сервисах
+        // Register Keyraft in DI for use in services
         services.AddKeyraftSecretProvider(options =>
         {
             options.BaseUrl = context.Configuration["Keyraft:BaseUrl"]!;
@@ -125,7 +125,7 @@ Host.CreateDefaultBuilder(args)
     })
     .Build();
 
-// В сервисе:
+// In the service:
 public class SecretService
 {
     private readonly IEnumerable<ISecretProvider> providers;
@@ -150,7 +150,7 @@ public class SecretService
 
 ---
 
-## Пример 6: Комбинация — конфигурация И DI регистрация
+## Example 6: Combination — configuration AND DI registration
 
 ```csharp
 var secrets = new SecretsBuilder()
@@ -164,12 +164,12 @@ var secrets = new SecretsBuilder()
 Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration((context, config) =>
     {
-        // Используем секреты при загрузке конфигурации
+        // Use secrets when loading configuration
         config.AddOtmlConfigurationFile("settings.otml", secrets);
     })
     .ConfigureServices((context, services) =>
     {
-        // Также регистрируем в DI для других нужд
+        // Also register in DI for other purposes
         services.AddKeyraftSecretProvider(options =>
         {
             options.BaseUrl = context.Configuration["Keyraft:BaseUrl"]!;
@@ -184,12 +184,12 @@ Host.CreateDefaultBuilder(args)
 
 ---
 
-## Пример 7: Условная регистрация в зависимости от окружения
+## Example 7: Conditional registration depending on environment
 
 ```csharp
 var secretsBuilder = new SecretsBuilder();
 
-// В продакшене используем Keyraft
+// In production use Keyraft
 if (!app.IsDevelopment())
 {
     secretsBuilder.AddKeyraftSecretProvider(options =>
@@ -199,12 +199,12 @@ if (!app.IsDevelopment())
         options.Namespace = "app/prod";
     });
 }
-// В разработке можно использовать переменные окружения (добавить свой провайдер)
+// In development you can use environment variables (add your own provider)
 
 Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration((context, config) =>
     {
-        // Использует secrets только если они были добавлены
+        // Uses secrets only if they were added
         config.AddOtmlConfigurationFile("settings.otml", secretsBuilder);
     })
     .Build();
@@ -212,7 +212,7 @@ Host.CreateDefaultBuilder(args)
 
 ---
 
-## Пример 8: Custom ISecretProvider
+## Example 8: Custom ISecretProvider
 
 ```csharp
 public class EnvironmentVariableSecretProvider : ISecretProvider
@@ -225,7 +225,7 @@ public class EnvironmentVariableSecretProvider : ISecretProvider
     }
 }
 
-// В Program.cs:
+// In Program.cs:
 var secrets = new SecretsBuilder()
     .Add(new EnvironmentVariableSecretProvider())
     .AddKeyraftSecretProvider(options =>
@@ -245,7 +245,7 @@ Host.CreateDefaultBuilder(args)
 
 ---
 
-## Пример 9: Минимальный (только конфигурация)
+## Example 9: Minimal (configuration only)
 
 ```csharp
 using AlienFruit.Otml.Configuration;
@@ -261,14 +261,14 @@ Host.CreateDefaultBuilder(args)
 
 ---
 
-## Итоговый паттерн
+## Final pattern
 
 ```
-1. Создать SecretsBuilder() — если нужны секреты в конфигурации
+1. Create SecretsBuilder() — if secrets are needed in configuration
    ↓
-2. Добавить провайдеров .AddKeyraftSecretProvider(...)
+2. Add providers .AddKeyraftSecretProvider(...)
    ↓
-3. Передать в AddOtmlConfigurationFile(file, secrets)
+3. Pass to AddOtmlConfigurationFile(file, secrets)
    ↓
-4. Опционально: отдельно зарегистрировать в DI сервисах
+4. Optional: separately register in DI services
 ```
