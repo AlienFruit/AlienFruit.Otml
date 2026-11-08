@@ -1,4 +1,5 @@
-﻿using AlienFruit.Otml.Serializer.Formatters;
+﻿using AlienFruit.Otml.Exceptions;
+using AlienFruit.Otml.Serializer.Formatters;
 using AlienFruit.Otml.Serializer.Utils;
 using AutoFixture;
 using FluentAssertions;
@@ -174,6 +175,48 @@ namespace AlienFruit.Otml.Serializer.Tests
 
             // Assert
             deserealizeResult.Should().BeEquivalentTo(sourceObject);
+        }
+
+        [Fact]
+        public void Serializer_then_deserialize_null_string_should_return_empty_array()
+        {
+            // Arrange
+            ISerializer serializer = OtmlSerializer.Build().Create();
+
+            // Action
+            var result = serializer.Deserialize<string[]>(string.Empty);
+
+            // Assert
+            result.Should().BeEmpty();
+        }
+
+
+        [Fact]
+        public void Deserialize_values_list_without_property_should_throw_parse_exception()
+        {
+            // Arrange
+            ISerializer serializer = OtmlSerializer.Build().Create();
+
+            // Action
+            Action action = () => serializer.Deserialize<string[]>($"value1,value2");
+
+            // Assert
+            action.Should().Throw<OtmlParseException>()
+                .WithMessage("Only one value can be in the line without a property*");
+        }
+
+        [Fact]
+        public void Serialize_then_deserialize_string_array_should_return_same_array()
+        {
+            // Arrange
+            ISerializer serializer = OtmlSerializer.Build().Create();
+            var source = new[] { "value1", "value2" };
+
+            // Action
+            var result = serializer.Deserialize<string[]>(serializer.Serialize(source));
+
+            // Assert
+            result.Should().BeEquivalentTo(source);
         }
 
         [Fact]
