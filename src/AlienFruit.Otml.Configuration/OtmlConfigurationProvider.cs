@@ -40,7 +40,12 @@ namespace AlienFruit.Otml.Configuration
 
             foreach (var node in dom)
             {
-                ProcessObject(string.Empty, node);
+                // Root-level objects become sections; root-level properties become
+                // root keys, like JSON/INI root scalars (e.g. AllowedHosts).
+                if (node.Type == NodeType.Object)
+                    ProcessObject(string.Empty, node);
+                else if (node.Type == NodeType.Property)
+                    ProcessProperty(string.Empty, node);
             }
         }
 
@@ -57,23 +62,31 @@ namespace AlienFruit.Otml.Configuration
                 }
 
                 if (item.Type == NodeType.Property)
-                {
-                    var values = GetValues(item);
+                    ProcessProperty(key, item);
+            }
+        }
 
-                    if (item.IsArray)
-                    {
-                        for (int i = 0; i < values.Length; i++)
-                        {
-                            var itemKey = GetKey(key, item.Name) + ':' + i;
-                            AddValue(itemKey, values[i], item);
-                        }
-                    }
-                    else
-                    {
-                        var itemKey = GetKey(key, item.Name);
-                        AddValue(itemKey, values[0], item);
-                    }
+        /// <summary>
+        /// Flattens one property node into configuration keys under <paramref name="parrentKey"/>:
+        /// a scalar becomes a single key, an array becomes indexed keys. A root-level
+        /// property uses an empty parent key and therefore maps straight onto a root key.
+        /// </summary>
+        private void ProcessProperty(string parrentKey, OtmlNode property)
+        {
+            var values = GetValues(property);
+
+            if (property.IsArray)
+            {
+                for (int i = 0; i < values.Length; i++)
+                {
+                    var itemKey = GetKey(parrentKey, property.Name) + ':' + i;
+                    AddValue(itemKey, values[i], property);
                 }
+            }
+            else
+            {
+                var itemKey = GetKey(parrentKey, property.Name);
+                AddValue(itemKey, values[0], property);
             }
         }
 

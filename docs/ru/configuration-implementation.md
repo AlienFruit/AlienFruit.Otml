@@ -117,6 +117,8 @@ services.AddEnvironmentVariableSecretProvider();
 | `database:endpoints:1` | `second` |
 | `database:pool:size` | `10` |
 
+Свойства в корне документа, вне секций, становятся корневыми ключами — как верхнеуровневые скаляры в JSON: `AllowedHosts : "*"` читается через `config["AllowedHosts"]`.
+
 Результат — обычная `IConfiguration`. Работают и чтение по ключу (`config["database:password"]`), и разовая привязка (`config.GetSection("database").Get<DatabaseOptions>()`), и привязка через `Configure<DatabaseOptions>` + `IOptions<DatabaseOptions>` — всё как с `appsettings.json`.
 
 Ключи регистронезависимы, как у JSON/XML/INI-провайдеров: `config["DB:PASS"]` найдёт значение, объявленное как `pass` в секции `db`.

@@ -117,6 +117,8 @@ Nested objects become colon-separated key paths, array values of a property get 
 | `database:endpoints:1` | `second` |
 | `database:pool:size` | `10` |
 
+Properties at the document root, outside any section, become root keys — just like top-level scalars in JSON: `AllowedHosts : "*"` is read via `config["AllowedHosts"]`.
+
 The result is an ordinary `IConfiguration`. Reading by key (`config["database:password"]`), one-shot binding (`config.GetSection("database").Get<DatabaseOptions>()`) and `Configure<DatabaseOptions>` + `IOptions<DatabaseOptions>` binding all work exactly as with `appsettings.json`.
 
 Keys are case-insensitive, like the JSON/XML/INI providers: `config["DB:PASS"]` finds the value declared as `pass` in section `db`.

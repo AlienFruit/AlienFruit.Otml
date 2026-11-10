@@ -194,16 +194,70 @@ namespace AlienFruit.Otml.Configuration.Tests
         }
 
         [Fact]
-        public void Properties_outside_an_object_are_dropped()
+        public void Root_level_property_maps_to_a_root_key()
         {
-            // ProcessObject only walks children of object nodes; a root-level property
-            // line has Value children, which are skipped.
+            // A property line at level 0 is a configuration key, like in JSON/INI:
+            // the standard appsettings shape with a root scalar must not be lost.
+            Write("AllowedHosts : \"*\"\n");
+
+            var config = Build();
+
+            config["AllowedHosts"].Should().Be("*");
+        }
+
+        [Fact]
+        public void Root_level_array_property_maps_to_indexed_root_keys()
+        {
             Write("prop : a, b\n");
 
             var config = Build();
 
-            config["prop:0"].Should().BeNull();
-            config["prop"].Should().BeNull();
+            config["prop:0"].Should().Be("a");
+            config["prop:1"].Should().Be("b");
+            config["prop"].Should().BeNull(); // arrays are stored indexed only, as inside sections
+        }
+
+        [Fact]
+        public void Root_property_and_root_section_with_the_same_name_coexist()
+        {
+            // "a" is a value key, "a:b" is a section key: different configuration
+            // dictionary entries, no collision.
+            Write("a : 1\n@a\n\tb : 2\n");
+
+            var config = Build();
+
+            config["a"].Should().Be("1");
+            config["a:b"].Should().Be("2");
+        }
+
+        [Fact]
+        public void Duplicate_root_property_names_fail_load()
+        {
+            Write("a : 1\na : 2\n");
+
+            var act = () => Build();
+
+            var failure = act.Should().Throw<OtmlConfigurationException>()
+                .WithMessage("*Duplicate property name*'a'*configuration key 'a' is already defined*")
+                .Which;
+
+            failure.Line.Should().Be(2);
+            failure.Position.Should().Be(0);
+        }
+
+        [Fact]
+        public void Root_property_without_value_fails_load()
+        {
+            Write("a :\n");
+
+            var act = () => Build();
+
+            var failure = act.Should().Throw<OtmlConfigurationException>()
+                .WithMessage("*Property cannot be empty*a*")
+                .Which;
+
+            failure.Line.Should().Be(1);
+            failure.Position.Should().Be(0);
         }
 
         [Fact]
