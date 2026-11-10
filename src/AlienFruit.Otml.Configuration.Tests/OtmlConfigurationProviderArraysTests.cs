@@ -150,19 +150,47 @@ namespace AlienFruit.Otml.Configuration.Tests
 
             var act = () => Build();
 
-            act.Should().Throw<ArgumentException>()
-                .WithMessage("*Property cannot be empty*a*");
+            var failure = act.Should().Throw<OtmlConfigurationException>()
+                .WithMessage("*Property cannot be empty*a*")
+                .Which;
+
+            failure.OtmlFile.Should().Be(this.tempFile);
+            failure.Line.Should().Be(2);
+            failure.Position.Should().Be(1);
         }
 
         [Fact]
         public void Duplicate_property_names_fail_load()
         {
-            // Data.Add is a plain dictionary insert: the second "s:a" collides
+            // The second "s:a" collides with the first; Load raises a domain error
+            // naming the file, line and position of the offending node instead of
+            // the raw Dictionary.Add ArgumentException.
             Write("@s\n\ta : 1\n\ta : 2\n");
 
             var act = () => Build();
 
-            act.Should().Throw<ArgumentException>().WithMessage("*already been added*s:a*");
+            var failure = act.Should().Throw<OtmlConfigurationException>()
+                .WithMessage("*Duplicate property name*already defined*")
+                .Which;
+
+            failure.Message.Should().Contain("'s:a'");
+            failure.OtmlFile.Should().Be(this.tempFile);
+            failure.Line.Should().Be(3);
+            failure.Position.Should().Be(1);
+        }
+
+        [Fact]
+        public void Duplicate_array_property_names_fail_load()
+        {
+            // Two array declarations reuse the same indexed keys: the second
+            // "arr : c, d" hits s:arr:0 already taken by the first declaration.
+            Write("@s\n\tarr : a, b\n\tarr : c, d\n");
+
+            var act = () => Build();
+
+            act.Should().Throw<OtmlConfigurationException>()
+                .WithMessage("*Duplicate property name*'arr'*'s:arr:0*")
+                .Which.Line.Should().Be(3);
         }
 
         [Fact]
@@ -212,12 +240,13 @@ namespace AlienFruit.Otml.Configuration.Tests
         public void Differently_cased_property_names_collide_on_one_key()
         {
             // Keys are case-insensitive, so "A" and "a" map to the same
-            // configuration key; the second add fails like any duplicate name.
+            // configuration key; the second declaration fails like any duplicate name.
             Write("@s\n\tA : 1\n\ta : 2\n");
 
             var act = () => Build();
 
-            act.Should().Throw<ArgumentException>().WithMessage("*already been added*s:a*");
+            act.Should().Throw<OtmlConfigurationException>()
+                .WithMessage("*Duplicate property name*'a'*'s:a*");
         }
 
         [Fact]

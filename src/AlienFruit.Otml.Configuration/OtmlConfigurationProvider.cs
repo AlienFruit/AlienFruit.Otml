@@ -65,16 +65,33 @@ namespace AlienFruit.Otml.Configuration
                         for (int i = 0; i < values.Length; i++)
                         {
                             var itemKey = GetKey(key, item.Name) + ':' + i;
-                            Data.Add(itemKey, values[i]);
+                            AddValue(itemKey, values[i], item);
                         }
                     }
                     else
                     {
                         var itemKey = GetKey(key, item.Name);
-                        Data.Add(itemKey, values[0]);
+                        AddValue(itemKey, values[0], item);
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Stores a single configuration value, turning the raw
+        /// <see cref="ArgumentException"/> of <c>Dictionary.Add</c> into a domain
+        /// <see cref="OtmlConfigurationException"/> that names the file, line and
+        /// position of the offending property node (the OTML parser error style).
+        /// A duplicate key means the same property name (or the same array index,
+        /// including a case-only difference: keys are case-insensitive) is declared twice.
+        /// </summary>
+        private void AddValue(string key, string value, OtmlNode node)
+        {
+            if (this.Data.ContainsKey(key))
+                throw new OtmlConfigurationException(this.otmlFile, node.Location?.Line, node.Location?.Position,
+                    $"Duplicate property name '{node.Name}': configuration key '{key}' is already defined.");
+
+            this.Data.Add(key, value);
         }
 
         public override bool TryGet(string key, out string? value)
@@ -104,11 +121,12 @@ namespace AlienFruit.Otml.Configuration
         private static string GetKey(string parrentKey, string currentName)
             => string.IsNullOrWhiteSpace(parrentKey) ? currentName : $"{parrentKey}:{currentName}";
 
-        private static string[] GetValues(OtmlNode node)
+        private string[] GetValues(OtmlNode node)
         {
             var values = node.Children.Where(x => x.Type == NodeType.Value).ToArray();
             if (values.Length == 0)
-                throw new ArgumentException($"Property cannot be empty. Property name:{node.Name}");
+                throw new OtmlConfigurationException(this.otmlFile, node.Location?.Line, node.Location?.Position,
+                    $"Property cannot be empty. Property name:{node.Name}");
 
             return values.Select(x => x.Value).ToArray();
         }
