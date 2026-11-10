@@ -20,8 +20,8 @@ namespace AlienFruit.Otml.Readers
         private int inLinePosition;
         private bool disposed;
 
-        public CurrentCharLocation CurrentLocation =>
-            new CurrentCharLocation(this.currentLine, this.inLinePosition);
+        public SourceLocation CurrentLocation =>
+            new SourceLocation(this.currentLine, this.inLinePosition);
 
         public event EventHandler OnNewLine;
 

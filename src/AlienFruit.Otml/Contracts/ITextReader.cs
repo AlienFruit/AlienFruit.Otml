@@ -6,7 +6,7 @@ namespace AlienFruit.Otml
     {
         event EventHandler OnNewLine;
 
-        CurrentCharLocation CurrentLocation { get; }
+        SourceLocation CurrentLocation { get; }
 
         int Read();
 

@@ -63,6 +63,10 @@ namespace AlienFruit.Otml.Domain.Version1v0
                         ? ParseItem(reader, true, nodeLocation)
                         : ParseItem(reader, false, nodeLocation, currentChar);
 
+                    // The node text starts one character left of nodeLocation: that location
+                    // was captured right after the first character of the node was read.
+                    newNode.Location = new SourceLocation(nodeLocation.Line, nodeLocation.Position - 1);
+
                     if (newNode.Name.FirstOrDefault() != OtmlSyntax.ObjectChar) //skip declaration object which start with @@
                     {
                         AddItem(newNode, result, levels, nodeLevel, nodeLocation);
@@ -86,7 +90,7 @@ namespace AlienFruit.Otml.Domain.Version1v0
             return result;
         }
 
-        private static OtmlNode ParseItem(ITextReader reader, bool isObject, CurrentCharLocation nodeLocation, char? lostChar = null)
+        private static OtmlNode ParseItem(ITextReader reader, bool isObject, SourceLocation nodeLocation, char? lostChar = null)
         {
             // ReadLine returns null only at EOF; here there is still a character before EOF,
             // but the line may be empty — keep the parser's previous behavior.
@@ -95,10 +99,10 @@ namespace AlienFruit.Otml.Domain.Version1v0
                 return ParseLine(line, isObject, nodeLocation);
             else
                 // nodeLocation was captured after reading lostChar: line start is one character to the left
-                return ParseLine(lostChar + line, isObject, new CurrentCharLocation(nodeLocation.Line, nodeLocation.Position - 1));
+                return ParseLine(lostChar + line, isObject, new SourceLocation(nodeLocation.Line, nodeLocation.Position - 1));
         }
 
-        private static OtmlNode ParseLine(string line, bool isObject, CurrentCharLocation location)
+        private static OtmlNode ParseLine(string line, bool isObject, SourceLocation location)
         {
             var property = GetNameAndValues(line);
             var offset = property.Item2 is null ? 0 : property.Item1.Length + 1 /*':'*/;
@@ -125,10 +129,10 @@ namespace AlienFruit.Otml.Domain.Version1v0
             AddToParrent(parrent, property.Item2 is null ? Enumerable.Empty<OtmlNode>() : valueNodes, location);
             return parrent;
 
-            CurrentCharLocation GetRelativeLocation(CurrentCharLocation loc, int ofst) => new CurrentCharLocation(location.Line, location.Position + ofst);
+            SourceLocation GetRelativeLocation(SourceLocation loc, int ofst) => new SourceLocation(location.Line, location.Position + ofst);
         }
 
-        private static void AddItem(OtmlNode item, List<OtmlNode> toList, Dictionary<int, OtmlNode> levels, int tabCounter, CurrentCharLocation location)
+        private static void AddItem(OtmlNode item, List<OtmlNode> toList, Dictionary<int, OtmlNode> levels, int tabCounter, SourceLocation location)
         {
             if (tabCounter == 0)
                 toList.Add(item);
@@ -139,7 +143,7 @@ namespace AlienFruit.Otml.Domain.Version1v0
                 throw new OtmlParseException($"Failed to recognoze parrents for item \'{(item.Type == NodeType.Value ? item.Value : item.Name)}\'", location);
         }
 
-        private static void AddToParrent(OtmlNode parrent, OtmlNode item, CurrentCharLocation location)
+        private static void AddToParrent(OtmlNode parrent, OtmlNode item, SourceLocation location)
         {
             #region Validation
 
@@ -155,13 +159,13 @@ namespace AlienFruit.Otml.Domain.Version1v0
                 (parrent as Node).AddChild(item);
         }
 
-        private static void AddToParrent(OtmlNode parrent, IEnumerable<OtmlNode> items, CurrentCharLocation location)
+        private static void AddToParrent(OtmlNode parrent, IEnumerable<OtmlNode> items, SourceLocation location)
         {
             foreach (var item in items)
                 AddToParrent(parrent, item, location);
         }
 
-        internal static string ParsePropertyValue(string text, CurrentCharLocation location, out bool hasPlus, out int posOffset)
+        internal static string ParsePropertyValue(string text, SourceLocation location, out bool hasPlus, out int posOffset)
         {
             if (string.IsNullOrWhiteSpace(text))
                 throw new OtmlParseException($"Empty property cannot be parsed", location.Line, location.Position);
@@ -238,7 +242,7 @@ namespace AlienFruit.Otml.Domain.Version1v0
             return new string(unescaped.ToArray());
         }
 
-        internal static string TrimProperty(string property, CurrentCharLocation location, out int posOffset, out char? trimmedQuotes)
+        internal static string TrimProperty(string property, SourceLocation location, out int posOffset, out char? trimmedQuotes)
         {
             trimmedQuotes = null;
             var result = property.TrimStart(OtmlSyntax.SpaceList);

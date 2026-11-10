@@ -5,6 +5,7 @@ using AlienFruit.Otml.Readers;
 using FluentAssertions;
 using Xunit;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -83,8 +84,21 @@ namespace AlienFruit.Otml.Tests
             using var parser = new OtmlParser(new StringTextReader(codeString));
             var result = parser.Parse();
 
+            // Location is parser metadata: code-built nodes have none. The round-trip
+            // contract is about the document structure, not coordinates — normalize.
+            ClearLocations(result);
+
             // Assert
             result.Should().BeEquivalentTo(source);
+        }
+
+        private static void ClearLocations(IEnumerable<OtmlNode> nodes)
+        {
+            foreach (var node in nodes)
+            {
+                node.Location = null;
+                ClearLocations(node.Children);
+            }
         }
 
         [Fact]
@@ -152,7 +166,7 @@ namespace AlienFruit.Otml.Tests
             var propertyString = " \"Property value\" ";
 
             // Action
-            var result = OtmlParser.TrimProperty(propertyString, new CurrentCharLocation(1, 0), out var offset, out var quotesIndex);
+            var result = OtmlParser.TrimProperty(propertyString, new SourceLocation(1, 0), out var offset, out var quotesIndex);
 
             // Assert
             result.Should().Be("Property value");
@@ -165,7 +179,7 @@ namespace AlienFruit.Otml.Tests
             var propertyString = " \"  Property value  \" ";
 
             // Action
-            var result = OtmlParser.TrimProperty(propertyString, new CurrentCharLocation(1, 0), out var offset, out var quotesIndex);
+            var result = OtmlParser.TrimProperty(propertyString, new SourceLocation(1, 0), out var offset, out var quotesIndex);
 
             // Assert
             result.Should().Be("  Property value  ");
@@ -178,7 +192,7 @@ namespace AlienFruit.Otml.Tests
             var propertyString = " Property value ";
 
             // Action
-            var result = OtmlParser.TrimProperty(propertyString, new CurrentCharLocation(1, 0), out var offset, out var quotesIndex);
+            var result = OtmlParser.TrimProperty(propertyString, new SourceLocation(1, 0), out var offset, out var quotesIndex);
 
             // Assert
             result.Should().Be("Property value");
@@ -191,7 +205,7 @@ namespace AlienFruit.Otml.Tests
             var propertyString = "Property value\"";
 
             // Action
-            var result = OtmlParser.TrimProperty(propertyString, new CurrentCharLocation(1, 0), out var offset, out var quotesIndex);
+            var result = OtmlParser.TrimProperty(propertyString, new SourceLocation(1, 0), out var offset, out var quotesIndex);
 
             // Assert
             result.Should().Be(propertyString);
@@ -204,7 +218,7 @@ namespace AlienFruit.Otml.Tests
             var propertyString = "Property value\\\"";
 
             // Action
-            var result = OtmlParser.TrimProperty(propertyString, new CurrentCharLocation(1, 0), out var offset, out var quotesIndex);
+            var result = OtmlParser.TrimProperty(propertyString, new SourceLocation(1, 0), out var offset, out var quotesIndex);
 
             // Assert
             result.Should().Be(propertyString);
@@ -215,7 +229,7 @@ namespace AlienFruit.Otml.Tests
         {
             // Arrange
             var propertyString = "\'Property value";
-            Action action = () => OtmlParser.TrimProperty(propertyString, new CurrentCharLocation(1, 1), out var offset, out var quotesIndex);
+            Action action = () => OtmlParser.TrimProperty(propertyString, new SourceLocation(1, 1), out var offset, out var quotesIndex);
 
             // Assert
             action.Should().Throw<OtmlParseException>().WithMessage("Missing closing quotation mark ('), in line: 1, position: 16");
@@ -226,7 +240,7 @@ namespace AlienFruit.Otml.Tests
         {
             // Arrange
             var propertyString = "\"Property value";
-            Action action = () => OtmlParser.TrimProperty(propertyString, new CurrentCharLocation(1, 2), out var offset, out var quotesIndex);
+            Action action = () => OtmlParser.TrimProperty(propertyString, new SourceLocation(1, 2), out var offset, out var quotesIndex);
 
             // Assert
             action.Should().Throw<OtmlParseException>().WithMessage("Missing closing quotation mark (\"), in line: 1, position: 17");
@@ -239,7 +253,7 @@ namespace AlienFruit.Otml.Tests
             var propertyString = "\"Property value\" + ";
 
             // Action
-            var result = OtmlParser.TrimProperty(propertyString, new CurrentCharLocation(1, 0), out var offset, out var quotesIndex);
+            var result = OtmlParser.TrimProperty(propertyString, new SourceLocation(1, 0), out var offset, out var quotesIndex);
 
             // Assert
             result.Should().Be("Property value");
@@ -252,7 +266,7 @@ namespace AlienFruit.Otml.Tests
             var propertyString = "Property value\"";
 
             // Action
-            var result = OtmlParser.TrimProperty(propertyString, new CurrentCharLocation(1, 0), out var offset, out var quoteChar);
+            var result = OtmlParser.TrimProperty(propertyString, new SourceLocation(1, 0), out var offset, out var quoteChar);
 
             // Assert
             quoteChar.Should().BeNull();
@@ -265,7 +279,7 @@ namespace AlienFruit.Otml.Tests
             var propertyString = "\'Property value\'";
 
             // Action
-            var result = OtmlParser.TrimProperty(propertyString, new CurrentCharLocation(1, 0), out var offset, out var quoteChar);
+            var result = OtmlParser.TrimProperty(propertyString, new SourceLocation(1, 0), out var offset, out var quoteChar);
 
             // Assert
             quoteChar.Should().Be('\'');
@@ -278,7 +292,7 @@ namespace AlienFruit.Otml.Tests
             var propertyString = "\"Property value\"";
 
             // Action
-            var result = OtmlParser.TrimProperty(propertyString, new CurrentCharLocation(1, 0), out var offset, out var quoteChar);
+            var result = OtmlParser.TrimProperty(propertyString, new SourceLocation(1, 0), out var offset, out var quoteChar);
 
             // Assert
             quoteChar.Should().Be('\"');
@@ -293,7 +307,7 @@ namespace AlienFruit.Otml.Tests
 
         {
             // Arrange
-            Action action = () => OtmlParser.ParsePropertyValue("\' test property string", new CurrentCharLocation(1, 0), out bool hasPlus, out int posOffset);
+            Action action = () => OtmlParser.ParsePropertyValue("\' test property string", new SourceLocation(1, 0), out bool hasPlus, out int posOffset);
 
             // Assert
             action.Should().Throw<OtmlParseException>().WithMessage("Missing closing quotation mark ('), in line: 1, position: 22");
@@ -303,7 +317,7 @@ namespace AlienFruit.Otml.Tests
         public void ParsePropertyValue_should_throw_exception_if_closing_double_quotation_mark_is_missed()
         {
             // Arrange
-            Action action = () => OtmlParser.ParsePropertyValue("\" test property string", new CurrentCharLocation(1, 2), out bool hasPlus, out int posOffset);
+            Action action = () => OtmlParser.ParsePropertyValue("\" test property string", new SourceLocation(1, 2), out bool hasPlus, out int posOffset);
 
             // Assert
             action.Should().Throw<OtmlParseException>().WithMessage("Missing closing quotation mark (\"), in line: 1, position: 24");
@@ -313,7 +327,7 @@ namespace AlienFruit.Otml.Tests
         public void ParsePropertyValue_should_throw_exception_if_unexpected_chars_exists_after_closing_quotation_mark()
         {
             // Arrange
-            Action action = () => OtmlParser.ParsePropertyValue("\" test property string \" unexpected chars", new CurrentCharLocation(1, 0), out bool hasPlus, out int posOffset);
+            Action action = () => OtmlParser.ParsePropertyValue("\" test property string \" unexpected chars", new SourceLocation(1, 0), out bool hasPlus, out int posOffset);
 
             // Assert
             action.Should().Throw<OtmlParseException>().WithMessage("Missing closing quotation mark (\"), in line: 1, position: 41");
@@ -323,7 +337,7 @@ namespace AlienFruit.Otml.Tests
         public void ParsePropertyValue_should_throw_exception_if_property_string_contains_only_whitespaces()
         {
             // Arrange
-            Action action = () => OtmlParser.ParsePropertyValue("    ", new CurrentCharLocation(1, 0), out bool hasPlus, out int posOffset);
+            Action action = () => OtmlParser.ParsePropertyValue("    ", new SourceLocation(1, 0), out bool hasPlus, out int posOffset);
 
             // Assert
             action.Should().Throw<OtmlParseException>().WithMessage("Empty property cannot be parsed, in line: 1, position: 0");
@@ -333,7 +347,7 @@ namespace AlienFruit.Otml.Tests
         public void ParsePropertyValue_should_throw_exception_if_value_has_unshielded_double_quote()
         {
             // Arrange
-            Action action = () => OtmlParser.ParsePropertyValue(" value \" with double quote", new CurrentCharLocation(1, 0), out bool hasPlus, out int posOffset);
+            Action action = () => OtmlParser.ParsePropertyValue(" value \" with double quote", new SourceLocation(1, 0), out bool hasPlus, out int posOffset);
 
             // Assert
             action.Should().Throw<OtmlParseException>().WithMessage("Unshielded quotation mark char (\"), in line: 1, position: 7");
@@ -343,7 +357,7 @@ namespace AlienFruit.Otml.Tests
         public void ParsePropertyValue_should_throw_exception_if_value_has_unshielded_single_quote()
         {
             // Arrange
-            Action action = () => OtmlParser.ParsePropertyValue(" value ' with double quote", new CurrentCharLocation(1, 0), out bool hasPlus, out int posOffset);
+            Action action = () => OtmlParser.ParsePropertyValue(" value ' with double quote", new SourceLocation(1, 0), out bool hasPlus, out int posOffset);
 
             // Assert
             action.Should().Throw<OtmlParseException>().WithMessage("Unshielded quotation mark char ('), in line: 1, position: 7");
@@ -353,7 +367,7 @@ namespace AlienFruit.Otml.Tests
         public void ParsePropertyValue_should_throw_exception_if_value_inside_double_quotes_has_unshielded_double_quote()
         {
             // Arrange
-            Action action = () => OtmlParser.ParsePropertyValue("\" value \" with double quote \"", new CurrentCharLocation(1, 0), out bool hasPlus, out int posOffset);
+            Action action = () => OtmlParser.ParsePropertyValue("\" value \" with double quote \"", new SourceLocation(1, 0), out bool hasPlus, out int posOffset);
 
             // Assert
             action.Should().Throw<OtmlParseException>().WithMessage("Unshielded quotation mark char (\"), in line: 1, position: 8");
@@ -363,7 +377,7 @@ namespace AlienFruit.Otml.Tests
         public void ParsePropertyValue_should_throw_exception_if_value_inside_single_quotes_has_unshielded_single_quote()
         {
             // Arrange
-            Action action = () => OtmlParser.ParsePropertyValue("' value ' with double quote '", new CurrentCharLocation(1, 0), out bool hasPlus, out int posOffset);
+            Action action = () => OtmlParser.ParsePropertyValue("' value ' with double quote '", new SourceLocation(1, 0), out bool hasPlus, out int posOffset);
 
             // Assert
             action.Should().Throw<OtmlParseException>().WithMessage("Unshielded quotation mark char ('), in line: 1, position: 8");
@@ -374,7 +388,7 @@ namespace AlienFruit.Otml.Tests
         {
             // Arrange
             var propertyString = " \"Property value\"+ ";
-            var location = new CurrentCharLocation();
+            var location = new SourceLocation();
 
             // Action
             _ = OtmlParser.ParsePropertyValue(propertyString, location, out bool hasPlus, out int posOffset);
@@ -388,7 +402,7 @@ namespace AlienFruit.Otml.Tests
         {
             // Arrange
             var propertyString = "Property value + ";
-            var location = new CurrentCharLocation();
+            var location = new SourceLocation();
 
             // Action
             _ = OtmlParser.ParsePropertyValue(propertyString, location, out bool hasPlus, out int posOffset);
@@ -402,7 +416,7 @@ namespace AlienFruit.Otml.Tests
         {
             // Arrange
             var propertyString = "\' Property, value + \' ";
-            var location = new CurrentCharLocation();
+            var location = new SourceLocation();
 
             // Action
             _ = OtmlParser.ParsePropertyValue(propertyString, location, out bool hasPlus, out int posOffset);
@@ -416,7 +430,7 @@ namespace AlienFruit.Otml.Tests
         {
             // Arrange
             var propertyString = "\\\"pro\\'perty";
-            var location = new CurrentCharLocation();
+            var location = new SourceLocation();
 
             // Action
             var result = OtmlParser.ParsePropertyValue(propertyString, location, out _, out _);
@@ -430,7 +444,7 @@ namespace AlienFruit.Otml.Tests
         {
             // Arrange
             var propertyString = "\"\\\"property\"";
-            var location = new CurrentCharLocation();
+            var location = new SourceLocation();
 
             // Action
             var result = OtmlParser.ParsePropertyValue(propertyString, location, out bool hasPlus, out int posOffset);
@@ -444,7 +458,7 @@ namespace AlienFruit.Otml.Tests
         {
             // Arrange
             var propertyString = "\" property value with ' \"";
-            var location = new CurrentCharLocation();
+            var location = new SourceLocation();
 
             // Action
             var result = OtmlParser.ParsePropertyValue(propertyString, location, out _, out _);
@@ -458,7 +472,7 @@ namespace AlienFruit.Otml.Tests
         {
             // Arrange
             var propertyString = "' property value with \" '";
-            var location = new CurrentCharLocation();
+            var location = new SourceLocation();
 
             // Action
             var result = OtmlParser.ParsePropertyValue(propertyString, location, out _, out _);
@@ -472,7 +486,7 @@ namespace AlienFruit.Otml.Tests
         {
             // Arrange
             var propertyString = @"D:\asdaad\asdasdasdasd\\'";
-            var location = new CurrentCharLocation();
+            var location = new SourceLocation();
 
             // Action
             var result = OtmlParser.ParsePropertyValue(propertyString, location, out _, out _);
@@ -486,7 +500,7 @@ namespace AlienFruit.Otml.Tests
         {
             // Arrange
             var propertyString = @"'D:\asdaad\asdasdasdasd\'";
-            var location = new CurrentCharLocation();
+            var location = new SourceLocation();
 
             // Action
             var result = OtmlParser.ParsePropertyValue(propertyString, location, out _, out _);

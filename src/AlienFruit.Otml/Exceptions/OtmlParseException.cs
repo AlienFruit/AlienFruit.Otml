@@ -4,7 +4,7 @@ namespace AlienFruit.Otml.Exceptions
 {
     public class OtmlParseException : Exception
     {
-        internal OtmlParseException(string message, CurrentCharLocation location)
+        internal OtmlParseException(string message, SourceLocation location)
             : base($"{message}, in line: {location.Line}, position: {location.Position}")
         {
         }

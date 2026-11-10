@@ -25,6 +25,12 @@ namespace AlienFruit.Otml
 
         public abstract NodeType Type { get; }
 
+        /// <summary>
+        /// Coordinates of the node in the source document, captured by the parser.
+        /// <see langword="null"/> for nodes that were built in code rather than parsed.
+        /// </summary>
+        public SourceLocation? Location { get; internal set; }
+
         public string Name
         {
             get

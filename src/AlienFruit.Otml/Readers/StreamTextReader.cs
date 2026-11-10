@@ -40,8 +40,8 @@ namespace AlienFruit.Otml.Readers
             this.reader = new StreamReader(stream, encoding, true, 1024, leaveOpen);
         }
 
-        public CurrentCharLocation CurrentLocation =>
-            new CurrentCharLocation(this.currentLine, this.inLinePosition);
+        public SourceLocation CurrentLocation =>
+            new SourceLocation(this.currentLine, this.inLinePosition);
 
         public int Read()
         {
