@@ -53,6 +53,14 @@ namespace AlienFruit.Otml.Configuration
         {
             var key = GetKey(parrentKey, node.Name);
 
+            // OTML allows values on an object (inline `@s : v` or on the new lines),
+            // but a configuration section cannot carry a value: the key `s` is already
+            // taken by the section itself, so there is nowhere to store them. Fail the
+            // load instead of silently dropping the data.
+            if (node.Children.Any(x => x.Type == NodeType.Value))
+                throw new OtmlConfigurationException(this.otmlFile, node.Location?.Line, node.Location?.Position,
+                    $"Object cannot have values. Object name:{node.Name}");
+
             foreach (var item in node.Children)
             {
                 if (item.Type == NodeType.Object)

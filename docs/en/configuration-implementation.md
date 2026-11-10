@@ -129,6 +129,7 @@ When the document is syntactically valid but cannot be flattened into keys, `Loa
 |-----------|---------|
 | The same property name is declared twice (including a case-only difference, and repeating array indexes) | `Duplicate property name 'a': configuration key 's:a' is already defined.` |
 | A property without a value (`a :`) | `Property cannot be empty. Property name:a.` |
+| An object with values (`@s : v` or values on the new lines under `@s`) | `Object cannot have values. Object name:s.` |
 
 `IConfigurationRoot.Reload()` re-parses the OTML file and clears the resolved-secret cache, so edited files and rotated secrets are picked up on the next read. Note: `IOptions<T>` binds once and lives for the process lifetime, so it will not see changes made after a `Reload()`. To see them, use `IOptionsSnapshot<T>` (rebinds per request) or `IOptionsMonitor<T>`.
 

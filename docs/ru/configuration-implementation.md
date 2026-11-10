@@ -129,6 +129,7 @@ services.AddEnvironmentVariableSecretProvider();
 |----------|-----------|
 | Одно и то же имя свойства объявлено дважды (включая различие только в регистре, а также повторяющиеся индексы массивов) | `Duplicate property name 'a': configuration key 's:a' is already defined.` |
 | Свойство без значения (`a :`) | `Property cannot be empty. Property name:a.` |
+| Объект со значениями (`@s : v` или значения новыми строками под `@s`) | `Object cannot have values. Object name:s.` |
 
 `IConfigurationRoot.Reload()` перечитывает OTML-файл и очищает кэш разрешённых секретов, поэтому правки файла и ротация секретов подхватываются при следующем чтении. Учтите: `IOptions<T>` связывается один раз и живёт до конца процесса, так что после `Reload()` обновлений он не увидит. Чтобы видеть их, используйте `IOptionsSnapshot<T>` (перевязывается на каждый запрос) или `IOptionsMonitor<T>`.
 

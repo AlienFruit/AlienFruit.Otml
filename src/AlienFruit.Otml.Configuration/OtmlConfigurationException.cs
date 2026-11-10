@@ -6,7 +6,8 @@ namespace AlienFruit.Otml.Configuration
     /// Thrown by <see cref="OtmlConfigurationProvider.Load()"/> when an OTML document is
     /// syntactically valid but cannot be flattened into configuration keys: a property
     /// name (or array index) repeats — the second declaration would collide with the first —
-    /// or a property carries no value. Unlike the parse errors raised by the OTML parser,
+    /// a property carries no value, or an object carries values that have no configuration
+    /// key to be stored under. Unlike the parse errors raised by the OTML parser,
     /// this failure happens while building the key/value store, so the exception belongs
     /// to the configuration library. The message follows the <c>OtmlParseException</c>
     /// style and names the file, line and position of the offending node.

@@ -261,15 +261,33 @@ namespace AlienFruit.Otml.Configuration.Tests
         }
 
         [Fact]
-        public void Inline_value_on_an_object_is_ignored()
+        public void Inline_value_on_an_object_fails_load()
         {
-            // "@s : inlineval" — the value node under the object is not a property
+            // "@s : inlineval" — a configuration section cannot carry a value,
+            // so the provider rejects the object instead of silently dropping it.
             Write("@s : inlineval\n\tk : v\n");
 
-            var config = Build();
+            var act = () => Build();
 
-            config["s"].Should().BeNull();
-            config["s:k"].Should().Be("v");
+            act.Should().Throw<OtmlConfigurationException>()
+                .WithMessage("*Object cannot have values*s*");
+        }
+
+        [Fact]
+        public void Newline_values_on_an_object_fails_load()
+        {
+            // Values on the new lines under an object are the same shape as the inline
+            // form; the flattener has no key to store them under.
+            Write("@s\n\tval1\n\tval2\n\tk : v\n");
+
+            var act = () => Build();
+
+            var failure = act.Should().Throw<OtmlConfigurationException>()
+                .WithMessage("*Object cannot have values. Object name:s*")
+                .Which;
+
+            failure.Line.Should().Be(1);
+            failure.Position.Should().Be(0);
         }
 
         #endregion blocked and multiline values
