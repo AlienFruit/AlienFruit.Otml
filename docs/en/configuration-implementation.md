@@ -137,7 +137,7 @@ When the document is syntactically valid but cannot be flattened into keys, `Loa
 
 Any property value may contain one or more markers.
 
-Markers are resolved **lazily**: `Load()` only parses the file, the substitution happens on the first read of the value (`config["database:password"]`, binding, etc.) and the resolved value is cached. The tag name is case-insensitive, spaces inside the marker are allowed (`{{ SECRET:DB_PASSWORD }}`). Markers with unknown tags (for example `{{vault:key}}`) and values without markers are left untouched.
+Markers are resolved **lazily**: `Load()` only parses the file, the substitution happens on the first read of the value (`config["database:password"]`, binding, etc.) and the resolved value is cached. The tag name is case-insensitive, spaces inside the marker are allowed (`{{ SECRET:DB_PASSWORD }}`). Markers with unknown tags (for example `{{vault:key}}`) and values without markers are left untouched. Resolution is single-pass: the value returned by a storage is used verbatim, even if it itself looks like a marker — nested markers are not supported by design.
 
 Storages are tried one after another, the first non-empty answer wins. A missing secret in a storage is not an error: the provider returns `null` and resolution moves on to the next one. A provider should throw only for real failures (transport, auth, timeout), which abort the resolution.
 

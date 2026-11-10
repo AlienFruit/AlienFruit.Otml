@@ -159,6 +159,9 @@ namespace AlienFruit.Otml.Configuration
         /// <see langword="null"/> and resolution moves on to the next one. Only when no storage
         /// returned a value the resolution fails with <see cref="SecretNotFoundException"/>.
         /// Markers with unknown tags and values without markers pass through unchanged.
+        /// Resolution is single-pass by design: a value returned by a storage is opaque data,
+        /// it is never re-scanned for markers, so nested markers are not supported —
+        /// a storage value that looks like <c>{{secret:...}}</c> is returned verbatim.
         /// Resolution happens on the first <see cref="TryGet"/> access to the value, not at load time.
         /// </summary>
         private string? ResolveSecrets(string? value, string configurationKey)
