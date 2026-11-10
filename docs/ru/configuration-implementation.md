@@ -119,6 +119,15 @@ services.AddEnvironmentVariableSecretProvider();
 
 Результат — обычная `IConfiguration`. Работают и чтение по ключу (`config["database:password"]`), и разовая привязка (`config.GetSection("database").Get<DatabaseOptions>()`), и привязка через `Configure<DatabaseOptions>` + `IOptions<DatabaseOptions>` — всё как с `appsettings.json`.
 
+Ключи регистронезависимы, как у JSON/XML/INI-провайдеров: `config["DB:PASS"]` найдёт значение, объявленное как `pass` в секции `db`.
+
+Если документ синтаксически корректен, но не может быть разложен в ключи, `Load()` завершается ошибкой `OtmlConfigurationException` — в сообщении и свойствах `OtmlFile` / `Line` / `Position` указан файл, строка и позиция проблемного узла:
+
+| Ситуация | Сообщение |
+|----------|-----------|
+| Одно и то же имя свойства объявлено дважды (включая различие только в регистре, а также повторяющиеся индексы массивов) | `Duplicate property name 'a': configuration key 's:a' is already defined.` |
+| Свойство без значения (`a :`) | `Property cannot be empty. Property name:a.` |
+
 `IConfigurationRoot.Reload()` перечитывает OTML-файл и очищает кэш разрешённых секретов, поэтому правки файла и ротация секретов подхватываются при следующем чтении. Учтите: `IOptions<T>` связывается один раз и живёт до конца процесса, так что после `Reload()` обновлений он не увидит. Чтобы видеть их, используйте `IOptionsSnapshot<T>` (перевязывается на каждый запрос) или `IOptionsMonitor<T>`.
 
 ### Как разрешаются маркеры

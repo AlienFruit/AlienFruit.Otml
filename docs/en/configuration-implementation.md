@@ -119,6 +119,15 @@ Nested objects become colon-separated key paths, array values of a property get 
 
 The result is an ordinary `IConfiguration`. Reading by key (`config["database:password"]`), one-shot binding (`config.GetSection("database").Get<DatabaseOptions>()`) and `Configure<DatabaseOptions>` + `IOptions<DatabaseOptions>` binding all work exactly as with `appsettings.json`.
 
+Keys are case-insensitive, like the JSON/XML/INI providers: `config["DB:PASS"]` finds the value declared as `pass` in section `db`.
+
+When the document is syntactically valid but cannot be flattened into keys, `Load()` fails with `OtmlConfigurationException` — the message and the `OtmlFile` / `Line` / `Position` properties name the file, line and position of the offending node:
+
+| Situation | Message |
+|-----------|---------|
+| The same property name is declared twice (including a case-only difference, and repeating array indexes) | `Duplicate property name 'a': configuration key 's:a' is already defined.` |
+| A property without a value (`a :`) | `Property cannot be empty. Property name:a.` |
+
 `IConfigurationRoot.Reload()` re-parses the OTML file and clears the resolved-secret cache, so edited files and rotated secrets are picked up on the next read. Note: `IOptions<T>` binds once and lives for the process lifetime, so it will not see changes made after a `Reload()`. To see them, use `IOptionsSnapshot<T>` (rebinds per request) or `IOptionsMonitor<T>`.
 
 ### How markers are resolved
